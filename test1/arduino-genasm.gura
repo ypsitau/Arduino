@@ -1,0 +1,36 @@
+#!/usr/bin/env gurax
+import(json)
+
+if (sys.argv.len < 2) {
+	sys.cerr.Print(R'''
+	usage: arduino-genasm.gura dir
+	Generate an assembler file from the C/C++ source code. The argumet arg specifes a directory
+	where files created by arduino-cli are stored. The directory can be specified by passing --build-path
+	option to arduino-cli, Example:
+	  arduino-cli compile --fqbn arduino:avr:uno --build-path build
+	  gurax arduino-genasm.gura build
+	'''	)
+	sys.Exit(1)
+}
+doc = json.Read(path.Join(sys.argv[1], 'compile_commands.json'))
+args = doc[0]['arguments']
+cmd = args[0]
+argsExclude = ['-c', '-g', '-MMD', '-flto']
+argsMod = ['-S', '-fverbose-asm']
+skipFlag = false
+args.Offset(1).Each {|arg|
+	if (skipFlag) {
+		skipFlag = false
+	} elsif (arg == '-o' || arg == '-I') {
+		skipFlag = true
+	} elsif (!(arg in argsExclude)) {
+		argsMod.Add(arg)
+		if (!arg.StartsWith('-')) {
+			pathNameSrc = arg
+		}
+	}
+}
+fileNameAsm = path.BaseName(path.FileName(pathNameSrc)) + '.s'
+argsMod.Add('-o', fileNameAsm)
+os.Exec(cmd, argsMod*)
+sys.cerr.Printf('%s was generated\n', fileNameAsm)
