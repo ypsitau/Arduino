@@ -1,29 +1,44 @@
 #!/usr/bin/env gurax
 import(json)
+import(argopt)
 
-if (sys.argv.len < 2) {
+argopt.Parser {|p|
+	p.OptBool('help', 'h', 'print help')
+	try {
+		[argv, opt] = p.Parse(sys.argv)
+	} catch {|e|
+		sys.cerr.Println(e.text)
+		sys.Exit(1)
+	}
+}
+if (opt['help']) {
 	sys.cerr.Print(R'''
 	usage: arduino-genasm.gura dir
-	Generate an assembler file from the C/C++ source code. The argumet arg specifes a directory
+	
+	Generate an assembler file from the C/C++ source code. The argumet dir specifes a directory
 	where files created by arduino-cli are stored. The directory can be specified by passing --build-path
 	option to arduino-cli, Example:
 	  arduino-cli compile --fqbn arduino:avr:uno --build-path build
 	  gurax arduino-genasm.gura build
 	'''	)
-	sys.Exit(1)
+	sys.Exit()
 }
-doc = json.Read(path.Join(sys.argv[1], 'compile_commands.json'))
+dirName = cond(argv.len == 0, 'build', argv[0])
+doc = json.Read(path.Join(dirName, 'compile_commands.json'))
 args = doc[0]['arguments']
 cmd = args[0]
 argsExclude = ['-c', '-g', '-MMD', '-flto']
+argsExcludeAndSkip = ['-o']
 argsMod = ['-S', '-fverbose-asm']
 skipFlag = false
 args.Offset(1).Each {|arg|
 	if (skipFlag) {
 		skipFlag = false
-	} elsif (arg == '-o' || arg == '-I') {
+	} elsif (arg in argsExcludeAndSkip) {
 		skipFlag = true
-	} elsif (!(arg in argsExclude)) {
+	} elsif (arg in argsExclude) {
+		// nothing to do
+	} else {
 		argsMod.Add(arg)
 		if (!arg.StartsWith('-')) {
 			pathNameSrc = arg
