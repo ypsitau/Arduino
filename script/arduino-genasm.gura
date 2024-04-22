@@ -23,8 +23,8 @@ if (opt['help']) {
 	'''	)
 	sys.Exit()
 }
-dirName = cond(argv.len == 0, 'build', argv[0])
-doc = json.Read(path.Join(dirName, 'compile_commands.json'))
+dirNameBuild = cond(argv.len == 0, 'build', argv[0])
+doc = json.Read(path.Join(dirNameBuild, 'compile_commands.json'))
 args = doc[0]['arguments']
 cmd = args[0]
 argsExclude = ['-c', '-g', '-MMD', '-flto']
@@ -45,7 +45,7 @@ args.Offset(1).Each {|arg|
 		}
 	}
 }
-fileNameAsm = path.BaseName(path.FileName(pathNameSrc)) + '.s'
-argsMod.Add('-o', fileNameAsm)
+pathNameAsm = path.Join(dirNameBuild, path.BaseName(path.FileName(pathNameSrc)) + '.s')
+argsMod.Add('-o', pathNameAsm)
 os.Exec(cmd, argsMod*)
-sys.cerr.Printf('%s was generated\n', fileNameAsm)
+sys.cerr.Printf('%s was generated\n', pathNameAsm)
