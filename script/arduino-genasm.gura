@@ -24,28 +24,35 @@ if (opt['help']) {
 	sys.Exit()
 }
 dirNameBuild = cond(argv.len == 0, 'build', argv[0])
-doc = json.Read(path.Join(dirNameBuild, 'compile_commands.json'))
-args = doc[0]['arguments']
-cmd = args[0]
-argsExclude = ['-c', '-g', '-MMD', '-flto']
-argsExcludeAndSkip = ['-o']
-argsMod = ['-S', '-fverbose-asm']
-skipFlag = false
-args.Offset(1).Each {|arg|
-	if (skipFlag) {
-		skipFlag = false
-	} elsif (arg in argsExcludeAndSkip) {
-		skipFlag = true
-	} elsif (arg in argsExclude) {
-		// nothing to do
-	} else {
-		argsMod.Add(arg)
-		if (!arg.StartsWith('-')) {
-			pathNameSrc = arg
+pathNameCompileCommands = path.Join(dirNameBuild, 'compile_commands.json')
+if (!path.Exists(pathNameCompileCommands)) {
+	sys.cerr.Printf('arduino-genasm: %s is not found\n', pathNameCompileCommands)
+	sys.Exit(1)
+}
+doc = json.Read(pathNameCompileCommands)
+doc.Each {|record|
+	args = record['arguments']
+	cmd = args[0]
+	argsExclude = ['-c', '-g', '-MMD', '-flto']
+	argsExcludeAndSkip = ['-o']
+	argsMod = ['-S', '-fverbose-asm']
+	skipFlag = false
+	args.Offset(1).Each {|arg|
+		if (skipFlag) {
+			skipFlag = false
+		} elsif (arg in argsExcludeAndSkip) {
+			skipFlag = true
+		} elsif (arg in argsExclude) {
+			// nothing to do
+		} else {
+			argsMod.Add(arg)
+			if (!arg.StartsWith('-')) {
+				pathNameSrc = arg
+			}
 		}
 	}
+	pathNameAsm = path.Join(dirNameBuild, path.BaseName(path.FileName(pathNameSrc)) + '.s')
+	argsMod.Add('-o', pathNameAsm)
+	os.Exec(cmd, argsMod*)
+	sys.cerr.Printf('%s was generated\n', pathNameAsm)
 }
-pathNameAsm = path.Join(dirNameBuild, path.BaseName(path.FileName(pathNameSrc)) + '.s')
-argsMod.Add('-o', pathNameAsm)
-os.Exec(cmd, argsMod*)
-sys.cerr.Printf('%s was generated\n', pathNameAsm)
