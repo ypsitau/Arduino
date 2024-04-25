@@ -9,6 +9,18 @@ void setup()
     "loop:"						"\n"
 	"	out %[portd],%[dataHi]"	"\n" // 1
 	"	out %[portd],%[dataLo]"	"\n" // 1
+	"	nop"					"\n"
+	"	nop"					"\n"
+	"	nop"					"\n"
+	"	nop"					"\n"
+	"	nop"					"\n"
+	"	nop"					"\n"
+	"	nop"					"\n"
+	"	nop"					"\n"
+	"	nop"					"\n"
+	"	nop"					"\n"
+	"	nop"					"\n"
+	"	nop"					"\n"
 	"	rjmp loop"				"\n" // 2
 	:
 	:	[portd] "I" (_SFR_IO_ADDR(PORTD)),
