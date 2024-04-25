@@ -32,7 +32,7 @@ void OutputPWM(int pin, uint8_t value)
 	}
 }
 
-int pin = 3;
+int pin = 11;
 
 void setup()
 {
