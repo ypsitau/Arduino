@@ -9,13 +9,13 @@ void loop()
 	uint16_t value = 0;
 	do {
 		// value = analogRead(A0);
-		ADMUX = (1 << 6)	// REFS = 1: AVcc with external capacitor at AREF pin
-			| (0 << 5)		// ADLAR = 0: The result is right adjusted
-			| (0 << 0);		// MUX = 0 .. choose A0
-		//_SFR_BYTE(ADCSRA) |= _BV(ADSC);
-		ADCSRA |= (1 << 6);	// ADSC = 1: ADC Start Conversion
-		while (bit_is_set(ADCSRA, 1 << 6)) ;
+		ADMUX =
+			(1 << REFS0) |		// Reference Selection Bits = AVcc with external capacitor at AREF pin
+			(0 << ADLAR) |		// ADC Left Adjust Result = 0
+			(0 << MUX0);		// Analog Channel Selection Bits = ADC0
+		ADCSRA |= (1 << ADSC);	// ADC Start Conversion = 1
+		while (ADCSRA & (1 << ADSC)) ;
 		value = ADC;
 	} while (0);
-	Serial.println(value);
+	Serial.println(value, 16);
 }
