@@ -7,12 +7,13 @@ void PrintPIN(uint8_t dataPIN, uint8_t dataDDR)
 
 void setup()
 {
+	Serial.begin(57600);
 	PORTD =
 		(0 << PD7) |	// D7      PCINT23
-		(0 << PD6) |	// D6*     PCINT22
-		(0 << PD5) |	// D5*     PCINT21
+		(0 << PD6) |	// D6      PCINT22 OC0A
+		(0 << PD5) |	// D5      PCINT21 OC0B
 		(0 << PD4) |	// D4      PCINT20
-		(0 << PD3) |	// D3*     PCINT19
+		(0 << PD3) |	// D3      PCINT19 OC2B
 		(0 << PD2) |	// D2      PCINT18
 		(0 << PD1) |	// D1 (TX) PCINT17
 		(0 << PD0);		// D0 (RX) PCINT16
@@ -21,9 +22,9 @@ void setup()
 		(0 << PB6) |	// (XTAL1) PCINT6
 		(0 << PB5) |	// D13     PCINT5
 		(0 << PB4) |	// D12     PCINT4
-		(0 << PB3) |	// D11*    PCINT3
-		(0 << PB2) |	// D10*    PCINT2
-		(0 << PB1) |	// D9*     PCINT1
+		(0 << PB3) |	// D11     PCINT3  OC2A
+		(0 << PB2) |	// D10     PCINT2  OC1B
+		(0 << PB1) |	// D9      PCINT1  OC1A
 		(0 << PB0);		// D8      PCINT0
 	PORTC =
 		(0 << PC6) |	// D20 A6  PCINT14
@@ -33,13 +34,12 @@ void setup()
 		(0 << PC2) |	// D16 A2  PCINT10
 		(0 << PC1) |	// D15 A1  PCINT9
 		(0 << PC0);		// D14 A0  PCINT8
-	Serial.begin(57600);
 	DDRD =
 		(1 << DDD7) |	// D7
-		(1 << DDD6) |	// D6*
-		(1 << DDD5) |	// D5*
+		(1 << DDD6) |	// D6
+		(1 << DDD5) |	// D5
 		(1 << DDD4) |	// D4
-		(1 << DDD3) |	// D3*
+		(1 << DDD3) |	// D3
 		(1 << DDD2) |	// D2
 		(0 << DDD1) |	// D1 (TX)
 		(0 << DDD0);	// D0 (RX)
@@ -48,9 +48,9 @@ void setup()
 		(0 << DDB6) |	// (XTAL1)
 		(0 << DDB5) |	// D13 
 		(0 << DDB4) |	// D12
-		(0 << DDB3) |	// D11*
-		(1 << DDB2) |	// D10*
-		(1 << DDB1) |	// D9*
+		(0 << DDB3) |	// D11
+		(1 << DDB2) |	// D10
+		(1 << DDB1) |	// D9
 		(1 << DDB0);	// D8
 	DDRC =
 		(0 << DDC6) |	// D20 A6
