@@ -9,31 +9,31 @@ void setup()
 {
 	Serial.begin(57600);
 	PORTD =
-		(0 << PD7) |	// D7      PCINT23
-		(0 << PD6) |	// D6      PCINT22 OC0A
-		(0 << PD5) |	// D5      PCINT21 OC0B
-		(0 << PD4) |	// D4      PCINT20
-		(0 << PD3) |	// D3      PCINT19 OC2B
-		(0 << PD2) |	// D2      PCINT18
-		(0 << PD1) |	// D1 (TX) PCINT17
-		(0 << PD0);		// D0 (RX) PCINT16
+		(0 << PD7) |	// D7  PCINT23
+		(0 << PD6) |	// D6  PCINT22 OC0A
+		(0 << PD5) |	// D5  PCINT21 OC0B
+		(0 << PD4) |	// D4  PCINT20
+		(0 << PD3) |	// D3  PCINT19 OC2B INT1
+		(0 << PD2) |	// D2  PCINT18      INT0
+		(0 << PD1) |	// D1  (TX) 
+		(0 << PD0);		// D0  (RX) 
 	PORTB =
-		(0 << PB7) |	// (XTAL2) PCINT7
-		(0 << PB6) |	// (XTAL1) PCINT6
-		(0 << PB5) |	// D13     PCINT5
-		(0 << PB4) |	// D12     PCINT4
-		(0 << PB3) |	// D11     PCINT3  OC2A
-		(0 << PB2) |	// D10     PCINT2  OC1B
-		(0 << PB1) |	// D9      PCINT1  OC1A
-		(0 << PB0);		// D8      PCINT0
+		(0 << PB7) |	// (XTAL2) 
+		(0 << PB6) |	// (XTAL1) 
+		(0 << PB5) |	// D13 PCINT5
+		(0 << PB4) |	// D12 PCINT4
+		(0 << PB3) |	// D11 PCINT3  OC2A
+		(0 << PB2) |	// D10 PCINT2  OC1B
+		(0 << PB1) |	// D9  PCINT1  OC1A
+		(0 << PB0);		// D8  PCINT0
 	PORTC =
-		(0 << PC6) |	// D20 A6  PCINT14
-		(0 << PC5) |	// D19 A5  PCINT13
-		(0 << PC4) |	// D18 A4  PCINT12
-		(0 << PC3) |	// D17 A3  PCINT11
-		(0 << PC2) |	// D16 A2  PCINT10
-		(0 << PC1) |	// D15 A1  PCINT9
-		(0 << PC0);		// D14 A0  PCINT8
+		(0 << PC6) |	// D20 PCINT14 A6
+		(0 << PC5) |	// D19 PCINT13 A5
+		(0 << PC4) |	// D18 PCINT12 A4
+		(0 << PC3) |	// D17 PCINT11 A3
+		(0 << PC2) |	// D16 PCINT10 A2
+		(0 << PC1) |	// D15 PCINT9  A1
+		(0 << PC0);		// D14 PCINT8  A0
 	DDRD =
 		(1 << DDD7) |	// D7
 		(1 << DDD6) |	// D6
