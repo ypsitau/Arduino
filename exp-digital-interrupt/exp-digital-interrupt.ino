@@ -1,28 +1,36 @@
-const char* volatile msg = nullptr;
+int cnt = 0;
+
+void PrintIntMsg(const char* msg)
+{
+	Serial.print(cnt);
+	Serial.print(" ");
+	Serial.println(msg);
+	cnt++;
+}
 
 ISR(INT0_vect) // External Interrupt Request 0: PD2
 {
-	msg = "INT0";
+	PrintIntMsg("INT0");
 }
 
 ISR(INT1_vect) // External Interrupt Request 1: PD3
 {
-	msg = "INT1";
+	PrintIntMsg("INT1");
 }
 
 ISR(PCINT0_vect) // Pin Change Interrupt 0: PB0..PB7
 {
-	msg = "PCINT0";
+	PrintIntMsg("PCINT0");
 }
 
 ISR(PCINT1_vect) // Pin Change Interrupt 1: PC0..PC6
 {
-	msg = "PCINT1";
+	PrintIntMsg("PCINT1");
 }
 
 ISR(PCINT2_vect) // Pin Change Interrupt 2: PD0..PD7
 {
-	msg = "PCINT2";
+	PrintIntMsg("PCINT2");
 }
 
 void setup()
@@ -98,15 +106,6 @@ void setup()
 		(1 << PCINT0);	// Pin Change Enable Mask 0 (D8) = 1
 }
 
-int cnt = 0;
 void loop()
 {
-	//Serial.println(PIND, 16);
-	if (msg) {
-		Serial.print(cnt);
-		Serial.print(" ");
-		Serial.println(msg);
-		msg = nullptr;
-		cnt++;
-	}
 }
