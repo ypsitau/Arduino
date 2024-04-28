@@ -1,34 +1,49 @@
+#define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
+#define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
+
 template<int pin> void EnablePWM()
 {
 	if constexpr (pin == 3) { // PD3 is controlled by OC2B
-		TCCR2A |= 1 << COM2B1;
+		sbi(TCCR2A, COM2B1);
+		//TCCR2A = (TCCR2A & ~(0b11 << COM2B0)) | (0b10 << COM2B0);
 	} else if (pin == 5) { // PD5 is controlled by OC0B
-		TCCR0A |= 1 << COM0B1;
+		sbi(TCCR0A, COM0B1);
+		//TCCR0A = (TCCR0A & ~(0b11 << COM0B0)) | (0b10 << COM0B0);
 	} else if (pin == 6) { // PD6 is controlled by OC0A
-		TCCR0A |= 1 << COM0A1;
+		sbi(TCCR0A, COM0A1);
+		//TCCR0A = (TCCR0A & ~(0b11 << COM0A0)) | (0b10 << COM0A0);
 	} else if (pin == 9) { // PB1 is controlled by OC1A
-		TCCR1A |= 1 << COM1A1;
+		sbi(TCCR1A, COM1A1);
+		//TCCR1A = (TCCR1A & ~(0b11 << COM1A0)) | (0b10 << COM1A0);
 	} else if (pin == 10) { // PB2 is controlled by OC1B
-		TCCR1A |= 1 << COM1B1;
+		sbi(TCCR1A, COM1B1);
+		//TCCR1A = (TCCR1A & ~(0b11 << COM1B0)) | (0b10 << COM1B0);
 	} else if (pin == 11) { // PB3 is controlled by OC2A
-		TCCR2A |= 1 << COM2A1;
+		sbi(TCCR2A, COM2A1);
+		//TCCR2A = (TCCR2A & ~(0b11 << COM2A0)) | (0b10 << COM2A0);
 	}
 }
 
 template<int pin> void DisablePWM()
 {
 	if constexpr (pin == 3) { // PD3 is controlled by OC2B
-		TCCR2A &= ~(1 << COM2B1);
+		clr(TCCR2A, COM2B1);
+		//TCCR2A &= ~(0b11 << COM2B0);
 	} else if (pin == 5) { // PD5 is controlled by OC0B
-		TCCR0A &= ~(1 << COM0B1);
+		clr(TCCR0A, COM0B1);
+		//TCCR0A &= ~(0b11 << COM0B0);
 	} else if (pin == 6) { // PD6 is controlled by OC0A
-		TCCR0A &= ~(1 << COM0A1);
+		clr(TCCR0A, COM0A1);
+		//TCCR0A &= ~(0b11 << COM0A0);
 	} else if (pin == 9) { // PB1 is controlled by OC1A
-		TCCR1A &= ~(1 << COM1A1);
+		clr(TCCR1A, COM1A1);
+		//TCCR1A &= ~(0b11 << COM1A0);
 	} else if (pin == 10) { // PB2 is controlled by OC1B
-		TCCR1A &= ~(1 << COM1B1);
+		clr(TCCR1A, COM1B1);
+		//TCCR1A &= ~(0b11 << COM1B0);
 	} else if (pin == 11) { // PB3 is controlled by OC2A
-		TCCR2A &= ~(1 << COM2A1);
+		clr(TCCR2A, COM2A1);
+		//TCCR2A &= ~(0b11 << COM2A0);
 	}
 }
 
