@@ -196,6 +196,48 @@ void setup()
 	data = avrt::Port<18>().Input();
 	data = avrt::Port<19>().Input();
 	data = avrt::Port<20>().Input();
+	avrt::Port<0>().EnablePWM();
+	avrt::Port<1>().EnablePWM();
+	avrt::Port<2>().EnablePWM();
+	avrt::Port<3>().EnablePWM();
+	avrt::Port<4>().EnablePWM();
+	avrt::Port<5>().EnablePWM();
+	avrt::Port<6>().EnablePWM();
+	avrt::Port<7>().EnablePWM();
+	avrt::Port<8>().EnablePWM();
+	avrt::Port<9>().EnablePWM();
+	avrt::Port<10>().EnablePWM();
+	avrt::Port<11>().EnablePWM();
+	avrt::Port<12>().EnablePWM();
+	avrt::Port<13>().EnablePWM();
+	avrt::Port<14>().EnablePWM();
+	avrt::Port<15>().EnablePWM();
+	avrt::Port<16>().EnablePWM();
+	avrt::Port<17>().EnablePWM();
+	avrt::Port<18>().EnablePWM();
+	avrt::Port<19>().EnablePWM();
+	avrt::Port<20>().EnablePWM();
+	avrt::Port<0>().DisablePWM();
+	avrt::Port<1>().DisablePWM();
+	avrt::Port<2>().DisablePWM();
+	avrt::Port<3>().DisablePWM();
+	avrt::Port<4>().DisablePWM();
+	avrt::Port<5>().DisablePWM();
+	avrt::Port<6>().DisablePWM();
+	avrt::Port<7>().DisablePWM();
+	avrt::Port<8>().DisablePWM();
+	avrt::Port<9>().DisablePWM();
+	avrt::Port<10>().DisablePWM();
+	avrt::Port<11>().DisablePWM();
+	avrt::Port<12>().DisablePWM();
+	avrt::Port<13>().DisablePWM();
+	avrt::Port<14>().DisablePWM();
+	avrt::Port<15>().DisablePWM();
+	avrt::Port<16>().DisablePWM();
+	avrt::Port<17>().DisablePWM();
+	avrt::Port<18>().DisablePWM();
+	avrt::Port<19>().DisablePWM();
+	avrt::Port<20>().DisablePWM();
 }
 
 void loop()
