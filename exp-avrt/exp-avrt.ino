@@ -1,124 +1,33 @@
-namespace avrt {
-
-constexpr uint8_t Input = 0;
-constexpr uint8_t Output = 1;
-constexpr uint8_t InputPullup = 2;
-
-class Port {
-public:
-	template<
-		uint8_t pin0	= Input,
-		uint8_t pin1	= Input,
-		uint8_t pin2	= Input,
-		uint8_t pin3	= Input,
-		uint8_t pin4	= Input,
-		uint8_t pin5	= Input,
-		uint8_t pin6	= Input,
-		uint8_t pin7	= Input,
-		uint8_t pin8	= Input,
-		uint8_t pin9	= Input,
-		uint8_t pin10	= Input,
-		uint8_t pin11	= Input,
-		uint8_t pin12	= Input,
-		uint8_t pin13	= Input,
-		uint8_t pin14	= Input,
-		uint8_t pin15	= Input,
-		uint8_t pin16	= Input,
-		uint8_t pin17	= Input,
-		uint8_t pin18	= Input,
-		uint8_t pin19	= Input,
-		uint8_t pin20	= Input
-	> static void Init() {
-		DDRD = ((pin0 & 1) << 0) | ((pin1 & 1) << 1) | ((pin2 & 1) << 2) | ((pin3 & 1) << 3) |
-			((pin4 & 1) << 4) | ((pin5 & 1) << 5) | ((pin6 & 1) << 6) | ((pin7 & 1) << 7);
-		DDRB = ((pin8 & 1) << 0) | ((pin9 & 1) << 1) | ((pin10 & 1) << 2) | ((pin11 & 1) << 3) |
-			((pin12 & 1) << 4) | ((pin13 & 1) << 5);
-		DDRC = ((pin14 & 1) << 0) | ((pin15 & 1) << 1) | ((pin16 & 1) << 2) | ((pin17 & 1) << 3) |
-			((pin18 & 1) << 4) | ((pin19 & 1) << 5) | ((pin20 & 1) << 6);
-	}
-	template<int pin, bool out> static void Output() {
-		if constexpr (pin == 0)         { if constexpr (out) { PORTD |= (1 << 0); } else { PORTD &= ~(1 << 0); }
-		} else if constexpr (pin == 1)  { if constexpr (out) { PORTD |= (1 << 1); } else { PORTD &= ~(1 << 1); }
-		} else if constexpr (pin == 2)  { if constexpr (out) { PORTD |= (1 << 2); } else { PORTD &= ~(1 << 2); }
-		} else if constexpr (pin == 3)  { if constexpr (out) { PORTD |= (1 << 3); } else { PORTD &= ~(1 << 3); }
-		} else if constexpr (pin == 4)  { if constexpr (out) { PORTD |= (1 << 4); } else { PORTD &= ~(1 << 4); }
-		} else if constexpr (pin == 5)  { if constexpr (out) { PORTD |= (1 << 5); } else { PORTD &= ~(1 << 5); }
-		} else if constexpr (pin == 6)  { if constexpr (out) { PORTD |= (1 << 6); } else { PORTD &= ~(1 << 6); }
-		} else if constexpr (pin == 7)  { if constexpr (out) { PORTD |= (1 << 7); } else { PORTD &= ~(1 << 7); }
-		} else if constexpr (pin == 8)  { if constexpr (out) { PORTB |= (1 << 0); } else { PORTB &= ~(1 << 0); }
-		} else if constexpr (pin == 9)  { if constexpr (out) { PORTB |= (1 << 1); } else { PORTB &= ~(1 << 1); }
-		} else if constexpr (pin == 10) { if constexpr (out) { PORTB |= (1 << 2); } else { PORTB &= ~(1 << 2); }
-		} else if constexpr (pin == 11) { if constexpr (out) { PORTB |= (1 << 3); } else { PORTB &= ~(1 << 3); }
-		} else if constexpr (pin == 12) { if constexpr (out) { PORTB |= (1 << 4); } else { PORTB &= ~(1 << 4); }
-		} else if constexpr (pin == 13) { if constexpr (out) { PORTB |= (1 << 5); } else { PORTB &= ~(1 << 5); }
-		} else if constexpr (pin == 14) { if constexpr (out) { PORTC |= (1 << 0); } else { PORTC &= ~(1 << 0); }
-		} else if constexpr (pin == 15) { if constexpr (out) { PORTC |= (1 << 1); } else { PORTC &= ~(1 << 1); }
-		} else if constexpr (pin == 16) { if constexpr (out) { PORTC |= (1 << 2); } else { PORTC &= ~(1 << 2); }
-		} else if constexpr (pin == 17) { if constexpr (out) { PORTC |= (1 << 3); } else { PORTC &= ~(1 << 3); }
-		} else if constexpr (pin == 18) { if constexpr (out) { PORTC |= (1 << 4); } else { PORTC &= ~(1 << 4); }
-		} else if constexpr (pin == 19) { if constexpr (out) { PORTC |= (1 << 5); } else { PORTC &= ~(1 << 5); }
-		} else if constexpr (pin == 20) { if constexpr (out) { PORTC |= (1 << 6); } else { PORTC &= ~(1 << 6); }
-		}
-	}
-	template<int pin> static void Output(bool out) {
-		if constexpr (pin == 0) { if (out) { PORTD |= (1 << 0); } else { PORTD &= ~(1 << 0); }
-		} else if (pin == 1)    { if (out) { PORTD |= (1 << 1); } else { PORTD &= ~(1 << 1); }
-		} else if (pin == 2)    { if (out) { PORTD |= (1 << 2); } else { PORTD &= ~(1 << 2); }
-		} else if (pin == 3)    { if (out) { PORTD |= (1 << 3); } else { PORTD &= ~(1 << 3); }
-		} else if (pin == 4)    { if (out) { PORTD |= (1 << 4); } else { PORTD &= ~(1 << 4); }
-		} else if (pin == 5)    { if (out) { PORTD |= (1 << 5); } else { PORTD &= ~(1 << 5); }
-		} else if (pin == 6)    { if (out) { PORTD |= (1 << 6); } else { PORTD &= ~(1 << 6); }
-		} else if (pin == 7)    { if (out) { PORTD |= (1 << 7); } else { PORTD &= ~(1 << 7); }
-		} else if (pin == 8)    { if (out) { PORTB |= (1 << 0); } else { PORTB &= ~(1 << 0); }
-		} else if (pin == 9)    { if (out) { PORTB |= (1 << 1); } else { PORTB &= ~(1 << 1); }
-		} else if (pin == 10)   { if (out) { PORTB |= (1 << 2); } else { PORTB &= ~(1 << 2); }
-		} else if (pin == 11)   { if (out) { PORTB |= (1 << 3); } else { PORTB &= ~(1 << 3); }
-		} else if (pin == 12)   { if (out) { PORTB |= (1 << 4); } else { PORTB &= ~(1 << 4); }
-		} else if (pin == 13)   { if (out) { PORTB |= (1 << 5); } else { PORTB &= ~(1 << 5); }
-		} else if (pin == 14)   { if (out) { PORTC |= (1 << 0); } else { PORTC &= ~(1 << 0); }
-		} else if (pin == 15)   { if (out) { PORTC |= (1 << 1); } else { PORTC &= ~(1 << 1); }
-		} else if (pin == 16)   { if (out) { PORTC |= (1 << 2); } else { PORTC &= ~(1 << 2); }
-		} else if (pin == 17)   { if (out) { PORTC |= (1 << 3); } else { PORTC &= ~(1 << 3); }
-		} else if (pin == 18)   { if (out) { PORTC |= (1 << 4); } else { PORTC &= ~(1 << 4); }
-		} else if (pin == 19)   { if (out) { PORTC |= (1 << 5); } else { PORTC &= ~(1 << 5); }
-		} else if (pin == 20)   { if (out) { PORTC |= (1 << 6); } else { PORTC &= ~(1 << 6); }
-		}
-	}
-	template<int pin> static uint8_t Input() {
-		if constexpr (pin == 0) return PIND & (1 << 0);
-		else if (pin == 1)      return PIND & (1 << 1);
-		else if (pin == 2)      return PIND & (1 << 2);
-		else if (pin == 3)      return PIND & (1 << 3);
-		else if (pin == 4)      return PIND & (1 << 4);
-		else if (pin == 5)      return PIND & (1 << 5);
-		else if (pin == 6)      return PIND & (1 << 6);
-		else if (pin == 7)      return PIND & (1 << 7);
-		else if (pin == 8)      return PINB & (1 << 0);
-		else if (pin == 9)      return PINB & (1 << 1);
-		else if (pin == 10)     return PINB & (1 << 2);
-		else if (pin == 11)     return PINB & (1 << 3);
-		else if (pin == 12)     return PINB & (1 << 4);
-		else if (pin == 13)     return PINB & (1 << 5);
-		else if (pin == 14)     return PINC & (1 << 0);
-		else if (pin == 15)     return PINC & (1 << 1);
-		else if (pin == 16)     return PINC & (1 << 2);
-		else if (pin == 17)     return PINC & (1 << 3);
-		else if (pin == 18)     return PINC & (1 << 4);
-		else if (pin == 19)     return PINC & (1 << 5);
-		else if (pin == 20)     return PINC & (1 << 6);
-		return 0;
-	}
-};
-
-
-};
+#include "avrt.h"
 
 volatile uint8_t data;
 volatile bool flag = true;
 
 void setup()
 {
-	avrt::Port::Init<>();
+	avrt::Port::Init<
+		avrt::Input,	// D0: PD0(RXD/PCINT16)
+		avrt::Input,	// D1: PD1(TXD/PCINT17)
+		avrt::Input,	// D2: PD2(INT0/PCINT18)
+		avrt::Input,	// D3: PD3(INT1/OC2B/PCINT19)
+		avrt::Input,	// D4: PD4(XCK/T0/PCINT20)
+		avrt::Input,	// D5: PD5(T1/OC0B/PCINT21)
+		avrt::Input,	// D6: PD6(AIN0/OC0A/PCINT22)
+		avrt::Input,	// D7: PD7(AIN1/PCINT23)
+		avrt::Input,	// D8: PB0(ICP1/CLKO/PCINT0)
+		avrt::Input,	// D9: PB1(OC1A/PCINT1)
+		avrt::Input,	// D10: PB2(SS/OC1B/PCINT2)
+		avrt::Input,	// D11: PB3(MOSI/OC2A/PCINT3)
+		avrt::Input,	// D12: PB4(MISO/PCINT4)
+		avrt::Input,	// D13: PB5(SCK/PCINT5)
+		avrt::Input,	// D14: PC0(ADC0/PCINT8)
+		avrt::Input,	// D15: PC1(ADC1/PCINT9)
+		avrt::Input,	// D16: PC2(ADC2/PCINT10)
+		avrt::Input,	// D17: PC3(ADC3/PCINT11)
+		avrt::Input,	// D18: PC4(ADC4/SDA/PCINT12)
+		avrt::Input,	// D19: PC5(ADC5/SCL/PCINT13)
+		avrt::Input		// D20: PC6(RESET/PCINT14)
+	>();
 	avrt::Port::Output<0, false>();
 	avrt::Port::Output<1, false>();
 	avrt::Port::Output<2, false>();
