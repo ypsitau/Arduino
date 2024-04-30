@@ -1,10 +1,40 @@
 namespace avrt {
 
+constexpr uint8_t Input = 0;
+constexpr uint8_t Output = 1;
+constexpr uint8_t InputPullup = 2;
+
 class Port {
 public:
 	template<
-		int pin
+		uint8_t pin0	= Input,
+		uint8_t pin1	= Input,
+		uint8_t pin2	= Input,
+		uint8_t pin3	= Input,
+		uint8_t pin4	= Input,
+		uint8_t pin5	= Input,
+		uint8_t pin6	= Input,
+		uint8_t pin7	= Input,
+		uint8_t pin8	= Input,
+		uint8_t pin9	= Input,
+		uint8_t pin10	= Input,
+		uint8_t pin11	= Input,
+		uint8_t pin12	= Input,
+		uint8_t pin13	= Input,
+		uint8_t pin14	= Input,
+		uint8_t pin15	= Input,
+		uint8_t pin16	= Input,
+		uint8_t pin17	= Input,
+		uint8_t pin18	= Input,
+		uint8_t pin19	= Input,
+		uint8_t pin20	= Input
 	> static void Init() {
+		DDRD = ((pin0 & 1) << 0) | ((pin1 & 1) << 1) | ((pin2 & 1) << 2) | ((pin3 & 1) << 3) |
+			((pin4 & 1) << 4) | ((pin5 & 1) << 5) | ((pin6 & 1) << 6) | ((pin7 & 1) << 7);
+		DDRB = ((pin8 & 1) << 0) | ((pin9 & 1) << 1) | ((pin10 & 1) << 2) | ((pin11 & 1) << 3) |
+			((pin12 & 1) << 4) | ((pin13 & 1) << 5);
+		DDRC = ((pin14 & 1) << 0) | ((pin15 & 1) << 1) | ((pin16 & 1) << 2) | ((pin17 & 1) << 3) |
+			((pin18 & 1) << 4) | ((pin19 & 1) << 5) | ((pin20 & 1) << 6);
 	}
 	template<int pin, bool out> static void Output() {
 		if constexpr (pin == 0)         { if constexpr (out) { PORTD |= (1 << 0); } else { PORTD &= ~(1 << 0); }
@@ -28,8 +58,9 @@ public:
 		} else if constexpr (pin == 18) { if constexpr (out) { PORTC |= (1 << 4); } else { PORTC &= ~(1 << 4); }
 		} else if constexpr (pin == 19) { if constexpr (out) { PORTC |= (1 << 5); } else { PORTC &= ~(1 << 5); }
 		} else if constexpr (pin == 20) { if constexpr (out) { PORTC |= (1 << 6); } else { PORTC &= ~(1 << 6); }
+		}
 	}
-	template<int pin> static void Output2(bool out) {
+	template<int pin> static void Output(bool out) {
 		if constexpr (pin == 0) { if (out) { PORTD |= (1 << 0); } else { PORTD &= ~(1 << 0); }
 		} else if (pin == 1)    { if (out) { PORTD |= (1 << 1); } else { PORTD &= ~(1 << 1); }
 		} else if (pin == 2)    { if (out) { PORTD |= (1 << 2); } else { PORTD &= ~(1 << 2); }
@@ -53,36 +84,32 @@ public:
 		} else if (pin == 20)   { if (out) { PORTC |= (1 << 6); } else { PORTC &= ~(1 << 6); }
 		}
 	}
-}
+	template<int pin> static uint8_t Input() {
+		if constexpr (pin == 0) return PIND & (1 << 0);
+		else if (pin == 1)      return PIND & (1 << 1);
+		else if (pin == 2)      return PIND & (1 << 2);
+		else if (pin == 3)      return PIND & (1 << 3);
+		else if (pin == 4)      return PIND & (1 << 4);
+		else if (pin == 5)      return PIND & (1 << 5);
+		else if (pin == 6)      return PIND & (1 << 6);
+		else if (pin == 7)      return PIND & (1 << 7);
+		else if (pin == 8)      return PINB & (1 << 0);
+		else if (pin == 9)      return PINB & (1 << 1);
+		else if (pin == 10)     return PINB & (1 << 2);
+		else if (pin == 11)     return PINB & (1 << 3);
+		else if (pin == 12)     return PINB & (1 << 4);
+		else if (pin == 13)     return PINB & (1 << 5);
+		else if (pin == 14)     return PINC & (1 << 0);
+		else if (pin == 15)     return PINC & (1 << 1);
+		else if (pin == 16)     return PINC & (1 << 2);
+		else if (pin == 17)     return PINC & (1 << 3);
+		else if (pin == 18)     return PINC & (1 << 4);
+		else if (pin == 19)     return PINC & (1 << 5);
+		else if (pin == 20)     return PINC & (1 << 6);
+		return 0;
+	}
 };
 
-}
-
-template<int pin> uint8_t InputPin()
-{
-	if constexpr (pin == 0) return PIND & (1 << 0);
-	else if (pin == 1)      return PIND & (1 << 1);
-	else if (pin == 2)      return PIND & (1 << 2);
-	else if (pin == 3)      return PIND & (1 << 3);
-	else if (pin == 4)      return PIND & (1 << 4);
-	else if (pin == 5)      return PIND & (1 << 5);
-	else if (pin == 6)      return PIND & (1 << 6);
-	else if (pin == 7)      return PIND & (1 << 7);
-	else if (pin == 8)      return PINB & (1 << 0);
-	else if (pin == 9)      return PINB & (1 << 1);
-	else if (pin == 10)     return PINB & (1 << 2);
-	else if (pin == 11)     return PINB & (1 << 3);
-	else if (pin == 12)     return PINB & (1 << 4);
-	else if (pin == 13)     return PINB & (1 << 5);
-	else if (pin == 14)     return PINC & (1 << 0);
-	else if (pin == 15)     return PINC & (1 << 1);
-	else if (pin == 16)     return PINC & (1 << 2);
-	else if (pin == 17)     return PINC & (1 << 3);
-	else if (pin == 18)     return PINC & (1 << 4);
-	else if (pin == 19)     return PINC & (1 << 5);
-	else if (pin == 20)     return PINC & (1 << 6);
-	return 0;
-}
 
 };
 
@@ -91,6 +118,7 @@ volatile bool flag = true;
 
 void setup()
 {
+	avrt::Port::Init<>();
 	avrt::Port::Output<0, false>();
 	avrt::Port::Output<1, false>();
 	avrt::Port::Output<2, false>();
@@ -154,27 +182,27 @@ void setup()
 	avrt::Port::Output<18>(flag);
 	avrt::Port::Output<19>(flag);
 	avrt::Port::Output<20>(flag);
-	avrt::InputPin<0>();
-	avrt::InputPin<1>();
-	avrt::InputPin<2>();
-	avrt::InputPin<3>();
-	avrt::InputPin<4>();
-	avrt::InputPin<5>();
-	avrt::InputPin<6>();
-	avrt::InputPin<7>();
-	avrt::InputPin<8>();
-	avrt::InputPin<9>();
-	avrt::InputPin<10>();
-	avrt::InputPin<11>();
-	avrt::InputPin<12>();
-	avrt::InputPin<13>();
-	avrt::InputPin<14>();
-	avrt::InputPin<15>();
-	avrt::InputPin<16>();
-	avrt::InputPin<17>();
-	avrt::InputPin<18>();
-	avrt::InputPin<19>();
-	avrt::InputPin<20>();
+	avrt::Port::Input<0>();
+	avrt::Port::Input<1>();
+	avrt::Port::Input<2>();
+	avrt::Port::Input<3>();
+	avrt::Port::Input<4>();
+	avrt::Port::Input<5>();
+	avrt::Port::Input<6>();
+	avrt::Port::Input<7>();
+	avrt::Port::Input<8>();
+	avrt::Port::Input<9>();
+	avrt::Port::Input<10>();
+	avrt::Port::Input<11>();
+	avrt::Port::Input<12>();
+	avrt::Port::Input<13>();
+	avrt::Port::Input<14>();
+	avrt::Port::Input<15>();
+	avrt::Port::Input<16>();
+	avrt::Port::Input<17>();
+	avrt::Port::Input<18>();
+	avrt::Port::Input<19>();
+	avrt::Port::Input<20>();
 }
 
 void loop()
