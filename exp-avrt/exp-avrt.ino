@@ -3,115 +3,199 @@
 volatile uint8_t data;
 volatile bool flag = true;
 
+class A {
+public:
+	char buff[32];
+};
+
+A a;
+constexpr avrt::Port<0> portHoge0;
+constexpr avrt::Port<1> portHoge1;
+constexpr avrt::Port<2> portHoge2;
+constexpr avrt::Port<3> portHoge3;
+constexpr avrt::Port<4> portHoge4;
+constexpr avrt::Port<5> portHoge5;
+constexpr avrt::Port<6> portHoge6;
+
 void setup()
 {
-	avrt::Port::Init<
-		avrt::Input,	// D0: PD0(RXD/PCINT16)
-		avrt::Input,	// D1: PD1(TXD/PCINT17)
-		avrt::Input,	// D2: PD2(INT0/PCINT18)
-		avrt::Input,	// D3: PD3(INT1/OC2B/PCINT19)
-		avrt::Input,	// D4: PD4(XCK/T0/PCINT20)
-		avrt::Input,	// D5: PD5(T1/OC0B/PCINT21)
-		avrt::Input,	// D6: PD6(AIN0/OC0A/PCINT22)
-		avrt::Input,	// D7: PD7(AIN1/PCINT23)
-		avrt::Input,	// D8: PB0(ICP1/CLKO/PCINT0)
-		avrt::Input,	// D9: PB1(OC1A/PCINT1)
-		avrt::Input,	// D10: PB2(SS/OC1B/PCINT2)
-		avrt::Input,	// D11: PB3(MOSI/OC2A/PCINT3)
-		avrt::Input,	// D12: PB4(MISO/PCINT4)
-		avrt::Input,	// D13: PB5(SCK/PCINT5)
-		avrt::Input,	// D14: PC0(ADC0/PCINT8)
-		avrt::Input,	// D15: PC1(ADC1/PCINT9)
-		avrt::Input,	// D16: PC2(ADC2/PCINT10)
-		avrt::Input,	// D17: PC3(ADC3/PCINT11)
-		avrt::Input,	// D18: PC4(ADC4/SDA/PCINT12)
-		avrt::Input,	// D19: PC5(ADC5/SCL/PCINT13)
-		avrt::Input		// D20: PC6(RESET/PCINT14)
+	avrt::InitPort<
+		avrt::In,	// D0: PD0(RXD/PCINT16)
+		avrt::In,	// D1: PD1(TXD/PCINT17)
+		avrt::In,	// D2: PD2(INT0/PCINT18)
+		avrt::In,	// D3: PD3(INT1/OC2B/PCINT19)
+		avrt::In,	// D4: PD4(XCK/T0/PCINT20)
+		avrt::In,	// D5: PD5(T1/OC0B/PCINT21)
+		avrt::In,	// D6: PD6(AIN0/OC0A/PCINT22)
+		avrt::In,	// D7: PD7(AIN1/PCINT23)
+		avrt::In,	// D8: PB0(ICP1/CLKO/PCINT0)
+		avrt::In,	// D9: PB1(OC1A/PCINT1)
+		avrt::In,	// D10: PB2(SS/OC1B/PCINT2)
+		avrt::In,	// D11: PB3(MOSI/OC2A/PCINT3)
+		avrt::In,	// D12: PB4(MISO/PCINT4)
+		avrt::In,	// D13: PB5(SCK/PCINT5)
+		avrt::In,	// D14: PC0(ADC0/PCINT8)
+		avrt::In,	// D15: PC1(ADC1/PCINT9)
+		avrt::In,	// D16: PC2(ADC2/PCINT10)
+		avrt::In,	// D17: PC3(ADC3/PCINT11)
+		avrt::In,	// D18: PC4(ADC4/SDA/PCINT12)
+		avrt::In,	// D19: PC5(ADC5/SCL/PCINT13)
+		avrt::In	// D20: PC6(RESET/PCINT14)
 	>();
-	avrt::Port::Output<0, false>();
-	avrt::Port::Output<1, false>();
-	avrt::Port::Output<2, false>();
-	avrt::Port::Output<3, false>();
-	avrt::Port::Output<4, false>();
-	avrt::Port::Output<5, false>();
-	avrt::Port::Output<6, false>();
-	avrt::Port::Output<7, false>();
-	avrt::Port::Output<8, false>();
-	avrt::Port::Output<9, false>();
-	avrt::Port::Output<10, false>();
-	avrt::Port::Output<11, false>();
-	avrt::Port::Output<12, false>();
-	avrt::Port::Output<13, false>();
-	avrt::Port::Output<14, false>();
-	avrt::Port::Output<15, false>();
-	avrt::Port::Output<16, false>();
-	avrt::Port::Output<17, false>();
-	avrt::Port::Output<18, false>();
-	avrt::Port::Output<19, false>();
-	avrt::Port::Output<20, false>();
-	avrt::Port::Output<0, true>();
-	avrt::Port::Output<1, true>();
-	avrt::Port::Output<2, true>();
-	avrt::Port::Output<3, true>();
-	avrt::Port::Output<4, true>();
-	avrt::Port::Output<5, true>();
-	avrt::Port::Output<6, true>();
-	avrt::Port::Output<7, true>();
-	avrt::Port::Output<8, true>();
-	avrt::Port::Output<9, true>();
-	avrt::Port::Output<10, true>();
-	avrt::Port::Output<11, true>();
-	avrt::Port::Output<12, true>();
-	avrt::Port::Output<13, true>();
-	avrt::Port::Output<14, true>();
-	avrt::Port::Output<15, true>();
-	avrt::Port::Output<16, true>();
-	avrt::Port::Output<17, true>();
-	avrt::Port::Output<18, true>();
-	avrt::Port::Output<19, true>();
-	avrt::Port::Output<20, true>();
-	avrt::Port::Output<0>(flag);
-	avrt::Port::Output<1>(flag);
-	avrt::Port::Output<2>(flag);
-	avrt::Port::Output<3>(flag);
-	avrt::Port::Output<4>(flag);
-	avrt::Port::Output<5>(flag);
-	avrt::Port::Output<6>(flag);
-	avrt::Port::Output<7>(flag);
-	avrt::Port::Output<8>(flag);
-	avrt::Port::Output<9>(flag);
-	avrt::Port::Output<10>(flag);
-	avrt::Port::Output<11>(flag);
-	avrt::Port::Output<12>(flag);
-	avrt::Port::Output<13>(flag);
-	avrt::Port::Output<14>(flag);
-	avrt::Port::Output<15>(flag);
-	avrt::Port::Output<16>(flag);
-	avrt::Port::Output<17>(flag);
-	avrt::Port::Output<18>(flag);
-	avrt::Port::Output<19>(flag);
-	avrt::Port::Output<20>(flag);
-	avrt::Port::Input<0>();
-	avrt::Port::Input<1>();
-	avrt::Port::Input<2>();
-	avrt::Port::Input<3>();
-	avrt::Port::Input<4>();
-	avrt::Port::Input<5>();
-	avrt::Port::Input<6>();
-	avrt::Port::Input<7>();
-	avrt::Port::Input<8>();
-	avrt::Port::Input<9>();
-	avrt::Port::Input<10>();
-	avrt::Port::Input<11>();
-	avrt::Port::Input<12>();
-	avrt::Port::Input<13>();
-	avrt::Port::Input<14>();
-	avrt::Port::Input<15>();
-	avrt::Port::Input<16>();
-	avrt::Port::Input<17>();
-	avrt::Port::Input<18>();
-	avrt::Port::Input<19>();
-	avrt::Port::Input<20>();
+	avrt::Port<0>().Output(a.buff[0]);
+	portHoge0.SetMode<avrt::Out>();
+	portHoge1.SetMode<avrt::Out>();
+	portHoge2.SetMode<avrt::Out>();
+	portHoge3.SetMode<avrt::Out>();
+	portHoge4.SetMode<avrt::Out>();
+	portHoge5.SetMode<avrt::Out>();
+	avrt::Port<0>().SetMode<avrt::Out>();
+	avrt::Port<1>().SetMode<avrt::Out>();
+	avrt::Port<2>().SetMode<avrt::Out>();
+	avrt::Port<3>().SetMode<avrt::Out>();
+	avrt::Port<4>().SetMode<avrt::Out>();
+	avrt::Port<5>().SetMode<avrt::Out>();
+	avrt::Port<6>().SetMode<avrt::Out>();
+	avrt::Port<7>().SetMode<avrt::Out>();
+	avrt::Port<8>().SetMode<avrt::Out>();
+	avrt::Port<9>().SetMode<avrt::Out>();
+	avrt::Port<10>().SetMode<avrt::Out>();
+	avrt::Port<11>().SetMode<avrt::Out>();
+	avrt::Port<12>().SetMode<avrt::Out>();
+	avrt::Port<13>().SetMode<avrt::Out>();
+	avrt::Port<14>().SetMode<avrt::Out>();
+	avrt::Port<15>().SetMode<avrt::Out>();
+	avrt::Port<16>().SetMode<avrt::Out>();
+	avrt::Port<17>().SetMode<avrt::Out>();
+	avrt::Port<18>().SetMode<avrt::Out>();
+	avrt::Port<19>().SetMode<avrt::Out>();
+	avrt::Port<20>().SetMode<avrt::Out>();
+	avrt::Port<0>().SetMode<avrt::In>();
+	avrt::Port<1>().SetMode<avrt::In>();
+	avrt::Port<2>().SetMode<avrt::In>();
+	avrt::Port<3>().SetMode<avrt::In>();
+	avrt::Port<4>().SetMode<avrt::In>();
+	avrt::Port<5>().SetMode<avrt::In>();
+	avrt::Port<6>().SetMode<avrt::In>();
+	avrt::Port<7>().SetMode<avrt::In>();
+	avrt::Port<8>().SetMode<avrt::In>();
+	avrt::Port<9>().SetMode<avrt::In>();
+	avrt::Port<10>().SetMode<avrt::In>();
+	avrt::Port<11>().SetMode<avrt::In>();
+	avrt::Port<12>().SetMode<avrt::In>();
+	avrt::Port<13>().SetMode<avrt::In>();
+	avrt::Port<14>().SetMode<avrt::In>();
+	avrt::Port<15>().SetMode<avrt::In>();
+	avrt::Port<16>().SetMode<avrt::In>();
+	avrt::Port<17>().SetMode<avrt::In>();
+	avrt::Port<18>().SetMode<avrt::In>();
+	avrt::Port<19>().SetMode<avrt::In>();
+	avrt::Port<20>().SetMode<avrt::In>();
+	avrt::Port<0>().SetMode<avrt::InPullup>();
+	avrt::Port<1>().SetMode<avrt::InPullup>();
+	avrt::Port<2>().SetMode<avrt::InPullup>();
+	avrt::Port<3>().SetMode<avrt::InPullup>();
+	avrt::Port<4>().SetMode<avrt::InPullup>();
+	avrt::Port<5>().SetMode<avrt::InPullup>();
+	avrt::Port<6>().SetMode<avrt::InPullup>();
+	avrt::Port<7>().SetMode<avrt::InPullup>();
+	avrt::Port<8>().SetMode<avrt::InPullup>();
+	avrt::Port<9>().SetMode<avrt::InPullup>();
+	avrt::Port<10>().SetMode<avrt::InPullup>();
+	avrt::Port<11>().SetMode<avrt::InPullup>();
+	avrt::Port<12>().SetMode<avrt::InPullup>();
+	avrt::Port<13>().SetMode<avrt::InPullup>();
+	avrt::Port<14>().SetMode<avrt::InPullup>();
+	avrt::Port<15>().SetMode<avrt::InPullup>();
+	avrt::Port<16>().SetMode<avrt::InPullup>();
+	avrt::Port<17>().SetMode<avrt::InPullup>();
+	avrt::Port<18>().SetMode<avrt::InPullup>();
+	avrt::Port<19>().SetMode<avrt::InPullup>();
+	avrt::Port<20>().SetMode<avrt::InPullup>();
+	avrt::Port<0>().Output<false>();
+	avrt::Port<1>().Output<false>();
+	avrt::Port<2>().Output<false>();
+	avrt::Port<3>().Output<false>();
+	avrt::Port<4>().Output<false>();
+	avrt::Port<5>().Output<false>();
+	avrt::Port<6>().Output<false>();
+	avrt::Port<7>().Output<false>();
+	avrt::Port<8>().Output<false>();
+	avrt::Port<9>().Output<false>();
+	avrt::Port<10>().Output<false>();
+	avrt::Port<11>().Output<false>();
+	avrt::Port<12>().Output<false>();
+	avrt::Port<13>().Output<false>();
+	avrt::Port<14>().Output<false>();
+	avrt::Port<15>().Output<false>();
+	avrt::Port<16>().Output<false>();
+	avrt::Port<17>().Output<false>();
+	avrt::Port<18>().Output<false>();
+	avrt::Port<19>().Output<false>();
+	avrt::Port<20>().Output<false>();
+	avrt::Port<0>().Output<true>();
+	avrt::Port<1>().Output<true>();
+	avrt::Port<2>().Output<true>();
+	avrt::Port<3>().Output<true>();
+	avrt::Port<4>().Output<true>();
+	avrt::Port<5>().Output<true>();
+	avrt::Port<6>().Output<true>();
+	avrt::Port<7>().Output<true>();
+	avrt::Port<8>().Output<true>();
+	avrt::Port<9>().Output<true>();
+	avrt::Port<10>().Output<true>();
+	avrt::Port<11>().Output<true>();
+	avrt::Port<12>().Output<true>();
+	avrt::Port<13>().Output<true>();
+	avrt::Port<14>().Output<true>();
+	avrt::Port<15>().Output<true>();
+	avrt::Port<16>().Output<true>();
+	avrt::Port<17>().Output<true>();
+	avrt::Port<18>().Output<true>();
+	avrt::Port<19>().Output<true>();
+	avrt::Port<20>().Output<true>();
+	avrt::Port<0>().Output(flag);
+	avrt::Port<1>().Output(flag);
+	avrt::Port<2>().Output(flag);
+	avrt::Port<3>().Output(flag);
+	avrt::Port<4>().Output(flag);
+	avrt::Port<5>().Output(flag);
+	avrt::Port<6>().Output(flag);
+	avrt::Port<7>().Output(flag);
+	avrt::Port<8>().Output(flag);
+	avrt::Port<9>().Output(flag);
+	avrt::Port<10>().Output(flag);
+	avrt::Port<11>().Output(flag);
+	avrt::Port<12>().Output(flag);
+	avrt::Port<13>().Output(flag);
+	avrt::Port<14>().Output(flag);
+	avrt::Port<15>().Output(flag);
+	avrt::Port<16>().Output(flag);
+	avrt::Port<17>().Output(flag);
+	avrt::Port<18>().Output(flag);
+	avrt::Port<19>().Output(flag);
+	avrt::Port<20>().Output(flag);
+	data = avrt::Port<0>().Input();
+	data = avrt::Port<1>().Input();
+	data = avrt::Port<2>().Input();
+	data = avrt::Port<3>().Input();
+	data = avrt::Port<4>().Input();
+	data = avrt::Port<5>().Input();
+	data = avrt::Port<6>().Input();
+	data = avrt::Port<7>().Input();
+	data = avrt::Port<8>().Input();
+	data = avrt::Port<9>().Input();
+	data = avrt::Port<10>().Input();
+	data = avrt::Port<11>().Input();
+	data = avrt::Port<12>().Input();
+	data = avrt::Port<13>().Input();
+	data = avrt::Port<14>().Input();
+	data = avrt::Port<15>().Input();
+	data = avrt::Port<16>().Input();
+	data = avrt::Port<17>().Input();
+	data = avrt::Port<18>().Input();
+	data = avrt::Port<19>().Input();
+	data = avrt::Port<20>().Input();
 }
 
 void loop()

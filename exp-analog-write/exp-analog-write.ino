@@ -1,3 +1,5 @@
+#include "avrt.h"
+
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
 
@@ -68,15 +70,17 @@ constexpr int pin = 11;
 
 void setup()
 {
-
 	Serial.begin(57600);
-	pinMode(pin, OUTPUT);
-	EnablePWM<pin>();
+	//pinMode(pin, OUTPUT);
+	//EnablePWM<pin>();
+	avrt::Port::SetMode<pin, avrt::Out>();
+	avrt::Port::EnablePWM<pin>();
 }
 
 void loop()
 {
 	uint8_t value = map(analogRead(A0), 0, 1023, 0, 255);
 	Serial.println(value);
-	OutputPWM<pin>(value);
+	//OutputPWM<pin>(value);
+	avrt::Port::OutputPWM<pin>(value);
 }
