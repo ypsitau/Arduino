@@ -35,7 +35,7 @@ constexpr at::Port<at::A4> portA4;
 constexpr at::Port<at::A5> portA5;
 constexpr at::Port<at::A6> portA6;
 
-void setup()
+void CompileTest_InitPort()
 {
 	at::InitPort<
 		at::In,			// D0: PD0(RXD/PCINT16)
@@ -108,7 +108,7 @@ void setup()
 	>();
 }
 
-void Func1()
+void CompileTest_Port_SetMode()
 {
 	portD0.SetMode<at::In>();
 	portD1.SetMode<at::In>();
@@ -173,157 +173,6 @@ void Func1()
 	portD18.SetMode<at::InPullup>();
 	portD19.SetMode<at::InPullup>();
 	portD20.SetMode<at::InPullup>();
-	portD0.Output<false>();
-	portD1.Output<false>();
-	portD2.Output<false>();
-	portD3.Output<false>();
-	portD4.Output<false>();
-	portD5.Output<false>();
-	portD6.Output<false>();
-	portD7.Output<false>();
-	portD8.Output<false>();
-	portD9.Output<false>();
-	portD10.Output<false>();
-	portD11.Output<false>();
-	portD12.Output<false>();
-	portD13.Output<false>();
-	portD14.Output<false>();
-	portD15.Output<false>();
-	portD16.Output<false>();
-	portD17.Output<false>();
-	portD18.Output<false>();
-	portD19.Output<false>();
-	portD20.Output<false>();
-	portD0.Output<true>();
-	portD1.Output<true>();
-	portD2.Output<true>();
-	portD3.Output<true>();
-	portD4.Output<true>();
-	portD5.Output<true>();
-	portD6.Output<true>();
-	portD7.Output<true>();
-	portD8.Output<true>();
-	portD9.Output<true>();
-	portD10.Output<true>();
-	portD11.Output<true>();
-	portD12.Output<true>();
-	portD13.Output<true>();
-	portD14.Output<true>();
-	portD15.Output<true>();
-	portD16.Output<true>();
-	portD17.Output<true>();
-	portD18.Output<true>();
-	portD19.Output<true>();
-	portD20.Output<true>();
-	portD0.Output(flag);
-	portD1.Output(flag);
-	portD2.Output(flag);
-	portD3.Output(flag);
-	portD4.Output(flag);
-	portD5.Output(flag);
-	portD6.Output(flag);
-	portD7.Output(flag);
-	portD8.Output(flag);
-	portD9.Output(flag);
-	portD10.Output(flag);
-	portD11.Output(flag);
-	portD12.Output(flag);
-	portD13.Output(flag);
-	portD14.Output(flag);
-	portD15.Output(flag);
-	portD16.Output(flag);
-	portD17.Output(flag);
-	portD18.Output(flag);
-	portD19.Output(flag);
-	portD20.Output(flag);
-	data = portD0.Input();
-	data = portD1.Input();
-	data = portD2.Input();
-	data = portD3.Input();
-	data = portD4.Input();
-	data = portD5.Input();
-	data = portD6.Input();
-	data = portD7.Input();
-	data = portD8.Input();
-	data = portD9.Input();
-	data = portD10.Input();
-	data = portD11.Input();
-	data = portD12.Input();
-	data = portD13.Input();
-	data = portD14.Input();
-	data = portD15.Input();
-	data = portD16.Input();
-	data = portD17.Input();
-	data = portD18.Input();
-	data = portD19.Input();
-	data = portD20.Input();
-	portD0.EnablePWM();
-	portD1.EnablePWM();
-	portD2.EnablePWM();
-	portD3.EnablePWM();
-	portD4.EnablePWM();
-	portD5.EnablePWM();
-	portD6.EnablePWM();
-	portD7.EnablePWM();
-	portD8.EnablePWM();
-	portD9.EnablePWM();
-	portD10.EnablePWM();
-	portD11.EnablePWM();
-	portD12.EnablePWM();
-	portD13.EnablePWM();
-	portD14.EnablePWM();
-	portD15.EnablePWM();
-	portD16.EnablePWM();
-	portD17.EnablePWM();
-	portD18.EnablePWM();
-	portD19.EnablePWM();
-	portD20.EnablePWM();
-	portD0.DisablePWM();
-	portD1.DisablePWM();
-	portD2.DisablePWM();
-	portD3.DisablePWM();
-	portD4.DisablePWM();
-	portD5.DisablePWM();
-	portD6.DisablePWM();
-	portD7.DisablePWM();
-	portD8.DisablePWM();
-	portD9.DisablePWM();
-	portD10.DisablePWM();
-	portD11.DisablePWM();
-	portD12.DisablePWM();
-	portD13.DisablePWM();
-	portD14.DisablePWM();
-	portD15.DisablePWM();
-	portD16.DisablePWM();
-	portD17.DisablePWM();
-	portD18.DisablePWM();
-	portD19.DisablePWM();
-	portD20.DisablePWM();
-	portD0.OutputPWM(128);
-	portD1.OutputPWM(128);
-	portD2.OutputPWM(128);
-	portD3.OutputPWM(128);
-	portD4.OutputPWM(128);
-	portD5.OutputPWM(128);
-	portD6.OutputPWM(128);
-	portD7.OutputPWM(128);
-	portD8.OutputPWM(128);
-	portD9.OutputPWM(128);
-	portD10.OutputPWM(128);
-	portD11.OutputPWM(128);
-	portD12.OutputPWM(128);
-	portD13.OutputPWM(128);
-	portD14.OutputPWM(128);
-	portD15.OutputPWM(128);
-	portD16.OutputPWM(128);
-	portD17.OutputPWM(128);
-	portD18.OutputPWM(128);
-	portD19.OutputPWM(128);
-	portD20.OutputPWM(128);
-}
-
-void Func2()
-{
 	at::Port<at::D0>().SetMode<at::In>();
 	at::Port<at::D1>().SetMode<at::In>();
 	at::Port<at::D2>().SetMode<at::In>();
@@ -387,6 +236,73 @@ void Func2()
 	at::Port<at::D18>().SetMode<at::InPullup>();
 	at::Port<at::D19>().SetMode<at::InPullup>();
 	at::Port<at::D20>().SetMode<at::InPullup>();
+}
+
+void CompileTest_Port_Output()
+{
+	portD0.Output<false>();
+	portD1.Output<false>();
+	portD2.Output<false>();
+	portD3.Output<false>();
+	portD4.Output<false>();
+	portD5.Output<false>();
+	portD6.Output<false>();
+	portD7.Output<false>();
+	portD8.Output<false>();
+	portD9.Output<false>();
+	portD10.Output<false>();
+	portD11.Output<false>();
+	portD12.Output<false>();
+	portD13.Output<false>();
+	portD14.Output<false>();
+	portD15.Output<false>();
+	portD16.Output<false>();
+	portD17.Output<false>();
+	portD18.Output<false>();
+	portD19.Output<false>();
+	portD20.Output<false>();
+	portD0.Output<true>();
+	portD1.Output<true>();
+	portD2.Output<true>();
+	portD3.Output<true>();
+	portD4.Output<true>();
+	portD5.Output<true>();
+	portD6.Output<true>();
+	portD7.Output<true>();
+	portD8.Output<true>();
+	portD9.Output<true>();
+	portD10.Output<true>();
+	portD11.Output<true>();
+	portD12.Output<true>();
+	portD13.Output<true>();
+	portD14.Output<true>();
+	portD15.Output<true>();
+	portD16.Output<true>();
+	portD17.Output<true>();
+	portD18.Output<true>();
+	portD19.Output<true>();
+	portD20.Output<true>();
+	portD0.Output(flag);
+	portD1.Output(flag);
+	portD2.Output(flag);
+	portD3.Output(flag);
+	portD4.Output(flag);
+	portD5.Output(flag);
+	portD6.Output(flag);
+	portD7.Output(flag);
+	portD8.Output(flag);
+	portD9.Output(flag);
+	portD10.Output(flag);
+	portD11.Output(flag);
+	portD12.Output(flag);
+	portD13.Output(flag);
+	portD14.Output(flag);
+	portD15.Output(flag);
+	portD16.Output(flag);
+	portD17.Output(flag);
+	portD18.Output(flag);
+	portD19.Output(flag);
+	portD20.Output(flag);
 	at::Port<at::D0>().Output<false>();
 	at::Port<at::D1>().Output<false>();
 	at::Port<at::D2>().Output<false>();
@@ -450,6 +366,31 @@ void Func2()
 	at::Port<at::D18>().Output(flag);
 	at::Port<at::D19>().Output(flag);
 	at::Port<at::D20>().Output(flag);
+}
+
+void CompileTest_Port_Input()
+{
+	data = portD0.Input();
+	data = portD1.Input();
+	data = portD2.Input();
+	data = portD3.Input();
+	data = portD4.Input();
+	data = portD5.Input();
+	data = portD6.Input();
+	data = portD7.Input();
+	data = portD8.Input();
+	data = portD9.Input();
+	data = portD10.Input();
+	data = portD11.Input();
+	data = portD12.Input();
+	data = portD13.Input();
+	data = portD14.Input();
+	data = portD15.Input();
+	data = portD16.Input();
+	data = portD17.Input();
+	data = portD18.Input();
+	data = portD19.Input();
+	data = portD20.Input();
 	data = at::Port<at::D0>().Input();
 	data = at::Port<at::D1>().Input();
 	data = at::Port<at::D2>().Input();
@@ -471,6 +412,31 @@ void Func2()
 	data = at::Port<at::D18>().Input();
 	data = at::Port<at::D19>().Input();
 	data = at::Port<at::D20>().Input();
+}
+
+void CompileTest_Port_EnablePWM()
+{
+	portD0.EnablePWM();
+	portD1.EnablePWM();
+	portD2.EnablePWM();
+	portD3.EnablePWM();
+	portD4.EnablePWM();
+	portD5.EnablePWM();
+	portD6.EnablePWM();
+	portD7.EnablePWM();
+	portD8.EnablePWM();
+	portD9.EnablePWM();
+	portD10.EnablePWM();
+	portD11.EnablePWM();
+	portD12.EnablePWM();
+	portD13.EnablePWM();
+	portD14.EnablePWM();
+	portD15.EnablePWM();
+	portD16.EnablePWM();
+	portD17.EnablePWM();
+	portD18.EnablePWM();
+	portD19.EnablePWM();
+	portD20.EnablePWM();
 	at::Port<at::D0>().EnablePWM();
 	at::Port<at::D1>().EnablePWM();
 	at::Port<at::D2>().EnablePWM();
@@ -492,6 +458,31 @@ void Func2()
 	at::Port<at::D18>().EnablePWM();
 	at::Port<at::D19>().EnablePWM();
 	at::Port<at::D20>().EnablePWM();
+}
+
+void CompileTest_Port_DisablePWM()
+{
+	portD0.DisablePWM();
+	portD1.DisablePWM();
+	portD2.DisablePWM();
+	portD3.DisablePWM();
+	portD4.DisablePWM();
+	portD5.DisablePWM();
+	portD6.DisablePWM();
+	portD7.DisablePWM();
+	portD8.DisablePWM();
+	portD9.DisablePWM();
+	portD10.DisablePWM();
+	portD11.DisablePWM();
+	portD12.DisablePWM();
+	portD13.DisablePWM();
+	portD14.DisablePWM();
+	portD15.DisablePWM();
+	portD16.DisablePWM();
+	portD17.DisablePWM();
+	portD18.DisablePWM();
+	portD19.DisablePWM();
+	portD20.DisablePWM();
 	at::Port<at::D0>().DisablePWM();
 	at::Port<at::D1>().DisablePWM();
 	at::Port<at::D2>().DisablePWM();
@@ -513,6 +504,31 @@ void Func2()
 	at::Port<at::D18>().DisablePWM();
 	at::Port<at::D19>().DisablePWM();
 	at::Port<at::D20>().DisablePWM();
+}
+
+void CompileTest_Port_OutputPWM()
+{
+	portD0.OutputPWM(128);
+	portD1.OutputPWM(128);
+	portD2.OutputPWM(128);
+	portD3.OutputPWM(128);
+	portD4.OutputPWM(128);
+	portD5.OutputPWM(128);
+	portD6.OutputPWM(128);
+	portD7.OutputPWM(128);
+	portD8.OutputPWM(128);
+	portD9.OutputPWM(128);
+	portD10.OutputPWM(128);
+	portD11.OutputPWM(128);
+	portD12.OutputPWM(128);
+	portD13.OutputPWM(128);
+	portD14.OutputPWM(128);
+	portD15.OutputPWM(128);
+	portD16.OutputPWM(128);
+	portD17.OutputPWM(128);
+	portD18.OutputPWM(128);
+	portD19.OutputPWM(128);
+	portD20.OutputPWM(128);
 	at::Port<at::D0>().OutputPWM(128);
 	at::Port<at::D1>().OutputPWM(128);
 	at::Port<at::D2>().OutputPWM(128);
@@ -536,7 +552,7 @@ void Func2()
 	at::Port<at::D20>().OutputPWM(128);
 }
 
-void Func3()
+void CompileTest_InitADConv()
 {
 	at::InitADConv<
 		0b00,	// REFS: Reference Selction Bits
@@ -553,7 +569,7 @@ void Func3()
 	>();
 }
 
-void Func4()
+void CompileTest_ADConv_Start()
 {
 	at::ADConv<at::A0>().Start();
 	at::ADConv<at::A1>().Start();
@@ -562,6 +578,10 @@ void Func4()
 	at::ADConv<at::A4>().Start();
 	at::ADConv<at::A5>().Start();
 	at::ADConv<at::A6>().Start();
+}
+
+void CompileTest_ADConv_Wait()
+{
 	at::ADConv<at::A0>().Wait();
 	at::ADConv<at::A1>().Wait();
 	at::ADConv<at::A2>().Wait();
@@ -569,6 +589,10 @@ void Func4()
 	at::ADConv<at::A4>().Wait();
 	at::ADConv<at::A5>().Wait();
 	at::ADConv<at::A6>().Wait();
+}
+
+void CompileTest_ADConv_Read()
+{
 	data = at::ADConv<at::A0>().Read();
 	data = at::ADConv<at::A1>().Read();
 	data = at::ADConv<at::A2>().Read();
@@ -578,10 +602,21 @@ void Func4()
 	data = at::ADConv<at::A6>().Read();
 }
 
+void setup()
+{
+	CompileTest_InitPort();
+	CompileTest_Port_SetMode();
+	CompileTest_Port_Output();
+	CompileTest_Port_Input();
+	CompileTest_Port_EnablePWM();
+	CompileTest_Port_DisablePWM();
+	CompileTest_Port_OutputPWM();
+	CompileTest_InitADConv();
+	CompileTest_ADConv_Start();
+	CompileTest_ADConv_Wait();
+	CompileTest_ADConv_Read();
+}
+
 void loop()
 {
-	Func1();
-	Func2();
-	Func3();
-	Func4();
 }
