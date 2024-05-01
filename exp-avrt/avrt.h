@@ -7,6 +7,11 @@
 
 namespace avrt {
 
+using Signal = uint8_t;
+
+constexpr uint8_t Low		= 0;
+constexpr uint8_t High		= 1;
+
 constexpr uint8_t In		= 0;
 constexpr uint8_t Out		= 1;
 constexpr uint8_t InPullup	= 2;
@@ -78,6 +83,25 @@ template<
 		((mode18 >> 1) << 4) | ((mode19 >> 1) << 5) | ((mode20 >> 1) << 6);
 }
 
+template <
+	uint8_t dataREFS	= 0b01,		// REFS: Reference Selction Bits = AVcc with external capacitor at AREF pin 
+	uint8_t dataADLAR	= 0b0,		// ADLAR: ADC Left Adjust Result = false
+	uint8_t dataMUX		= 0b0000,	// MUX: Analog Channel Selection Bits = ADC0
+	uint8_t dataADEN	= 0b1,		// ADEN: ADC Enable = true
+	uint8_t dataADSC	= 0b0,		// ADSC: ADC Start Conversion = false
+	uint8_t dataADATE	= 0b0,		// ADATE: ADC Auto Trigger Enable = false
+	uint8_t dataADIF	= 0b0,		// ADIF: ADC Interrupt Flag = false
+	uint8_t dataADIE	= 0b0,		// ADIE: ADC Interrupt Enable = false
+	uint8_t dataADPS	= 0b111,	// ADPS: ADC Prescaler Select Bits = 1/128
+	uint8_t dataACME	= 0b0,		// ACME: Analog Comparator Multiplexer Enable = false
+	uint8_t dataADTS	= 0b000		// ADTS: ADC Auto Trigger Source = Free Running mode
+> static void InitADConv() {
+	ADMUX = (dataREFS << REFS0) | (dataADLAR << ADLAR) | (dataMUX << MUX0);
+	ADCSRA = (dataADEN << ADEN) | (dataADSC << ADSC) | (dataADATE << ADATE) |
+		(dataADIF << ADIF) | (dataADIE << ADIE) | (dataADPS << ADPS0);
+	ADCSRB = (dataACME << ACME) | (dataADTS << ADTS0);
+}
+
 template<int pin_> class Port {
 public:
 	constexpr static int pin = pin_;
@@ -126,77 +150,77 @@ public:
 			if constexpr (mode & 1) { DDRC |= (1 << 6); } else { DDRC &= ~(1 << 6); if constexpr (mode >> 1) { PORTC |= (1 << 6); } else { PORTC &= ~(1 << 6); } }
 		}
 	}
-	template<bool out> void Output() const {
-		if constexpr (pin == 0)         { if constexpr (out) { PORTD |= (1 << 0); } else { PORTD &= ~(1 << 0); }
-		} else if constexpr (pin == 1)  { if constexpr (out) { PORTD |= (1 << 1); } else { PORTD &= ~(1 << 1); }
-		} else if constexpr (pin == 2)  { if constexpr (out) { PORTD |= (1 << 2); } else { PORTD &= ~(1 << 2); }
-		} else if constexpr (pin == 3)  { if constexpr (out) { PORTD |= (1 << 3); } else { PORTD &= ~(1 << 3); }
-		} else if constexpr (pin == 4)  { if constexpr (out) { PORTD |= (1 << 4); } else { PORTD &= ~(1 << 4); }
-		} else if constexpr (pin == 5)  { if constexpr (out) { PORTD |= (1 << 5); } else { PORTD &= ~(1 << 5); }
-		} else if constexpr (pin == 6)  { if constexpr (out) { PORTD |= (1 << 6); } else { PORTD &= ~(1 << 6); }
-		} else if constexpr (pin == 7)  { if constexpr (out) { PORTD |= (1 << 7); } else { PORTD &= ~(1 << 7); }
-		} else if constexpr (pin == 8)  { if constexpr (out) { PORTB |= (1 << 0); } else { PORTB &= ~(1 << 0); }
-		} else if constexpr (pin == 9)  { if constexpr (out) { PORTB |= (1 << 1); } else { PORTB &= ~(1 << 1); }
-		} else if constexpr (pin == 10) { if constexpr (out) { PORTB |= (1 << 2); } else { PORTB &= ~(1 << 2); }
-		} else if constexpr (pin == 11) { if constexpr (out) { PORTB |= (1 << 3); } else { PORTB &= ~(1 << 3); }
-		} else if constexpr (pin == 12) { if constexpr (out) { PORTB |= (1 << 4); } else { PORTB &= ~(1 << 4); }
-		} else if constexpr (pin == 13) { if constexpr (out) { PORTB |= (1 << 5); } else { PORTB &= ~(1 << 5); }
-		} else if constexpr (pin == 14) { if constexpr (out) { PORTC |= (1 << 0); } else { PORTC &= ~(1 << 0); }
-		} else if constexpr (pin == 15) { if constexpr (out) { PORTC |= (1 << 1); } else { PORTC &= ~(1 << 1); }
-		} else if constexpr (pin == 16) { if constexpr (out) { PORTC |= (1 << 2); } else { PORTC &= ~(1 << 2); }
-		} else if constexpr (pin == 17) { if constexpr (out) { PORTC |= (1 << 3); } else { PORTC &= ~(1 << 3); }
-		} else if constexpr (pin == 18) { if constexpr (out) { PORTC |= (1 << 4); } else { PORTC &= ~(1 << 4); }
-		} else if constexpr (pin == 19) { if constexpr (out) { PORTC |= (1 << 5); } else { PORTC &= ~(1 << 5); }
-		} else if constexpr (pin == 20) { if constexpr (out) { PORTC |= (1 << 6); } else { PORTC &= ~(1 << 6); }
+	template<Signal sig> void OutputDigital() const {
+		if constexpr (pin == 0)         { if constexpr (sig) { PORTD |= (1 << 0); } else { PORTD &= ~(1 << 0); }
+		} else if constexpr (pin == 1)  { if constexpr (sig) { PORTD |= (1 << 1); } else { PORTD &= ~(1 << 1); }
+		} else if constexpr (pin == 2)  { if constexpr (sig) { PORTD |= (1 << 2); } else { PORTD &= ~(1 << 2); }
+		} else if constexpr (pin == 3)  { if constexpr (sig) { PORTD |= (1 << 3); } else { PORTD &= ~(1 << 3); }
+		} else if constexpr (pin == 4)  { if constexpr (sig) { PORTD |= (1 << 4); } else { PORTD &= ~(1 << 4); }
+		} else if constexpr (pin == 5)  { if constexpr (sig) { PORTD |= (1 << 5); } else { PORTD &= ~(1 << 5); }
+		} else if constexpr (pin == 6)  { if constexpr (sig) { PORTD |= (1 << 6); } else { PORTD &= ~(1 << 6); }
+		} else if constexpr (pin == 7)  { if constexpr (sig) { PORTD |= (1 << 7); } else { PORTD &= ~(1 << 7); }
+		} else if constexpr (pin == 8)  { if constexpr (sig) { PORTB |= (1 << 0); } else { PORTB &= ~(1 << 0); }
+		} else if constexpr (pin == 9)  { if constexpr (sig) { PORTB |= (1 << 1); } else { PORTB &= ~(1 << 1); }
+		} else if constexpr (pin == 10) { if constexpr (sig) { PORTB |= (1 << 2); } else { PORTB &= ~(1 << 2); }
+		} else if constexpr (pin == 11) { if constexpr (sig) { PORTB |= (1 << 3); } else { PORTB &= ~(1 << 3); }
+		} else if constexpr (pin == 12) { if constexpr (sig) { PORTB |= (1 << 4); } else { PORTB &= ~(1 << 4); }
+		} else if constexpr (pin == 13) { if constexpr (sig) { PORTB |= (1 << 5); } else { PORTB &= ~(1 << 5); }
+		} else if constexpr (pin == 14) { if constexpr (sig) { PORTC |= (1 << 0); } else { PORTC &= ~(1 << 0); }
+		} else if constexpr (pin == 15) { if constexpr (sig) { PORTC |= (1 << 1); } else { PORTC &= ~(1 << 1); }
+		} else if constexpr (pin == 16) { if constexpr (sig) { PORTC |= (1 << 2); } else { PORTC &= ~(1 << 2); }
+		} else if constexpr (pin == 17) { if constexpr (sig) { PORTC |= (1 << 3); } else { PORTC &= ~(1 << 3); }
+		} else if constexpr (pin == 18) { if constexpr (sig) { PORTC |= (1 << 4); } else { PORTC &= ~(1 << 4); }
+		} else if constexpr (pin == 19) { if constexpr (sig) { PORTC |= (1 << 5); } else { PORTC &= ~(1 << 5); }
+		} else if constexpr (pin == 20) { if constexpr (sig) { PORTC |= (1 << 6); } else { PORTC &= ~(1 << 6); }
 		}
 	}
-	void Output(bool out) const {
-		if constexpr (pin == 0) { if (out) { PORTD |= (1 << 0); } else { PORTD &= ~(1 << 0); }
-		} else if (pin == 1)    { if (out) { PORTD |= (1 << 1); } else { PORTD &= ~(1 << 1); }
-		} else if (pin == 2)    { if (out) { PORTD |= (1 << 2); } else { PORTD &= ~(1 << 2); }
-		} else if (pin == 3)    { if (out) { PORTD |= (1 << 3); } else { PORTD &= ~(1 << 3); }
-		} else if (pin == 4)    { if (out) { PORTD |= (1 << 4); } else { PORTD &= ~(1 << 4); }
-		} else if (pin == 5)    { if (out) { PORTD |= (1 << 5); } else { PORTD &= ~(1 << 5); }
-		} else if (pin == 6)    { if (out) { PORTD |= (1 << 6); } else { PORTD &= ~(1 << 6); }
-		} else if (pin == 7)    { if (out) { PORTD |= (1 << 7); } else { PORTD &= ~(1 << 7); }
-		} else if (pin == 8)    { if (out) { PORTB |= (1 << 0); } else { PORTB &= ~(1 << 0); }
-		} else if (pin == 9)    { if (out) { PORTB |= (1 << 1); } else { PORTB &= ~(1 << 1); }
-		} else if (pin == 10)   { if (out) { PORTB |= (1 << 2); } else { PORTB &= ~(1 << 2); }
-		} else if (pin == 11)   { if (out) { PORTB |= (1 << 3); } else { PORTB &= ~(1 << 3); }
-		} else if (pin == 12)   { if (out) { PORTB |= (1 << 4); } else { PORTB &= ~(1 << 4); }
-		} else if (pin == 13)   { if (out) { PORTB |= (1 << 5); } else { PORTB &= ~(1 << 5); }
-		} else if (pin == 14)   { if (out) { PORTC |= (1 << 0); } else { PORTC &= ~(1 << 0); }
-		} else if (pin == 15)   { if (out) { PORTC |= (1 << 1); } else { PORTC &= ~(1 << 1); }
-		} else if (pin == 16)   { if (out) { PORTC |= (1 << 2); } else { PORTC &= ~(1 << 2); }
-		} else if (pin == 17)   { if (out) { PORTC |= (1 << 3); } else { PORTC &= ~(1 << 3); }
-		} else if (pin == 18)   { if (out) { PORTC |= (1 << 4); } else { PORTC &= ~(1 << 4); }
-		} else if (pin == 19)   { if (out) { PORTC |= (1 << 5); } else { PORTC &= ~(1 << 5); }
-		} else if (pin == 20)   { if (out) { PORTC |= (1 << 6); } else { PORTC &= ~(1 << 6); }
+	void OutputDigital(Signal sig) const {
+		if constexpr (pin == 0) { if (sig) { PORTD |= (1 << 0); } else { PORTD &= ~(1 << 0); }
+		} else if (pin == 1)    { if (sig) { PORTD |= (1 << 1); } else { PORTD &= ~(1 << 1); }
+		} else if (pin == 2)    { if (sig) { PORTD |= (1 << 2); } else { PORTD &= ~(1 << 2); }
+		} else if (pin == 3)    { if (sig) { PORTD |= (1 << 3); } else { PORTD &= ~(1 << 3); }
+		} else if (pin == 4)    { if (sig) { PORTD |= (1 << 4); } else { PORTD &= ~(1 << 4); }
+		} else if (pin == 5)    { if (sig) { PORTD |= (1 << 5); } else { PORTD &= ~(1 << 5); }
+		} else if (pin == 6)    { if (sig) { PORTD |= (1 << 6); } else { PORTD &= ~(1 << 6); }
+		} else if (pin == 7)    { if (sig) { PORTD |= (1 << 7); } else { PORTD &= ~(1 << 7); }
+		} else if (pin == 8)    { if (sig) { PORTB |= (1 << 0); } else { PORTB &= ~(1 << 0); }
+		} else if (pin == 9)    { if (sig) { PORTB |= (1 << 1); } else { PORTB &= ~(1 << 1); }
+		} else if (pin == 10)   { if (sig) { PORTB |= (1 << 2); } else { PORTB &= ~(1 << 2); }
+		} else if (pin == 11)   { if (sig) { PORTB |= (1 << 3); } else { PORTB &= ~(1 << 3); }
+		} else if (pin == 12)   { if (sig) { PORTB |= (1 << 4); } else { PORTB &= ~(1 << 4); }
+		} else if (pin == 13)   { if (sig) { PORTB |= (1 << 5); } else { PORTB &= ~(1 << 5); }
+		} else if (pin == 14)   { if (sig) { PORTC |= (1 << 0); } else { PORTC &= ~(1 << 0); }
+		} else if (pin == 15)   { if (sig) { PORTC |= (1 << 1); } else { PORTC &= ~(1 << 1); }
+		} else if (pin == 16)   { if (sig) { PORTC |= (1 << 2); } else { PORTC &= ~(1 << 2); }
+		} else if (pin == 17)   { if (sig) { PORTC |= (1 << 3); } else { PORTC &= ~(1 << 3); }
+		} else if (pin == 18)   { if (sig) { PORTC |= (1 << 4); } else { PORTC &= ~(1 << 4); }
+		} else if (pin == 19)   { if (sig) { PORTC |= (1 << 5); } else { PORTC &= ~(1 << 5); }
+		} else if (pin == 20)   { if (sig) { PORTC |= (1 << 6); } else { PORTC &= ~(1 << 6); }
 		}
 	}
-	uint8_t Input() const {
-		if constexpr (pin == 0) return PIND & (1 << 0);
-		else if (pin == 1)      return PIND & (1 << 1);
-		else if (pin == 2)      return PIND & (1 << 2);
-		else if (pin == 3)      return PIND & (1 << 3);
-		else if (pin == 4)      return PIND & (1 << 4);
-		else if (pin == 5)      return PIND & (1 << 5);
-		else if (pin == 6)      return PIND & (1 << 6);
-		else if (pin == 7)      return PIND & (1 << 7);
-		else if (pin == 8)      return PINB & (1 << 0);
-		else if (pin == 9)      return PINB & (1 << 1);
-		else if (pin == 10)     return PINB & (1 << 2);
-		else if (pin == 11)     return PINB & (1 << 3);
-		else if (pin == 12)     return PINB & (1 << 4);
-		else if (pin == 13)     return PINB & (1 << 5);
-		else if (pin == 14)     return PINC & (1 << 0);
-		else if (pin == 15)     return PINC & (1 << 1);
-		else if (pin == 16)     return PINC & (1 << 2);
-		else if (pin == 17)     return PINC & (1 << 3);
-		else if (pin == 18)     return PINC & (1 << 4);
-		else if (pin == 19)     return PINC & (1 << 5);
-		else if (pin == 20)     return PINC & (1 << 6);
-		return 0;
+	bool InputDigital() const {
+		if constexpr (pin == 0) return (PIND >> 0) & 1;
+		else if (pin == 1)      return (PIND >> 1) & 1;
+		else if (pin == 2)      return (PIND >> 2) & 1;
+		else if (pin == 3)      return (PIND >> 3) & 1;
+		else if (pin == 4)      return (PIND >> 4) & 1;
+		else if (pin == 5)      return (PIND >> 5) & 1;
+		else if (pin == 6)      return (PIND >> 6) & 1;
+		else if (pin == 7)      return (PIND >> 7) & 1;
+		else if (pin == 8)      return (PINB >> 0) & 1;
+		else if (pin == 9)      return (PINB >> 1) & 1;
+		else if (pin == 10)     return (PINB >> 2) & 1;
+		else if (pin == 11)     return (PINB >> 3) & 1;
+		else if (pin == 12)     return (PINB >> 4) & 1;
+		else if (pin == 13)     return (PINB >> 5) & 1;
+		else if (pin == 14)     return (PINC >> 0) & 1;
+		else if (pin == 15)     return (PINC >> 1) & 1;
+		else if (pin == 16)     return (PINC >> 2) & 1;
+		else if (pin == 17)     return (PINC >> 3) & 1;
+		else if (pin == 18)     return (PINC >> 4) & 1;
+		else if (pin == 19)     return (PINC >> 5) & 1;
+		else if (pin == 20)     return (PINC >> 6) & 1;
+		return Low;
 	}
 	void EnablePWM() const {
 		if constexpr (pin == 3) { // PD3 is controlled by OC2B
@@ -246,53 +270,29 @@ public:
 	void OutputFinePWM(uint8_t out) const {
 		if (out == 0) {
 			DisablePWM();
-			Output<pin, false>();
+			OutputDigital<pin, false>();
 		} else if (out == 255) {
 			DisablePWM();
-			Output<true>();
+			OutputDigital<true>();
 		} else {
 			EnablePWM();
 			OutputPWM(out);
 		}
 	}
-};
-
-template <
-	uint8_t dataREFS	= 0b01,		// REFS: Reference Selction Bits = AVcc with external capacitor at AREF pin 
-	uint8_t dataADLAR	= 0b0,		// ADLAR: ADC Left Adjust Result = false
-	uint8_t dataMUX		= 0b0000,	// MUX: Analog Channel Selection Bits = ADC0
-	uint8_t dataADEN	= 0b1,		// ADEN: ADC Enable = true
-	uint8_t dataADSC	= 0b0,		// ADSC: ADC Start Conversion = false
-	uint8_t dataADATE	= 0b0,		// ADATE: ADC Auto Trigger Enable = false
-	uint8_t dataADIF	= 0b0,		// ADIF: ADC Interrupt Flag = false
-	uint8_t dataADIE	= 0b0,		// ADIE: ADC Interrupt Enable = false
-	uint8_t dataADPS	= 0b111,	// ADPS: ADC Prescaler Select Bits = 1/128
-	uint8_t dataACME	= 0b0,		// ACME: Analog Comparator Multiplexer Enable = false
-	uint8_t dataADTS	= 0b000		// ADTS: ADC Auto Trigger Source = Free Running mode
-> static void InitADConv() {
-	ADMUX = (dataREFS << REFS0) | (dataADLAR << ADLAR) | (dataMUX << MUX0);
-	ADCSRA = (dataADEN << ADEN) | (dataADSC << ADSC) | (dataADATE << ADATE) |
-		(dataADIF << ADIF) | (dataADIE << ADIE) | (dataADPS << ADPS0);
-	ADCSRB = (dataACME << ACME) | (dataADTS << ADTS0);
-}
-
-template<int pin_> class ADConv {
-public:
-	constexpr static int pin = pin_;
-	static uint8_t PinToChannel(int pin) { return static_cast<uint8_t>(pin - A0); }
-	void Start() const {
-		ADMUX = ADMUX & (~0b1111 << MUX0) | (PinToChannel(pin) << MUX0);
+	static uint8_t PinToADCChannel(int pin) { return static_cast<uint8_t>(pin - A0); }
+	void StartADC() const {
+		ADMUX = ADMUX & (~0b1111 << MUX0) | (PinToADCChannel(pin) << MUX0);
 		ADCSRA |= (0b1 << ADSC);	// ADSC: ADC Start Conversion = 1
 	}
-	void Wait() const {
+	void WaitADC() const {
 		while (ADCSRA & (0b1 << ADSC)) ;
 	}
-	static uint16_t GetResult() { return ADC; }
-	uint16_t Read() const {
-		ADMUX = ADMUX & (~0b1111 << MUX0) | (PinToChannel(pin) << MUX0);
+	static uint16_t GetADC() { return ADC; }
+	uint16_t InputAnalog() const {
+		ADMUX = ADMUX & (~0b1111 << MUX0) | (PinToADCChannel(pin) << MUX0);
 		ADCSRA |= (0b1 << ADSC);	// ADSC: ADC Start Conversion = 1
 		while (ADCSRA & (0b1 << ADSC)) ;
-		return GetResult();
+		return ADC;
 	}
 };
 
