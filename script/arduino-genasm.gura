@@ -4,6 +4,7 @@ import(argopt)
 
 argopt.Parser {|p|
 	p.OptBool('help', 'h', 'print help')
+	p.OptBool('no-opt', 'n', 'no optimization')
 	try {
 		[argv, opt] = p.Parse(sys.argv)
 	} catch {|e|
@@ -23,6 +24,7 @@ if (opt['help']) {
 	'''	)
 	sys.Exit()
 }
+noOptFlag = opt['no-opt']
 dirNameBuild = cond(argv.len == 0, 'build', argv[0])
 pathNameCompileCommands = path.Join(dirNameBuild, 'compile_commands.json')
 if (!path.Exists(pathNameCompileCommands)) {
@@ -42,7 +44,7 @@ doc.Each {|record|
 			skipFlag = false
 		} elsif (arg in argsExcludeAndSkip) {
 			skipFlag = true
-		} elsif (arg in argsExclude) {
+		} elsif (arg in argsExclude || (noOptFlag && arg.StartsWith('-O'))) {
 			// nothing to do
 		} else {
 			argsMod.Add(arg)
