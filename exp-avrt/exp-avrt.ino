@@ -1,516 +1,581 @@
 #include "avrt.h"
 
+namespace at = avrt;
+
 volatile uint8_t data;
 volatile bool flag = true;
 
-constexpr avrt::Port<0> portHoge0;
-constexpr avrt::Port<1> portHoge1;
-constexpr avrt::Port<2> portHoge2;
-constexpr avrt::Port<3> portHoge3;
-constexpr avrt::Port<4> portHoge4;
-constexpr avrt::Port<5> portHoge5;
-constexpr avrt::Port<6> portHoge6;
-constexpr avrt::Port<7> portHoge7;
-constexpr avrt::Port<8> portHoge8;
-constexpr avrt::Port<9> portHoge9;
-constexpr avrt::Port<10> portHoge10;
-constexpr avrt::Port<11> portHoge11;
-constexpr avrt::Port<12> portHoge12;
-constexpr avrt::Port<13> portHoge13;
-constexpr avrt::Port<14> portHoge14;
-constexpr avrt::Port<15> portHoge15;
-constexpr avrt::Port<16> portHoge16;
-constexpr avrt::Port<17> portHoge17;
-constexpr avrt::Port<18> portHoge18;
-constexpr avrt::Port<19> portHoge19;
-constexpr avrt::Port<20> portHoge20;
+constexpr at::Port<at::D0> portD0;
+constexpr at::Port<at::D1> portD1;
+constexpr at::Port<at::D2> portD2;
+constexpr at::Port<at::D3> portD3;
+constexpr at::Port<at::D4> portD4;
+constexpr at::Port<at::D5> portD5;
+constexpr at::Port<at::D6> portD6;
+constexpr at::Port<at::D7> portD7;
+constexpr at::Port<at::D8> portD8;
+constexpr at::Port<at::D9> portD9;
+constexpr at::Port<at::D10> portD10;
+constexpr at::Port<at::D11> portD11;
+constexpr at::Port<at::D12> portD12;
+constexpr at::Port<at::D13> portD13;
+constexpr at::Port<at::D14> portD14;
+constexpr at::Port<at::D15> portD15;
+constexpr at::Port<at::D16> portD16;
+constexpr at::Port<at::D17> portD17;
+constexpr at::Port<at::D18> portD18;
+constexpr at::Port<at::D19> portD19;
+constexpr at::Port<at::D20> portD20;
 
-constexpr avrt::Port<A0> portHogeA0;
-constexpr avrt::Port<A1> portHogeA1;
-constexpr avrt::Port<A2> portHogeA2;
-constexpr avrt::Port<A3> portHogeA3;
-constexpr avrt::Port<A4> portHogeA4;
-constexpr avrt::Port<A5> portHogeA5;
-constexpr avrt::Port<A6> portHogeA6;
+constexpr at::Port<at::A0> portA0;
+constexpr at::Port<at::A1> portA1;
+constexpr at::Port<at::A2> portA2;
+constexpr at::Port<at::A3> portA3;
+constexpr at::Port<at::A4> portA4;
+constexpr at::Port<at::A5> portA5;
+constexpr at::Port<at::A6> portA6;
 
 void setup()
 {
-	avrt::InitPort<
-		avrt::In,	// D0: PD0(RXD/PCINT16)
-		avrt::In,	// D1: PD1(TXD/PCINT17)
-		avrt::In,	// D2: PD2(INT0/PCINT18)
-		avrt::In,	// D3: PD3(INT1/OC2B/PCINT19)
-		avrt::In,	// D4: PD4(XCK/T0/PCINT20)
-		avrt::In,	// D5: PD5(T1/OC0B/PCINT21)
-		avrt::In,	// D6: PD6(AIN0/OC0A/PCINT22)
-		avrt::In,	// D7: PD7(AIN1/PCINT23)
-		avrt::In,	// D8: PB0(ICP1/CLKO/PCINT0)
-		avrt::In,	// D9: PB1(OC1A/PCINT1)
-		avrt::In,	// D10: PB2(SS/OC1B/PCINT2)
-		avrt::In,	// D11: PB3(MOSI/OC2A/PCINT3)
-		avrt::In,	// D12: PB4(MISO/PCINT4)
-		avrt::In,	// D13: PB5(SCK/PCINT5)
-		avrt::In,	// D14: PC0(ADC0/PCINT8)
-		avrt::In,	// D15: PC1(ADC1/PCINT9)
-		avrt::In,	// D16: PC2(ADC2/PCINT10)
-		avrt::In,	// D17: PC3(ADC3/PCINT11)
-		avrt::In,	// D18: PC4(ADC4/SDA/PCINT12)
-		avrt::In,	// D19: PC5(ADC5/SCL/PCINT13)
-		avrt::In	// D20: PC6(RESET/PCINT14)
+	at::InitPort<
+		at::In,			// D0: PD0(RXD/PCINT16)
+		at::In,			// D1: PD1(TXD/PCINT17)
+		at::In,			// D2: PD2(INT0/PCINT18)
+		at::In,			// D3: PD3(INT1/OC2B/PCINT19)
+		at::In,			// D4: PD4(XCK/T0/PCINT20)
+		at::In,			// D5: PD5(T1/OC0B/PCINT21)
+		at::In,			// D6: PD6(AIN0/OC0A/PCINT22)
+		at::In,			// D7: PD7(AIN1/PCINT23)
+		at::In,			// D8: PB0(ICP1/CLKO/PCINT0)
+		at::In,			// D9: PB1(OC1A/PCINT1)
+		at::In,			// D10: PB2(SS/OC1B/PCINT2)
+		at::In,			// D11: PB3(MOSI/OC2A/PCINT3)
+		at::In,			// D12: PB4(MISO/PCINT4)
+		at::In,			// D13: PB5(SCK/PCINT5)
+		at::In,			// D14: PC0(ADC0/PCINT8)
+		at::In,			// D15: PC1(ADC1/PCINT9)
+		at::In,			// D16: PC2(ADC2/PCINT10)
+		at::In,			// D17: PC3(ADC3/PCINT11)
+		at::In,			// D18: PC4(ADC4/SDA/PCINT12)
+		at::In,			// D19: PC5(ADC5/SCL/PCINT13)
+		at::In			// D20: PC6(RESET/PCINT14)
+	>();
+	at::InitPort<
+		at::Out,		// D0: PD0(RXD/PCINT16)
+		at::Out,		// D1: PD1(TXD/PCINT17)
+		at::Out,		// D2: PD2(INT0/PCINT18)
+		at::Out,		// D3: PD3(INT1/OC2B/PCINT19)
+		at::Out,		// D4: PD4(XCK/T0/PCINT20)
+		at::Out,		// D5: PD5(T1/OC0B/PCINT21)
+		at::Out,		// D6: PD6(AIN0/OC0A/PCINT22)
+		at::Out,		// D7: PD7(AIN1/PCINT23)
+		at::Out,		// D8: PB0(ICP1/CLKO/PCINT0)
+		at::Out,		// D9: PB1(OC1A/PCINT1)
+		at::Out,		// D10: PB2(SS/OC1B/PCINT2)
+		at::Out,		// D11: PB3(MOSI/OC2A/PCINT3)
+		at::Out,		// D12: PB4(MISO/PCINT4)
+		at::Out,		// D13: PB5(SCK/PCINT5)
+		at::Out,		// D14: PC0(ADC0/PCINT8)
+		at::Out,		// D15: PC1(ADC1/PCINT9)
+		at::Out,		// D16: PC2(ADC2/PCINT10)
+		at::Out,		// D17: PC3(ADC3/PCINT11)
+		at::Out,		// D18: PC4(ADC4/SDA/PCINT12)
+		at::Out,		// D19: PC5(ADC5/SCL/PCINT13)
+		at::Out			// D20: PC6(RESET/PCINT14)
+	>();
+	at::InitPort<
+		at::InPullup,	// D0: PD0(RXD/PCINT16)
+		at::InPullup,	// D1: PD1(TXD/PCINT17)
+		at::InPullup,	// D2: PD2(INT0/PCINT18)
+		at::InPullup,	// D3: PD3(INT1/OC2B/PCINT19)
+		at::InPullup,	// D4: PD4(XCK/T0/PCINT20)
+		at::InPullup,	// D5: PD5(T1/OC0B/PCINT21)
+		at::InPullup,	// D6: PD6(AIN0/OC0A/PCINT22)
+		at::InPullup,	// D7: PD7(AIN1/PCINT23)
+		at::InPullup,	// D8: PB0(ICP1/CLKO/PCINT0)
+		at::InPullup,	// D9: PB1(OC1A/PCINT1)
+		at::InPullup,	// D10: PB2(SS/OC1B/PCINT2)
+		at::InPullup,	// D11: PB3(MOSI/OC2A/PCINT3)
+		at::InPullup,	// D12: PB4(MISO/PCINT4)
+		at::InPullup,	// D13: PB5(SCK/PCINT5)
+		at::InPullup,	// D14: PC0(ADC0/PCINT8)
+		at::InPullup,	// D15: PC1(ADC1/PCINT9)
+		at::InPullup,	// D16: PC2(ADC2/PCINT10)
+		at::InPullup,	// D17: PC3(ADC3/PCINT11)
+		at::InPullup,	// D18: PC4(ADC4/SDA/PCINT12)
+		at::InPullup,	// D19: PC5(ADC5/SCL/PCINT13)
+		at::InPullup	// D20: PC6(RESET/PCINT14)
 	>();
 }
 
 void Func1()
 {
-	portHoge0.SetMode<avrt::In>();
-	portHoge1.SetMode<avrt::In>();
-	portHoge2.SetMode<avrt::In>();
-	portHoge3.SetMode<avrt::In>();
-	portHoge4.SetMode<avrt::In>();
-	portHoge5.SetMode<avrt::In>();
-	portHoge6.SetMode<avrt::In>();
-	portHoge7.SetMode<avrt::In>();
-	portHoge8.SetMode<avrt::In>();
-	portHoge9.SetMode<avrt::In>();
-	portHoge10.SetMode<avrt::In>();
-	portHoge11.SetMode<avrt::In>();
-	portHoge12.SetMode<avrt::In>();
-	portHoge13.SetMode<avrt::In>();
-	portHoge14.SetMode<avrt::In>();
-	portHoge15.SetMode<avrt::In>();
-	portHoge16.SetMode<avrt::In>();
-	portHoge17.SetMode<avrt::In>();
-	portHoge18.SetMode<avrt::In>();
-	portHoge19.SetMode<avrt::In>();
-	portHoge20.SetMode<avrt::In>();
-	portHoge0.SetMode<avrt::Out>();
-	portHoge1.SetMode<avrt::Out>();
-	portHoge2.SetMode<avrt::Out>();
-	portHoge3.SetMode<avrt::Out>();
-	portHoge4.SetMode<avrt::Out>();
-	portHoge5.SetMode<avrt::Out>();
-	portHoge6.SetMode<avrt::Out>();
-	portHoge7.SetMode<avrt::Out>();
-	portHoge8.SetMode<avrt::Out>();
-	portHoge9.SetMode<avrt::Out>();
-	portHoge10.SetMode<avrt::Out>();
-	portHoge11.SetMode<avrt::Out>();
-	portHoge12.SetMode<avrt::Out>();
-	portHoge13.SetMode<avrt::Out>();
-	portHoge14.SetMode<avrt::Out>();
-	portHoge15.SetMode<avrt::Out>();
-	portHoge16.SetMode<avrt::Out>();
-	portHoge17.SetMode<avrt::Out>();
-	portHoge18.SetMode<avrt::Out>();
-	portHoge19.SetMode<avrt::Out>();
-	portHoge20.SetMode<avrt::Out>();
-	portHoge0.SetMode<avrt::InPullup>();
-	portHoge1.SetMode<avrt::InPullup>();
-	portHoge2.SetMode<avrt::InPullup>();
-	portHoge3.SetMode<avrt::InPullup>();
-	portHoge4.SetMode<avrt::InPullup>();
-	portHoge5.SetMode<avrt::InPullup>();
-	portHoge6.SetMode<avrt::InPullup>();
-	portHoge7.SetMode<avrt::InPullup>();
-	portHoge8.SetMode<avrt::InPullup>();
-	portHoge9.SetMode<avrt::InPullup>();
-	portHoge10.SetMode<avrt::InPullup>();
-	portHoge11.SetMode<avrt::InPullup>();
-	portHoge12.SetMode<avrt::InPullup>();
-	portHoge13.SetMode<avrt::InPullup>();
-	portHoge14.SetMode<avrt::InPullup>();
-	portHoge15.SetMode<avrt::InPullup>();
-	portHoge16.SetMode<avrt::InPullup>();
-	portHoge17.SetMode<avrt::InPullup>();
-	portHoge18.SetMode<avrt::InPullup>();
-	portHoge19.SetMode<avrt::InPullup>();
-	portHoge20.SetMode<avrt::InPullup>();
-	portHoge0.Output<false>();
-	portHoge1.Output<false>();
-	portHoge2.Output<false>();
-	portHoge3.Output<false>();
-	portHoge4.Output<false>();
-	portHoge5.Output<false>();
-	portHoge6.Output<false>();
-	portHoge7.Output<false>();
-	portHoge8.Output<false>();
-	portHoge9.Output<false>();
-	portHoge10.Output<false>();
-	portHoge11.Output<false>();
-	portHoge12.Output<false>();
-	portHoge13.Output<false>();
-	portHoge14.Output<false>();
-	portHoge15.Output<false>();
-	portHoge16.Output<false>();
-	portHoge17.Output<false>();
-	portHoge18.Output<false>();
-	portHoge19.Output<false>();
-	portHoge20.Output<false>();
-	portHoge0.Output<true>();
-	portHoge1.Output<true>();
-	portHoge2.Output<true>();
-	portHoge3.Output<true>();
-	portHoge4.Output<true>();
-	portHoge5.Output<true>();
-	portHoge6.Output<true>();
-	portHoge7.Output<true>();
-	portHoge8.Output<true>();
-	portHoge9.Output<true>();
-	portHoge10.Output<true>();
-	portHoge11.Output<true>();
-	portHoge12.Output<true>();
-	portHoge13.Output<true>();
-	portHoge14.Output<true>();
-	portHoge15.Output<true>();
-	portHoge16.Output<true>();
-	portHoge17.Output<true>();
-	portHoge18.Output<true>();
-	portHoge19.Output<true>();
-	portHoge20.Output<true>();
-	portHoge0.Output(flag);
-	portHoge1.Output(flag);
-	portHoge2.Output(flag);
-	portHoge3.Output(flag);
-	portHoge4.Output(flag);
-	portHoge5.Output(flag);
-	portHoge6.Output(flag);
-	portHoge7.Output(flag);
-	portHoge8.Output(flag);
-	portHoge9.Output(flag);
-	portHoge10.Output(flag);
-	portHoge11.Output(flag);
-	portHoge12.Output(flag);
-	portHoge13.Output(flag);
-	portHoge14.Output(flag);
-	portHoge15.Output(flag);
-	portHoge16.Output(flag);
-	portHoge17.Output(flag);
-	portHoge18.Output(flag);
-	portHoge19.Output(flag);
-	portHoge20.Output(flag);
-	data = portHoge0.Input();
-	data = portHoge1.Input();
-	data = portHoge2.Input();
-	data = portHoge3.Input();
-	data = portHoge4.Input();
-	data = portHoge5.Input();
-	data = portHoge6.Input();
-	data = portHoge7.Input();
-	data = portHoge8.Input();
-	data = portHoge9.Input();
-	data = portHoge10.Input();
-	data = portHoge11.Input();
-	data = portHoge12.Input();
-	data = portHoge13.Input();
-	data = portHoge14.Input();
-	data = portHoge15.Input();
-	data = portHoge16.Input();
-	data = portHoge17.Input();
-	data = portHoge18.Input();
-	data = portHoge19.Input();
-	data = portHoge20.Input();
-	portHoge0.EnablePWM();
-	portHoge1.EnablePWM();
-	portHoge2.EnablePWM();
-	portHoge3.EnablePWM();
-	portHoge4.EnablePWM();
-	portHoge5.EnablePWM();
-	portHoge6.EnablePWM();
-	portHoge7.EnablePWM();
-	portHoge8.EnablePWM();
-	portHoge9.EnablePWM();
-	portHoge10.EnablePWM();
-	portHoge11.EnablePWM();
-	portHoge12.EnablePWM();
-	portHoge13.EnablePWM();
-	portHoge14.EnablePWM();
-	portHoge15.EnablePWM();
-	portHoge16.EnablePWM();
-	portHoge17.EnablePWM();
-	portHoge18.EnablePWM();
-	portHoge19.EnablePWM();
-	portHoge20.EnablePWM();
-	portHoge0.DisablePWM();
-	portHoge1.DisablePWM();
-	portHoge2.DisablePWM();
-	portHoge3.DisablePWM();
-	portHoge4.DisablePWM();
-	portHoge5.DisablePWM();
-	portHoge6.DisablePWM();
-	portHoge7.DisablePWM();
-	portHoge8.DisablePWM();
-	portHoge9.DisablePWM();
-	portHoge10.DisablePWM();
-	portHoge11.DisablePWM();
-	portHoge12.DisablePWM();
-	portHoge13.DisablePWM();
-	portHoge14.DisablePWM();
-	portHoge15.DisablePWM();
-	portHoge16.DisablePWM();
-	portHoge17.DisablePWM();
-	portHoge18.DisablePWM();
-	portHoge19.DisablePWM();
-	portHoge20.DisablePWM();
-	portHoge0.OutputPWM(128);
-	portHoge1.OutputPWM(128);
-	portHoge2.OutputPWM(128);
-	portHoge3.OutputPWM(128);
-	portHoge4.OutputPWM(128);
-	portHoge5.OutputPWM(128);
-	portHoge6.OutputPWM(128);
-	portHoge7.OutputPWM(128);
-	portHoge8.OutputPWM(128);
-	portHoge9.OutputPWM(128);
-	portHoge10.OutputPWM(128);
-	portHoge11.OutputPWM(128);
-	portHoge12.OutputPWM(128);
-	portHoge13.OutputPWM(128);
-	portHoge14.OutputPWM(128);
-	portHoge15.OutputPWM(128);
-	portHoge16.OutputPWM(128);
-	portHoge17.OutputPWM(128);
-	portHoge18.OutputPWM(128);
-	portHoge19.OutputPWM(128);
-	portHoge20.OutputPWM(128);
+	portD0.SetMode<at::In>();
+	portD1.SetMode<at::In>();
+	portD2.SetMode<at::In>();
+	portD3.SetMode<at::In>();
+	portD4.SetMode<at::In>();
+	portD5.SetMode<at::In>();
+	portD6.SetMode<at::In>();
+	portD7.SetMode<at::In>();
+	portD8.SetMode<at::In>();
+	portD9.SetMode<at::In>();
+	portD10.SetMode<at::In>();
+	portD11.SetMode<at::In>();
+	portD12.SetMode<at::In>();
+	portD13.SetMode<at::In>();
+	portD14.SetMode<at::In>();
+	portD15.SetMode<at::In>();
+	portD16.SetMode<at::In>();
+	portD17.SetMode<at::In>();
+	portD18.SetMode<at::In>();
+	portD19.SetMode<at::In>();
+	portD20.SetMode<at::In>();
+	portD0.SetMode<at::Out>();
+	portD1.SetMode<at::Out>();
+	portD2.SetMode<at::Out>();
+	portD3.SetMode<at::Out>();
+	portD4.SetMode<at::Out>();
+	portD5.SetMode<at::Out>();
+	portD6.SetMode<at::Out>();
+	portD7.SetMode<at::Out>();
+	portD8.SetMode<at::Out>();
+	portD9.SetMode<at::Out>();
+	portD10.SetMode<at::Out>();
+	portD11.SetMode<at::Out>();
+	portD12.SetMode<at::Out>();
+	portD13.SetMode<at::Out>();
+	portD14.SetMode<at::Out>();
+	portD15.SetMode<at::Out>();
+	portD16.SetMode<at::Out>();
+	portD17.SetMode<at::Out>();
+	portD18.SetMode<at::Out>();
+	portD19.SetMode<at::Out>();
+	portD20.SetMode<at::Out>();
+	portD0.SetMode<at::InPullup>();
+	portD1.SetMode<at::InPullup>();
+	portD2.SetMode<at::InPullup>();
+	portD3.SetMode<at::InPullup>();
+	portD4.SetMode<at::InPullup>();
+	portD5.SetMode<at::InPullup>();
+	portD6.SetMode<at::InPullup>();
+	portD7.SetMode<at::InPullup>();
+	portD8.SetMode<at::InPullup>();
+	portD9.SetMode<at::InPullup>();
+	portD10.SetMode<at::InPullup>();
+	portD11.SetMode<at::InPullup>();
+	portD12.SetMode<at::InPullup>();
+	portD13.SetMode<at::InPullup>();
+	portD14.SetMode<at::InPullup>();
+	portD15.SetMode<at::InPullup>();
+	portD16.SetMode<at::InPullup>();
+	portD17.SetMode<at::InPullup>();
+	portD18.SetMode<at::InPullup>();
+	portD19.SetMode<at::InPullup>();
+	portD20.SetMode<at::InPullup>();
+	portD0.Output<false>();
+	portD1.Output<false>();
+	portD2.Output<false>();
+	portD3.Output<false>();
+	portD4.Output<false>();
+	portD5.Output<false>();
+	portD6.Output<false>();
+	portD7.Output<false>();
+	portD8.Output<false>();
+	portD9.Output<false>();
+	portD10.Output<false>();
+	portD11.Output<false>();
+	portD12.Output<false>();
+	portD13.Output<false>();
+	portD14.Output<false>();
+	portD15.Output<false>();
+	portD16.Output<false>();
+	portD17.Output<false>();
+	portD18.Output<false>();
+	portD19.Output<false>();
+	portD20.Output<false>();
+	portD0.Output<true>();
+	portD1.Output<true>();
+	portD2.Output<true>();
+	portD3.Output<true>();
+	portD4.Output<true>();
+	portD5.Output<true>();
+	portD6.Output<true>();
+	portD7.Output<true>();
+	portD8.Output<true>();
+	portD9.Output<true>();
+	portD10.Output<true>();
+	portD11.Output<true>();
+	portD12.Output<true>();
+	portD13.Output<true>();
+	portD14.Output<true>();
+	portD15.Output<true>();
+	portD16.Output<true>();
+	portD17.Output<true>();
+	portD18.Output<true>();
+	portD19.Output<true>();
+	portD20.Output<true>();
+	portD0.Output(flag);
+	portD1.Output(flag);
+	portD2.Output(flag);
+	portD3.Output(flag);
+	portD4.Output(flag);
+	portD5.Output(flag);
+	portD6.Output(flag);
+	portD7.Output(flag);
+	portD8.Output(flag);
+	portD9.Output(flag);
+	portD10.Output(flag);
+	portD11.Output(flag);
+	portD12.Output(flag);
+	portD13.Output(flag);
+	portD14.Output(flag);
+	portD15.Output(flag);
+	portD16.Output(flag);
+	portD17.Output(flag);
+	portD18.Output(flag);
+	portD19.Output(flag);
+	portD20.Output(flag);
+	data = portD0.Input();
+	data = portD1.Input();
+	data = portD2.Input();
+	data = portD3.Input();
+	data = portD4.Input();
+	data = portD5.Input();
+	data = portD6.Input();
+	data = portD7.Input();
+	data = portD8.Input();
+	data = portD9.Input();
+	data = portD10.Input();
+	data = portD11.Input();
+	data = portD12.Input();
+	data = portD13.Input();
+	data = portD14.Input();
+	data = portD15.Input();
+	data = portD16.Input();
+	data = portD17.Input();
+	data = portD18.Input();
+	data = portD19.Input();
+	data = portD20.Input();
+	portD0.EnablePWM();
+	portD1.EnablePWM();
+	portD2.EnablePWM();
+	portD3.EnablePWM();
+	portD4.EnablePWM();
+	portD5.EnablePWM();
+	portD6.EnablePWM();
+	portD7.EnablePWM();
+	portD8.EnablePWM();
+	portD9.EnablePWM();
+	portD10.EnablePWM();
+	portD11.EnablePWM();
+	portD12.EnablePWM();
+	portD13.EnablePWM();
+	portD14.EnablePWM();
+	portD15.EnablePWM();
+	portD16.EnablePWM();
+	portD17.EnablePWM();
+	portD18.EnablePWM();
+	portD19.EnablePWM();
+	portD20.EnablePWM();
+	portD0.DisablePWM();
+	portD1.DisablePWM();
+	portD2.DisablePWM();
+	portD3.DisablePWM();
+	portD4.DisablePWM();
+	portD5.DisablePWM();
+	portD6.DisablePWM();
+	portD7.DisablePWM();
+	portD8.DisablePWM();
+	portD9.DisablePWM();
+	portD10.DisablePWM();
+	portD11.DisablePWM();
+	portD12.DisablePWM();
+	portD13.DisablePWM();
+	portD14.DisablePWM();
+	portD15.DisablePWM();
+	portD16.DisablePWM();
+	portD17.DisablePWM();
+	portD18.DisablePWM();
+	portD19.DisablePWM();
+	portD20.DisablePWM();
+	portD0.OutputPWM(128);
+	portD1.OutputPWM(128);
+	portD2.OutputPWM(128);
+	portD3.OutputPWM(128);
+	portD4.OutputPWM(128);
+	portD5.OutputPWM(128);
+	portD6.OutputPWM(128);
+	portD7.OutputPWM(128);
+	portD8.OutputPWM(128);
+	portD9.OutputPWM(128);
+	portD10.OutputPWM(128);
+	portD11.OutputPWM(128);
+	portD12.OutputPWM(128);
+	portD13.OutputPWM(128);
+	portD14.OutputPWM(128);
+	portD15.OutputPWM(128);
+	portD16.OutputPWM(128);
+	portD17.OutputPWM(128);
+	portD18.OutputPWM(128);
+	portD19.OutputPWM(128);
+	portD20.OutputPWM(128);
 }
 
 void Func2()
 {
-	avrt::Port<0>().SetMode<avrt::In>();
-	avrt::Port<1>().SetMode<avrt::In>();
-	avrt::Port<2>().SetMode<avrt::In>();
-	avrt::Port<3>().SetMode<avrt::In>();
-	avrt::Port<4>().SetMode<avrt::In>();
-	avrt::Port<5>().SetMode<avrt::In>();
-	avrt::Port<6>().SetMode<avrt::In>();
-	avrt::Port<7>().SetMode<avrt::In>();
-	avrt::Port<8>().SetMode<avrt::In>();
-	avrt::Port<9>().SetMode<avrt::In>();
-	avrt::Port<10>().SetMode<avrt::In>();
-	avrt::Port<11>().SetMode<avrt::In>();
-	avrt::Port<12>().SetMode<avrt::In>();
-	avrt::Port<13>().SetMode<avrt::In>();
-	avrt::Port<14>().SetMode<avrt::In>();
-	avrt::Port<15>().SetMode<avrt::In>();
-	avrt::Port<16>().SetMode<avrt::In>();
-	avrt::Port<17>().SetMode<avrt::In>();
-	avrt::Port<18>().SetMode<avrt::In>();
-	avrt::Port<19>().SetMode<avrt::In>();
-	avrt::Port<20>().SetMode<avrt::In>();
-	avrt::Port<0>().SetMode<avrt::Out>();
-	avrt::Port<1>().SetMode<avrt::Out>();
-	avrt::Port<2>().SetMode<avrt::Out>();
-	avrt::Port<3>().SetMode<avrt::Out>();
-	avrt::Port<4>().SetMode<avrt::Out>();
-	avrt::Port<5>().SetMode<avrt::Out>();
-	avrt::Port<6>().SetMode<avrt::Out>();
-	avrt::Port<7>().SetMode<avrt::Out>();
-	avrt::Port<8>().SetMode<avrt::Out>();
-	avrt::Port<9>().SetMode<avrt::Out>();
-	avrt::Port<10>().SetMode<avrt::Out>();
-	avrt::Port<11>().SetMode<avrt::Out>();
-	avrt::Port<12>().SetMode<avrt::Out>();
-	avrt::Port<13>().SetMode<avrt::Out>();
-	avrt::Port<14>().SetMode<avrt::Out>();
-	avrt::Port<15>().SetMode<avrt::Out>();
-	avrt::Port<16>().SetMode<avrt::Out>();
-	avrt::Port<17>().SetMode<avrt::Out>();
-	avrt::Port<18>().SetMode<avrt::Out>();
-	avrt::Port<19>().SetMode<avrt::Out>();
-	avrt::Port<20>().SetMode<avrt::Out>();
-	avrt::Port<0>().SetMode<avrt::InPullup>();
-	avrt::Port<1>().SetMode<avrt::InPullup>();
-	avrt::Port<2>().SetMode<avrt::InPullup>();
-	avrt::Port<3>().SetMode<avrt::InPullup>();
-	avrt::Port<4>().SetMode<avrt::InPullup>();
-	avrt::Port<5>().SetMode<avrt::InPullup>();
-	avrt::Port<6>().SetMode<avrt::InPullup>();
-	avrt::Port<7>().SetMode<avrt::InPullup>();
-	avrt::Port<8>().SetMode<avrt::InPullup>();
-	avrt::Port<9>().SetMode<avrt::InPullup>();
-	avrt::Port<10>().SetMode<avrt::InPullup>();
-	avrt::Port<11>().SetMode<avrt::InPullup>();
-	avrt::Port<12>().SetMode<avrt::InPullup>();
-	avrt::Port<13>().SetMode<avrt::InPullup>();
-	avrt::Port<14>().SetMode<avrt::InPullup>();
-	avrt::Port<15>().SetMode<avrt::InPullup>();
-	avrt::Port<16>().SetMode<avrt::InPullup>();
-	avrt::Port<17>().SetMode<avrt::InPullup>();
-	avrt::Port<18>().SetMode<avrt::InPullup>();
-	avrt::Port<19>().SetMode<avrt::InPullup>();
-	avrt::Port<20>().SetMode<avrt::InPullup>();
-	avrt::Port<0>().Output<false>();
-	avrt::Port<1>().Output<false>();
-	avrt::Port<2>().Output<false>();
-	avrt::Port<3>().Output<false>();
-	avrt::Port<4>().Output<false>();
-	avrt::Port<5>().Output<false>();
-	avrt::Port<6>().Output<false>();
-	avrt::Port<7>().Output<false>();
-	avrt::Port<8>().Output<false>();
-	avrt::Port<9>().Output<false>();
-	avrt::Port<10>().Output<false>();
-	avrt::Port<11>().Output<false>();
-	avrt::Port<12>().Output<false>();
-	avrt::Port<13>().Output<false>();
-	avrt::Port<14>().Output<false>();
-	avrt::Port<15>().Output<false>();
-	avrt::Port<16>().Output<false>();
-	avrt::Port<17>().Output<false>();
-	avrt::Port<18>().Output<false>();
-	avrt::Port<19>().Output<false>();
-	avrt::Port<20>().Output<false>();
-	avrt::Port<0>().Output<true>();
-	avrt::Port<1>().Output<true>();
-	avrt::Port<2>().Output<true>();
-	avrt::Port<3>().Output<true>();
-	avrt::Port<4>().Output<true>();
-	avrt::Port<5>().Output<true>();
-	avrt::Port<6>().Output<true>();
-	avrt::Port<7>().Output<true>();
-	avrt::Port<8>().Output<true>();
-	avrt::Port<9>().Output<true>();
-	avrt::Port<10>().Output<true>();
-	avrt::Port<11>().Output<true>();
-	avrt::Port<12>().Output<true>();
-	avrt::Port<13>().Output<true>();
-	avrt::Port<14>().Output<true>();
-	avrt::Port<15>().Output<true>();
-	avrt::Port<16>().Output<true>();
-	avrt::Port<17>().Output<true>();
-	avrt::Port<18>().Output<true>();
-	avrt::Port<19>().Output<true>();
-	avrt::Port<20>().Output<true>();
-	avrt::Port<0>().Output(flag);
-	avrt::Port<1>().Output(flag);
-	avrt::Port<2>().Output(flag);
-	avrt::Port<3>().Output(flag);
-	avrt::Port<4>().Output(flag);
-	avrt::Port<5>().Output(flag);
-	avrt::Port<6>().Output(flag);
-	avrt::Port<7>().Output(flag);
-	avrt::Port<8>().Output(flag);
-	avrt::Port<9>().Output(flag);
-	avrt::Port<10>().Output(flag);
-	avrt::Port<11>().Output(flag);
-	avrt::Port<12>().Output(flag);
-	avrt::Port<13>().Output(flag);
-	avrt::Port<14>().Output(flag);
-	avrt::Port<15>().Output(flag);
-	avrt::Port<16>().Output(flag);
-	avrt::Port<17>().Output(flag);
-	avrt::Port<18>().Output(flag);
-	avrt::Port<19>().Output(flag);
-	avrt::Port<20>().Output(flag);
-	data = avrt::Port<0>().Input();
-	data = avrt::Port<1>().Input();
-	data = avrt::Port<2>().Input();
-	data = avrt::Port<3>().Input();
-	data = avrt::Port<4>().Input();
-	data = avrt::Port<5>().Input();
-	data = avrt::Port<6>().Input();
-	data = avrt::Port<7>().Input();
-	data = avrt::Port<8>().Input();
-	data = avrt::Port<9>().Input();
-	data = avrt::Port<10>().Input();
-	data = avrt::Port<11>().Input();
-	data = avrt::Port<12>().Input();
-	data = avrt::Port<13>().Input();
-	data = avrt::Port<14>().Input();
-	data = avrt::Port<15>().Input();
-	data = avrt::Port<16>().Input();
-	data = avrt::Port<17>().Input();
-	data = avrt::Port<18>().Input();
-	data = avrt::Port<19>().Input();
-	data = avrt::Port<20>().Input();
-	avrt::Port<0>().EnablePWM();
-	avrt::Port<1>().EnablePWM();
-	avrt::Port<2>().EnablePWM();
-	avrt::Port<3>().EnablePWM();
-	avrt::Port<4>().EnablePWM();
-	avrt::Port<5>().EnablePWM();
-	avrt::Port<6>().EnablePWM();
-	avrt::Port<7>().EnablePWM();
-	avrt::Port<8>().EnablePWM();
-	avrt::Port<9>().EnablePWM();
-	avrt::Port<10>().EnablePWM();
-	avrt::Port<11>().EnablePWM();
-	avrt::Port<12>().EnablePWM();
-	avrt::Port<13>().EnablePWM();
-	avrt::Port<14>().EnablePWM();
-	avrt::Port<15>().EnablePWM();
-	avrt::Port<16>().EnablePWM();
-	avrt::Port<17>().EnablePWM();
-	avrt::Port<18>().EnablePWM();
-	avrt::Port<19>().EnablePWM();
-	avrt::Port<20>().EnablePWM();
-	avrt::Port<0>().DisablePWM();
-	avrt::Port<1>().DisablePWM();
-	avrt::Port<2>().DisablePWM();
-	avrt::Port<3>().DisablePWM();
-	avrt::Port<4>().DisablePWM();
-	avrt::Port<5>().DisablePWM();
-	avrt::Port<6>().DisablePWM();
-	avrt::Port<7>().DisablePWM();
-	avrt::Port<8>().DisablePWM();
-	avrt::Port<9>().DisablePWM();
-	avrt::Port<10>().DisablePWM();
-	avrt::Port<11>().DisablePWM();
-	avrt::Port<12>().DisablePWM();
-	avrt::Port<13>().DisablePWM();
-	avrt::Port<14>().DisablePWM();
-	avrt::Port<15>().DisablePWM();
-	avrt::Port<16>().DisablePWM();
-	avrt::Port<17>().DisablePWM();
-	avrt::Port<18>().DisablePWM();
-	avrt::Port<19>().DisablePWM();
-	avrt::Port<20>().DisablePWM();
-	avrt::Port<0>().OutputPWM(128);
-	avrt::Port<1>().OutputPWM(128);
-	avrt::Port<2>().OutputPWM(128);
-	avrt::Port<3>().OutputPWM(128);
-	avrt::Port<4>().OutputPWM(128);
-	avrt::Port<5>().OutputPWM(128);
-	avrt::Port<6>().OutputPWM(128);
-	avrt::Port<7>().OutputPWM(128);
-	avrt::Port<8>().OutputPWM(128);
-	avrt::Port<9>().OutputPWM(128);
-	avrt::Port<10>().OutputPWM(128);
-	avrt::Port<11>().OutputPWM(128);
-	avrt::Port<12>().OutputPWM(128);
-	avrt::Port<13>().OutputPWM(128);
-	avrt::Port<14>().OutputPWM(128);
-	avrt::Port<15>().OutputPWM(128);
-	avrt::Port<16>().OutputPWM(128);
-	avrt::Port<17>().OutputPWM(128);
-	avrt::Port<18>().OutputPWM(128);
-	avrt::Port<19>().OutputPWM(128);
-	avrt::Port<20>().OutputPWM(128);
+	at::Port<at::D0>().SetMode<at::In>();
+	at::Port<at::D1>().SetMode<at::In>();
+	at::Port<at::D2>().SetMode<at::In>();
+	at::Port<at::D3>().SetMode<at::In>();
+	at::Port<at::D4>().SetMode<at::In>();
+	at::Port<at::D5>().SetMode<at::In>();
+	at::Port<at::D6>().SetMode<at::In>();
+	at::Port<at::D7>().SetMode<at::In>();
+	at::Port<at::D8>().SetMode<at::In>();
+	at::Port<at::D9>().SetMode<at::In>();
+	at::Port<at::D10>().SetMode<at::In>();
+	at::Port<at::D11>().SetMode<at::In>();
+	at::Port<at::D12>().SetMode<at::In>();
+	at::Port<at::D13>().SetMode<at::In>();
+	at::Port<at::D14>().SetMode<at::In>();
+	at::Port<at::D15>().SetMode<at::In>();
+	at::Port<at::D16>().SetMode<at::In>();
+	at::Port<at::D17>().SetMode<at::In>();
+	at::Port<at::D18>().SetMode<at::In>();
+	at::Port<at::D19>().SetMode<at::In>();
+	at::Port<at::D20>().SetMode<at::In>();
+	at::Port<at::D0>().SetMode<at::Out>();
+	at::Port<at::D1>().SetMode<at::Out>();
+	at::Port<at::D2>().SetMode<at::Out>();
+	at::Port<at::D3>().SetMode<at::Out>();
+	at::Port<at::D4>().SetMode<at::Out>();
+	at::Port<at::D5>().SetMode<at::Out>();
+	at::Port<at::D6>().SetMode<at::Out>();
+	at::Port<at::D7>().SetMode<at::Out>();
+	at::Port<at::D8>().SetMode<at::Out>();
+	at::Port<at::D9>().SetMode<at::Out>();
+	at::Port<at::D10>().SetMode<at::Out>();
+	at::Port<at::D11>().SetMode<at::Out>();
+	at::Port<at::D12>().SetMode<at::Out>();
+	at::Port<at::D13>().SetMode<at::Out>();
+	at::Port<at::D14>().SetMode<at::Out>();
+	at::Port<at::D15>().SetMode<at::Out>();
+	at::Port<at::D16>().SetMode<at::Out>();
+	at::Port<at::D17>().SetMode<at::Out>();
+	at::Port<at::D18>().SetMode<at::Out>();
+	at::Port<at::D19>().SetMode<at::Out>();
+	at::Port<at::D20>().SetMode<at::Out>();
+	at::Port<at::D0>().SetMode<at::InPullup>();
+	at::Port<at::D1>().SetMode<at::InPullup>();
+	at::Port<at::D2>().SetMode<at::InPullup>();
+	at::Port<at::D3>().SetMode<at::InPullup>();
+	at::Port<at::D4>().SetMode<at::InPullup>();
+	at::Port<at::D5>().SetMode<at::InPullup>();
+	at::Port<at::D6>().SetMode<at::InPullup>();
+	at::Port<at::D7>().SetMode<at::InPullup>();
+	at::Port<at::D8>().SetMode<at::InPullup>();
+	at::Port<at::D9>().SetMode<at::InPullup>();
+	at::Port<at::D10>().SetMode<at::InPullup>();
+	at::Port<at::D11>().SetMode<at::InPullup>();
+	at::Port<at::D12>().SetMode<at::InPullup>();
+	at::Port<at::D13>().SetMode<at::InPullup>();
+	at::Port<at::D14>().SetMode<at::InPullup>();
+	at::Port<at::D15>().SetMode<at::InPullup>();
+	at::Port<at::D16>().SetMode<at::InPullup>();
+	at::Port<at::D17>().SetMode<at::InPullup>();
+	at::Port<at::D18>().SetMode<at::InPullup>();
+	at::Port<at::D19>().SetMode<at::InPullup>();
+	at::Port<at::D20>().SetMode<at::InPullup>();
+	at::Port<at::D0>().Output<false>();
+	at::Port<at::D1>().Output<false>();
+	at::Port<at::D2>().Output<false>();
+	at::Port<at::D3>().Output<false>();
+	at::Port<at::D4>().Output<false>();
+	at::Port<at::D5>().Output<false>();
+	at::Port<at::D6>().Output<false>();
+	at::Port<at::D7>().Output<false>();
+	at::Port<at::D8>().Output<false>();
+	at::Port<at::D9>().Output<false>();
+	at::Port<at::D10>().Output<false>();
+	at::Port<at::D11>().Output<false>();
+	at::Port<at::D12>().Output<false>();
+	at::Port<at::D13>().Output<false>();
+	at::Port<at::D14>().Output<false>();
+	at::Port<at::D15>().Output<false>();
+	at::Port<at::D16>().Output<false>();
+	at::Port<at::D17>().Output<false>();
+	at::Port<at::D18>().Output<false>();
+	at::Port<at::D19>().Output<false>();
+	at::Port<at::D20>().Output<false>();
+	at::Port<at::D0>().Output<true>();
+	at::Port<at::D1>().Output<true>();
+	at::Port<at::D2>().Output<true>();
+	at::Port<at::D3>().Output<true>();
+	at::Port<at::D4>().Output<true>();
+	at::Port<at::D5>().Output<true>();
+	at::Port<at::D6>().Output<true>();
+	at::Port<at::D7>().Output<true>();
+	at::Port<at::D8>().Output<true>();
+	at::Port<at::D9>().Output<true>();
+	at::Port<at::D10>().Output<true>();
+	at::Port<at::D11>().Output<true>();
+	at::Port<at::D12>().Output<true>();
+	at::Port<at::D13>().Output<true>();
+	at::Port<at::D14>().Output<true>();
+	at::Port<at::D15>().Output<true>();
+	at::Port<at::D16>().Output<true>();
+	at::Port<at::D17>().Output<true>();
+	at::Port<at::D18>().Output<true>();
+	at::Port<at::D19>().Output<true>();
+	at::Port<at::D20>().Output<true>();
+	at::Port<at::D0>().Output(flag);
+	at::Port<at::D1>().Output(flag);
+	at::Port<at::D2>().Output(flag);
+	at::Port<at::D3>().Output(flag);
+	at::Port<at::D4>().Output(flag);
+	at::Port<at::D5>().Output(flag);
+	at::Port<at::D6>().Output(flag);
+	at::Port<at::D7>().Output(flag);
+	at::Port<at::D8>().Output(flag);
+	at::Port<at::D9>().Output(flag);
+	at::Port<at::D10>().Output(flag);
+	at::Port<at::D11>().Output(flag);
+	at::Port<at::D12>().Output(flag);
+	at::Port<at::D13>().Output(flag);
+	at::Port<at::D14>().Output(flag);
+	at::Port<at::D15>().Output(flag);
+	at::Port<at::D16>().Output(flag);
+	at::Port<at::D17>().Output(flag);
+	at::Port<at::D18>().Output(flag);
+	at::Port<at::D19>().Output(flag);
+	at::Port<at::D20>().Output(flag);
+	data = at::Port<at::D0>().Input();
+	data = at::Port<at::D1>().Input();
+	data = at::Port<at::D2>().Input();
+	data = at::Port<at::D3>().Input();
+	data = at::Port<at::D4>().Input();
+	data = at::Port<at::D5>().Input();
+	data = at::Port<at::D6>().Input();
+	data = at::Port<at::D7>().Input();
+	data = at::Port<at::D8>().Input();
+	data = at::Port<at::D9>().Input();
+	data = at::Port<at::D10>().Input();
+	data = at::Port<at::D11>().Input();
+	data = at::Port<at::D12>().Input();
+	data = at::Port<at::D13>().Input();
+	data = at::Port<at::D14>().Input();
+	data = at::Port<at::D15>().Input();
+	data = at::Port<at::D16>().Input();
+	data = at::Port<at::D17>().Input();
+	data = at::Port<at::D18>().Input();
+	data = at::Port<at::D19>().Input();
+	data = at::Port<at::D20>().Input();
+	at::Port<at::D0>().EnablePWM();
+	at::Port<at::D1>().EnablePWM();
+	at::Port<at::D2>().EnablePWM();
+	at::Port<at::D3>().EnablePWM();
+	at::Port<at::D4>().EnablePWM();
+	at::Port<at::D5>().EnablePWM();
+	at::Port<at::D6>().EnablePWM();
+	at::Port<at::D7>().EnablePWM();
+	at::Port<at::D8>().EnablePWM();
+	at::Port<at::D9>().EnablePWM();
+	at::Port<at::D10>().EnablePWM();
+	at::Port<at::D11>().EnablePWM();
+	at::Port<at::D12>().EnablePWM();
+	at::Port<at::D13>().EnablePWM();
+	at::Port<at::D14>().EnablePWM();
+	at::Port<at::D15>().EnablePWM();
+	at::Port<at::D16>().EnablePWM();
+	at::Port<at::D17>().EnablePWM();
+	at::Port<at::D18>().EnablePWM();
+	at::Port<at::D19>().EnablePWM();
+	at::Port<at::D20>().EnablePWM();
+	at::Port<at::D0>().DisablePWM();
+	at::Port<at::D1>().DisablePWM();
+	at::Port<at::D2>().DisablePWM();
+	at::Port<at::D3>().DisablePWM();
+	at::Port<at::D4>().DisablePWM();
+	at::Port<at::D5>().DisablePWM();
+	at::Port<at::D6>().DisablePWM();
+	at::Port<at::D7>().DisablePWM();
+	at::Port<at::D8>().DisablePWM();
+	at::Port<at::D9>().DisablePWM();
+	at::Port<at::D10>().DisablePWM();
+	at::Port<at::D11>().DisablePWM();
+	at::Port<at::D12>().DisablePWM();
+	at::Port<at::D13>().DisablePWM();
+	at::Port<at::D14>().DisablePWM();
+	at::Port<at::D15>().DisablePWM();
+	at::Port<at::D16>().DisablePWM();
+	at::Port<at::D17>().DisablePWM();
+	at::Port<at::D18>().DisablePWM();
+	at::Port<at::D19>().DisablePWM();
+	at::Port<at::D20>().DisablePWM();
+	at::Port<at::D0>().OutputPWM(128);
+	at::Port<at::D1>().OutputPWM(128);
+	at::Port<at::D2>().OutputPWM(128);
+	at::Port<at::D3>().OutputPWM(128);
+	at::Port<at::D4>().OutputPWM(128);
+	at::Port<at::D5>().OutputPWM(128);
+	at::Port<at::D6>().OutputPWM(128);
+	at::Port<at::D7>().OutputPWM(128);
+	at::Port<at::D8>().OutputPWM(128);
+	at::Port<at::D9>().OutputPWM(128);
+	at::Port<at::D10>().OutputPWM(128);
+	at::Port<at::D11>().OutputPWM(128);
+	at::Port<at::D12>().OutputPWM(128);
+	at::Port<at::D13>().OutputPWM(128);
+	at::Port<at::D14>().OutputPWM(128);
+	at::Port<at::D15>().OutputPWM(128);
+	at::Port<at::D16>().OutputPWM(128);
+	at::Port<at::D17>().OutputPWM(128);
+	at::Port<at::D18>().OutputPWM(128);
+	at::Port<at::D19>().OutputPWM(128);
+	at::Port<at::D20>().OutputPWM(128);
 }
 
 void Func3()
 {
-	avrt::ADConv<avrt::A0>().Start();
-	avrt::ADConv<avrt::A1>().Start();
-	avrt::ADConv<avrt::A2>().Start();
-	avrt::ADConv<avrt::A3>().Start();
-	avrt::ADConv<avrt::A4>().Start();
-	avrt::ADConv<avrt::A5>().Start();
-	avrt::ADConv<avrt::A6>().Start();
-	avrt::ADConv<avrt::A0>().Wait();
-	avrt::ADConv<avrt::A1>().Wait();
-	avrt::ADConv<avrt::A2>().Wait();
-	avrt::ADConv<avrt::A3>().Wait();
-	avrt::ADConv<avrt::A4>().Wait();
-	avrt::ADConv<avrt::A5>().Wait();
-	avrt::ADConv<avrt::A6>().Wait();
-	data = avrt::ADConv<avrt::A0>().Read();
-	data = avrt::ADConv<avrt::A1>().Read();
-	data = avrt::ADConv<avrt::A2>().Read();
-	data = avrt::ADConv<avrt::A3>().Read();
-	data = avrt::ADConv<avrt::A4>().Read();
-	data = avrt::ADConv<avrt::A5>().Read();
-	data = avrt::ADConv<avrt::A6>().Read();
+	at::InitADConv<
+		0b00,	// REFS: Reference Selction Bits
+		0b0,	// ADLAR: ADC Left Adjust Result
+		0b0000,	// MUX: Analog Channel Selection Bits
+		0b0,	// ADEN: ADC Enable
+		0b0,	// ADSC: ADC Start Conversion
+		0b0,	// ADATE: ADC Auto Trigger Enable
+		0b0,	// ADIF: ADC Interrupt Flag
+		0b0,	// ADIE: ADC Interrupt Enable
+		0b000,	// ADPS: ADC Prescaler Select Bits
+		0b0,	// ACME: Analog Comparator Multiplexer Enable
+		0b000	// ADTS: ADC Auto Trigger Source
+	>();
+}
+
+void Func4()
+{
+	at::ADConv<at::A0>().Start();
+	at::ADConv<at::A1>().Start();
+	at::ADConv<at::A2>().Start();
+	at::ADConv<at::A3>().Start();
+	at::ADConv<at::A4>().Start();
+	at::ADConv<at::A5>().Start();
+	at::ADConv<at::A6>().Start();
+	at::ADConv<at::A0>().Wait();
+	at::ADConv<at::A1>().Wait();
+	at::ADConv<at::A2>().Wait();
+	at::ADConv<at::A3>().Wait();
+	at::ADConv<at::A4>().Wait();
+	at::ADConv<at::A5>().Wait();
+	at::ADConv<at::A6>().Wait();
+	data = at::ADConv<at::A0>().Read();
+	data = at::ADConv<at::A1>().Read();
+	data = at::ADConv<at::A2>().Read();
+	data = at::ADConv<at::A3>().Read();
+	data = at::ADConv<at::A4>().Read();
+	data = at::ADConv<at::A5>().Read();
+	data = at::ADConv<at::A6>().Read();
 }
 
 void loop()
@@ -518,4 +583,5 @@ void loop()
 	Func1();
 	Func2();
 	Func3();
+	Func4();
 }

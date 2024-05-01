@@ -11,6 +11,28 @@ constexpr uint8_t In		= 0;
 constexpr uint8_t Out		= 1;
 constexpr uint8_t InPullup	= 2;
 
+constexpr int D0 = 0;
+constexpr int D1 = 1;
+constexpr int D2 = 2;
+constexpr int D3 = 3;
+constexpr int D4 = 4;
+constexpr int D5 = 5;
+constexpr int D6 = 6;
+constexpr int D7 = 7;
+constexpr int D8 = 8;
+constexpr int D9 = 9;
+constexpr int D10 = 10;
+constexpr int D11 = 11;
+constexpr int D12 = 12;
+constexpr int D13 = 13;
+constexpr int D14 = 14;
+constexpr int D15 = 15;
+constexpr int D16 = 16;
+constexpr int D17 = 17;
+constexpr int D18 = 18;
+constexpr int D19 = 19;
+constexpr int D20 = 20;
+
 constexpr int A0 = 14;
 constexpr int A1 = 15;
 constexpr int A2 = 16;
@@ -221,7 +243,7 @@ public:
 			OCR2A = out;
 		}
 	}
-	void OutputPWMExact(uint8_t out) const {
+	void OutputFinePWM(uint8_t out) const {
 		if (out == 0) {
 			DisablePWM();
 			Output<pin, false>();
@@ -236,17 +258,17 @@ public:
 };
 
 template <
-	uint8_t dataREFS	= 0b00,		// REFS: Reference Selction Bits
-	uint8_t dataADLAR	= 0b0,		// ADLAR: ADC Left Adjust Result
-	uint8_t dataMUX		= 0b0000,	// MUX: Analog Channel Selection Bits
-	uint8_t dataADEN	= 0b0,		// ADEN: ADC Enable
-	uint8_t dataADSC	= 0b0,		// ADSC: ADC Start Conversion
-	uint8_t dataADATE	= 0b0,		// ADATE: ADC Auto Trigger Enable
-	uint8_t dataADIF	= 0b0,		// ADIF: ADC Interrupt Flag
-	uint8_t dataADIE	= 0b0,		// ADIE: ADC Interrupt Enable
-	uint8_t dataADPS	= 0b000,	// ADPS: ADC Prescaler Select Bits
-	uint8_t dataACME	= 0b0,		// ACME: Analog Comparator Multiplexer Enable
-	uint8_t dataADTS	= 0b000		// ADTS: ADC Auto Trigger Source
+	uint8_t dataREFS	= 0b01,		// REFS: Reference Selction Bits = AVcc with external capacitor at AREF pin 
+	uint8_t dataADLAR	= 0b0,		// ADLAR: ADC Left Adjust Result = false
+	uint8_t dataMUX		= 0b0000,	// MUX: Analog Channel Selection Bits = ADC0
+	uint8_t dataADEN	= 0b1,		// ADEN: ADC Enable = true
+	uint8_t dataADSC	= 0b0,		// ADSC: ADC Start Conversion = false
+	uint8_t dataADATE	= 0b0,		// ADATE: ADC Auto Trigger Enable = false
+	uint8_t dataADIF	= 0b0,		// ADIF: ADC Interrupt Flag = false
+	uint8_t dataADIE	= 0b0,		// ADIE: ADC Interrupt Enable = false
+	uint8_t dataADPS	= 0b111,	// ADPS: ADC Prescaler Select Bits = 1/128
+	uint8_t dataACME	= 0b0,		// ACME: Analog Comparator Multiplexer Enable = false
+	uint8_t dataADTS	= 0b000		// ADTS: ADC Auto Trigger Source = Free Running mode
 > static void InitADConv() {
 	ADMUX = (dataREFS << REFS0) | (dataADLAR << ADLAR) | (dataMUX << MUX0);
 	ADCSRA = (dataADEN << ADEN) | (dataADSC << ADSC) | (dataADATE << ADATE) |
