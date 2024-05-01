@@ -5,6 +5,7 @@ import(argopt)
 argopt.Parser {|p|
 	p.OptBool('help', 'h', 'print help')
 	p.OptBool('no-opt', 'n', 'no optimization')
+	p.OptBool('verbose', 'v', 'prints the executed command')
 	try {
 		[argv, opt] = p.Parse(sys.argv)
 	} catch {|e|
@@ -56,5 +57,6 @@ doc.Each {|record|
 	pathNameAsm = path.Join(dirNameBuild, path.BaseName(path.FileName(pathNameSrc)) + '.s')
 	argsMod.Add('-o', pathNameAsm)
 	os.Exec(cmd, argsMod*)
-	sys.cerr.Printf('%s was generated\n', pathNameAsm)
+	opt['verbose'] && Println(cmd + ' ' + argsMod.Join(' '))
+	sys.cerr.Printf('%s was generated%s\n', pathNameAsm, cond(noOptFlag, ' without optimization', ''))
 }
