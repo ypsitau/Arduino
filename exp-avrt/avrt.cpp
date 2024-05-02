@@ -17,7 +17,7 @@ void FormatterFlags::Initialize()
 	charPadding = ' ';
 }
 
-const char* FormatterFlags::FormatNumber_d(int32_t num, char* buff, size_t size) const
+const char* FormatterFlags::FormatNumber_d(int num, char* buff, size_t size) const
 {
 	char* p = buff + size - 1;
 	*p = '\0';
@@ -50,7 +50,7 @@ const char* FormatterFlags::FormatNumber_d(int32_t num, char* buff, size_t size)
 		}
 	} else {
 		int nCols = 0;
-		uint32_t numNeg = -num;
+		unsigned int numNeg = -num;
 		for ( ; numNeg != 0; numNeg /= 10, nCols++) {
 			p--;
 			*p = (numNeg % 10) + '0';
@@ -68,7 +68,7 @@ const char* FormatterFlags::FormatNumber_d(int32_t num, char* buff, size_t size)
 	return p;
 }
 
-const char* FormatterFlags::FormatNumber_u(uint32_t num, char* buff, size_t size) const
+const char* FormatterFlags::FormatNumber_u(unsigned int num, char* buff, size_t size) const
 {
 	char* p = buff + size - 1;
 	*p = '\0';
@@ -96,7 +96,7 @@ const char* FormatterFlags::FormatNumber_u(uint32_t num, char* buff, size_t size
 	return p;
 }
 
-const char* FormatterFlags::FormatNumber_b(uint32_t num, char* buff, size_t size) const
+const char* FormatterFlags::FormatNumber_b(unsigned int num, char* buff, size_t size) const
 {
 	char* p = buff + size - 1;
 	*p = '\0';
@@ -129,7 +129,7 @@ const char* FormatterFlags::FormatNumber_b(uint32_t num, char* buff, size_t size
 	return p;
 }
 
-const char* FormatterFlags::FormatNumber_o(uint32_t num, char* buff, size_t size) const
+const char* FormatterFlags::FormatNumber_o(unsigned int num, char* buff, size_t size) const
 {
 	char* p = buff + size - 1;
 	*p = '\0';
@@ -160,7 +160,7 @@ const char* FormatterFlags::FormatNumber_o(uint32_t num, char* buff, size_t size
 	return p;
 }
 
-const char* FormatterFlags::FormatNumber_x(uint32_t num, char* buff, size_t size) const
+const char* FormatterFlags::FormatNumber_x(unsigned int num, char* buff, size_t size) const
 {
 	char* p = buff + size - 1;
 	*p = '\0';
@@ -239,6 +239,7 @@ bool Serial::Printf(const char* format, ...)
 	FormatterFlags formatterFlags;
 	Stat stat = Stat::Start;
 	va_list ap;
+	va_start(ap, format);
 	for (const char* formatp = format; ; ) {
 		char ch = *formatp;
 		eatNextFlag = true;
@@ -302,33 +303,33 @@ bool Serial::Printf(const char* format, ...)
 			//} else if (ch == 'z') {
 			//	stat = Stat::FlagsAfterZ;
 			} else if (ch == 'd' || ch == 'i') {
-				int32_t num = va_arg(ap, int32_t);
+				int num = va_arg(ap, int);
 				const char* p = formatterFlags.FormatNumber_d(num, buff, sizeof(buff));
 				PutString(p);
 				stat = Stat::Start;
 			} else if (ch == 'u') {
-				uint32_t num = va_arg(ap, uint32_t);
+				unsigned int num = va_arg(ap, unsigned int);
 				const char* p = formatterFlags.FormatNumber_u(num, buff, sizeof(buff));
 				PutString(p);
 				stat = Stat::Start;
 			} else if (ch == 'b') {
-				uint32_t num = va_arg(ap, uint32_t);
+				unsigned int num = va_arg(ap, unsigned int);
 				const char* p = formatterFlags.FormatNumber_b(num, buff, sizeof(buff));
 				PutString(p);
 				stat = Stat::Start;
 			} else if (ch == 'o') {
-				uint32_t num = va_arg(ap, uint32_t);
+				unsigned int num = va_arg(ap, unsigned int);
 				const char* p = formatterFlags.FormatNumber_o(num, buff, sizeof(buff));
 				PutString(p);
 				stat = Stat::Start;
 			} else if (ch == 'x' || ch == 'X') {
-				uint32_t num = va_arg(ap, uint32_t);
+				unsigned int num = va_arg(ap, unsigned int);
 				formatterFlags.upperCaseFlag = (ch == 'X');
 				const char* p = formatterFlags.FormatNumber_x(num, buff, sizeof(buff));
 				PutString(p);
 				stat = Stat::Start;
 			} else if (ch == 'p') {
-				uint32_t num = va_arg(ap, uint32_t);
+				unsigned int num = va_arg(ap, unsigned int);
 				const char* p = formatterFlags.FormatNumber_x(num, buff, sizeof(buff));
 				PutString("0x");
 				PutString(p);
@@ -361,12 +362,14 @@ bool Serial::Printf(const char* format, ...)
 				PutChar(ch);
 				stat = Stat::Start;
 			} else {
+				va_end(ap);
 				return false;
 			}
 			break;
 		}
 		case Stat::FlagsAfterWhite: {
 			if (ch == ' ') {
+				va_end(ap);
 				return false;
 			} else {
 				eatNextFlag = false;
@@ -393,27 +396,28 @@ bool Serial::Printf(const char* format, ...)
 				PutString(buff);
 				stat = Stat::Start;
 			} else if (ch == 'u') {
-				uint32_t num = va_arg(ap, uint32_t);
+				unsigned int num = va_arg(ap, unsigned int);
 				formatterFlags.FormatNumber_u(num, buff, sizeof(buff));
 				PutString(buff);
 				stat = Stat::Start;
 			} else if (ch == 'b') {
-				uint32_t num = va_arg(ap, uint32_t);
+				unsigned int num = va_arg(ap, unsigned int);
 				formatterFlags.FormatNumber_b(num, buff, sizeof(buff));
 				PutString(buff);
 				stat = Stat::Start;
 			} else if (ch == 'o') {
-				uint32_t num = va_arg(ap, uint32_t);
+				unsigned int num = va_arg(ap, unsigned int);
 				formatterFlags.FormatNumber_o(num, buff, sizeof(buff));
 				PutString(buff);
 				stat = Stat::Start;
 			} else if (ch == 'x' || ch == 'X') {
-				uint32_t num = va_arg(ap, uint32_t);
+				unsigned int num = va_arg(ap, unsigned int);
 				formatterFlags.upperCaseFlag = (ch == 'X');
 				formatterFlags.FormatNumber_x(num, buff, sizeof(buff));
 				PutString(buff);
 				stat = Stat::Start;
 			} else {
+				va_end(ap);
 				return false;
 			}
 			break;
@@ -493,6 +497,7 @@ bool Serial::Printf(const char* format, ...)
 		}
 		if (eatNextFlag) formatp++;
 	}
+	va_end(ap);
 	return true;
 }
 

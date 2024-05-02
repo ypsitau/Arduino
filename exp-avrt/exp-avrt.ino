@@ -751,7 +751,8 @@ void setup()
 #endif
 	av::Serial0 serial;
 	serial.Open(av::Serial::BaudRate57600, av::Serial::CharSize8, av::Serial::ParityNone, av::Serial::StopBit1);
-	serial.Printf("abcdefg %d\n", 10);
+	serial.Printf("abcdefg %d\n", 1234);
+	serial.Printf("abcdefg %x\n", 1234);
 	for (int i = 0; i < 10; i++) {
 		serial.PutString("hoge\n");
 	}

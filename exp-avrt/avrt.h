@@ -403,11 +403,11 @@ public:
 	char charPadding;
 public:
 	void Initialize();
-	const char* FormatNumber_d(int32_t num, char* buff, size_t size) const;
-	const char* FormatNumber_u(uint32_t num, char* buff, size_t size) const;
-	const char* FormatNumber_b(uint32_t num, char* buff, size_t size) const;
-	const char* FormatNumber_o(uint32_t num, char* buff, size_t size) const;
-	const char* FormatNumber_x(uint32_t num, char* buff, size_t size) const;
+	const char* FormatNumber_d(int num, char* buff, size_t size) const;
+	const char* FormatNumber_u(unsigned int num, char* buff, size_t size) const;
+	const char* FormatNumber_b(unsigned int num, char* buff, size_t size) const;
+	const char* FormatNumber_o(unsigned int num, char* buff, size_t size) const;
+	const char* FormatNumber_x(unsigned int num, char* buff, size_t size) const;
 	const char* FormatNumber_e(double num, char* buff, size_t size) const;
 	const char* FormatNumber_f(double num, char* buff, size_t size) const;
 	const char* FormatNumber_g(double num, char* buff, size_t size) const;
