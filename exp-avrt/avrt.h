@@ -10,6 +10,8 @@
 
 namespace avrt {
 
+template<typename T> T ChooseMin(T a, T b) { return (a < b)? a : b; }
+
 using Logic = uint8_t;
 
 constexpr uint8_t Low		= 0;
@@ -382,6 +384,36 @@ public:
 };
 
 //------------------------------------------------------------------------------
+// FormatterFlags
+//------------------------------------------------------------------------------
+class FormatterFlags {
+public:
+	enum class PlusMode { None, Space, Plus };
+	struct Prec {
+		static const int Default	= -1;
+		static const int Null		= -2;
+	};
+public:
+	bool upperCaseFlag;
+	bool leftAlignFlag;
+	bool sharpFlag;
+	int fieldMinWidth;
+	int precision;
+	PlusMode plusMode;
+	char charPadding;
+public:
+	void Initialize();
+	const char* FormatNumber_d(int32_t num, char* buff, size_t size) const;
+	const char* FormatNumber_u(uint32_t num, char* buff, size_t size) const;
+	const char* FormatNumber_b(uint32_t num, char* buff, size_t size) const;
+	const char* FormatNumber_o(uint32_t num, char* buff, size_t size) const;
+	const char* FormatNumber_x(uint32_t num, char* buff, size_t size) const;
+	const char* FormatNumber_e(double num, char* buff, size_t size) const;
+	const char* FormatNumber_f(double num, char* buff, size_t size) const;
+	const char* FormatNumber_g(double num, char* buff, size_t size) const;
+};
+
+//------------------------------------------------------------------------------
 // Serial
 //------------------------------------------------------------------------------
 class Serial {
@@ -415,13 +447,14 @@ public:
 public:
 	Serial() {}
 	void Write(const uint8_t* buff, int len);
+	void PutChar(char ch) { PutData(static_cast<uint8_t>(ch)); }
 	void Print(char* str);
 	void Printf(const char* format, ...);
 public:
 	virtual void Open(BaudRate baudRate, uint8_t charSize, uint8_t stopBit, uint8_t parity) = 0;
 	virtual void Close() = 0;
-	virtual void Put(uint8_t data) = 0;
-	virtual uint8_t Get() = 0;
+	virtual void PutData(uint8_t data) = 0;
+	virtual uint8_t GetData() = 0;
 public:
 	static uint16_t LookupUBRR(BaudRate baudRate, bool doubleSpeedFlag);
 };
@@ -434,8 +467,8 @@ public:
 	Serial0() {}
 	virtual void Open(BaudRate baudRate, uint8_t charSize, uint8_t stopBit, uint8_t parity);
 	virtual void Close();
-	virtual void Put(uint8_t data);
-	virtual uint8_t Get();
+	virtual void PutData(uint8_t data);
+	virtual uint8_t GetData();
 };
 
 };
