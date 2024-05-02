@@ -2,7 +2,8 @@
 
 namespace av = avrt;
 
-volatile uint16_t data = 0;
+volatile uint8_t data8 = 0;
+volatile uint16_t data16 = 0;
 volatile av::Signal sig = av::Low;
 
 constexpr av::Port<av::D0> portD0;
@@ -37,6 +38,7 @@ constexpr av::Port<av::A6> portA6;
 
 void CompileTest_InitPort()
 {
+	av::InitPort<>();
 	av::InitPort<
 		av::In,			// D0: PD0(RXD/PCINT16)
 		av::In,			// D1: PD1(TXD/PCINT17)
@@ -106,11 +108,36 @@ void CompileTest_InitPort()
 		av::InPullup,	// D19: PC5(ADC5/SCL/PCINT13)
 		av::InPullup	// D20: PC6(RESET/PCINT14)
 	>();
+	av::InitPort<
+		av::OutHigh,	// D0: PD0(RXD/PCINT16)
+		av::OutHigh,	// D1: PD1(TXD/PCINT17)
+		av::OutHigh,	// D2: PD2(INT0/PCINT18)
+		av::OutHigh,	// D3: PD3(INT1/OC2B/PCINT19)
+		av::OutHigh,	// D4: PD4(XCK/T0/PCINT20)
+		av::OutHigh,	// D5: PD5(T1/OC0B/PCINT21)
+		av::OutHigh,	// D6: PD6(AIN0/OC0A/PCINT22)
+		av::OutHigh,	// D7: PD7(AIN1/PCINT23)
+		av::OutHigh,	// D8: PB0(ICP1/CLKO/PCINT0)
+		av::OutHigh,	// D9: PB1(OC1A/PCINT1)
+		av::OutHigh,	// D10: PB2(SS/OC1B/PCINT2)
+		av::OutHigh,	// D11: PB3(MOSI/OC2A/PCINT3)
+		av::OutHigh,	// D12: PB4(MISO/PCINT4)
+		av::OutHigh,	// D13: PB5(SCK/PCINT5)
+		av::OutHigh,	// D14: PC0(ADC0/PCINT8)
+		av::OutHigh,	// D15: PC1(ADC1/PCINT9)
+		av::OutHigh,	// D16: PC2(ADC2/PCINT10)
+		av::OutHigh,	// D17: PC3(ADC3/PCINT11)
+		av::OutHigh,	// D18: PC4(ADC4/SDA/PCINT12)
+		av::OutHigh,	// D19: PC5(ADC5/SCL/PCINT13)
+		av::OutHigh		// D20: PC6(RESET/PCINT14)
+	>();
 }
 
-void CompileTest_InitADConv()
+void CompileTest_InitADC()
 {
-	av::InitADConv<
+	av::InitADC<>();
+#if 0
+	av::InitADC<
 		0b00,	// REFS: Reference Selction Bits
 		0b0,	// ADLAR: ADC Left Adjust Result
 		0b0000,	// MUX: Analog Channel Selection Bits
@@ -123,6 +150,7 @@ void CompileTest_InitADConv()
 		0b0,	// ACME: Analog Comparator Multiplexer Enable
 		0b000	// ADTS: ADC Auto Trigger Source
 	>();
+#endif
 }
 
 void CompileTest_Port_SetMode()
@@ -431,6 +459,52 @@ void CompileTest_Port_InputDigital()
 	sig = av::Port<av::D20>().InputDigital();
 }
 
+void CompileTest_Port_ProbeDigital()
+{
+	data8 = portD0.ProbeDigital();
+	data8 = portD1.ProbeDigital();
+	data8 = portD2.ProbeDigital();
+	data8 = portD3.ProbeDigital();
+	data8 = portD4.ProbeDigital();
+	data8 = portD5.ProbeDigital();
+	data8 = portD6.ProbeDigital();
+	data8 = portD7.ProbeDigital();
+	data8 = portD8.ProbeDigital();
+	data8 = portD9.ProbeDigital();
+	data8 = portD10.ProbeDigital();
+	data8 = portD11.ProbeDigital();
+	data8 = portD12.ProbeDigital();
+	data8 = portD13.ProbeDigital();
+	data8 = portD14.ProbeDigital();
+	data8 = portD15.ProbeDigital();
+	data8 = portD16.ProbeDigital();
+	data8 = portD17.ProbeDigital();
+	data8 = portD18.ProbeDigital();
+	data8 = portD19.ProbeDigital();
+	data8 = portD20.ProbeDigital();
+	data8 = av::Port<av::D0>().ProbeDigital();
+	data8 = av::Port<av::D1>().ProbeDigital();
+	data8 = av::Port<av::D2>().ProbeDigital();
+	data8 = av::Port<av::D3>().ProbeDigital();
+	data8 = av::Port<av::D4>().ProbeDigital();
+	data8 = av::Port<av::D5>().ProbeDigital();
+	data8 = av::Port<av::D6>().ProbeDigital();
+	data8 = av::Port<av::D7>().ProbeDigital();
+	data8 = av::Port<av::D8>().ProbeDigital();
+	data8 = av::Port<av::D9>().ProbeDigital();
+	data8 = av::Port<av::D10>().ProbeDigital();
+	data8 = av::Port<av::D11>().ProbeDigital();
+	data8 = av::Port<av::D12>().ProbeDigital();
+	data8 = av::Port<av::D13>().ProbeDigital();
+	data8 = av::Port<av::D14>().ProbeDigital();
+	data8 = av::Port<av::D15>().ProbeDigital();
+	data8 = av::Port<av::D16>().ProbeDigital();
+	data8 = av::Port<av::D17>().ProbeDigital();
+	data8 = av::Port<av::D18>().ProbeDigital();
+	data8 = av::Port<av::D19>().ProbeDigital();
+	data8 = av::Port<av::D20>().ProbeDigital();
+}
+
 void CompileTest_Port_EnablePWM()
 {
 	portD0.EnablePWM();
@@ -525,48 +599,94 @@ void CompileTest_Port_DisablePWM()
 
 void CompileTest_Port_OutputPWM()
 {
-	portD0.OutputPWM(128);
-	portD1.OutputPWM(128);
-	portD2.OutputPWM(128);
-	portD3.OutputPWM(128);
-	portD4.OutputPWM(128);
-	portD5.OutputPWM(128);
-	portD6.OutputPWM(128);
-	portD7.OutputPWM(128);
-	portD8.OutputPWM(128);
-	portD9.OutputPWM(128);
-	portD10.OutputPWM(128);
-	portD11.OutputPWM(128);
-	portD12.OutputPWM(128);
-	portD13.OutputPWM(128);
-	portD14.OutputPWM(128);
-	portD15.OutputPWM(128);
-	portD16.OutputPWM(128);
-	portD17.OutputPWM(128);
-	portD18.OutputPWM(128);
-	portD19.OutputPWM(128);
-	portD20.OutputPWM(128);
-	av::Port<av::D0>().OutputPWM(128);
-	av::Port<av::D1>().OutputPWM(128);
-	av::Port<av::D2>().OutputPWM(128);
-	av::Port<av::D3>().OutputPWM(128);
-	av::Port<av::D4>().OutputPWM(128);
-	av::Port<av::D5>().OutputPWM(128);
-	av::Port<av::D6>().OutputPWM(128);
-	av::Port<av::D7>().OutputPWM(128);
-	av::Port<av::D8>().OutputPWM(128);
-	av::Port<av::D9>().OutputPWM(128);
-	av::Port<av::D10>().OutputPWM(128);
-	av::Port<av::D11>().OutputPWM(128);
-	av::Port<av::D12>().OutputPWM(128);
-	av::Port<av::D13>().OutputPWM(128);
-	av::Port<av::D14>().OutputPWM(128);
-	av::Port<av::D15>().OutputPWM(128);
-	av::Port<av::D16>().OutputPWM(128);
-	av::Port<av::D17>().OutputPWM(128);
-	av::Port<av::D18>().OutputPWM(128);
-	av::Port<av::D19>().OutputPWM(128);
-	av::Port<av::D20>().OutputPWM(128);
+	portD0.OutputPWM(data8);
+	portD1.OutputPWM(data8);
+	portD2.OutputPWM(data8);
+	portD3.OutputPWM(data8);
+	portD4.OutputPWM(data8);
+	portD5.OutputPWM(data8);
+	portD6.OutputPWM(data8);
+	portD7.OutputPWM(data8);
+	portD8.OutputPWM(data8);
+	portD9.OutputPWM(data8);
+	portD10.OutputPWM(data8);
+	portD11.OutputPWM(data8);
+	portD12.OutputPWM(data8);
+	portD13.OutputPWM(data8);
+	portD14.OutputPWM(data8);
+	portD15.OutputPWM(data8);
+	portD16.OutputPWM(data8);
+	portD17.OutputPWM(data8);
+	portD18.OutputPWM(data8);
+	portD19.OutputPWM(data8);
+	portD20.OutputPWM(data8);
+	av::Port<av::D0>().OutputPWM(data8);
+	av::Port<av::D1>().OutputPWM(data8);
+	av::Port<av::D2>().OutputPWM(data8);
+	av::Port<av::D3>().OutputPWM(data8);
+	av::Port<av::D4>().OutputPWM(data8);
+	av::Port<av::D5>().OutputPWM(data8);
+	av::Port<av::D6>().OutputPWM(data8);
+	av::Port<av::D7>().OutputPWM(data8);
+	av::Port<av::D8>().OutputPWM(data8);
+	av::Port<av::D9>().OutputPWM(data8);
+	av::Port<av::D10>().OutputPWM(data8);
+	av::Port<av::D11>().OutputPWM(data8);
+	av::Port<av::D12>().OutputPWM(data8);
+	av::Port<av::D13>().OutputPWM(data8);
+	av::Port<av::D14>().OutputPWM(data8);
+	av::Port<av::D15>().OutputPWM(data8);
+	av::Port<av::D16>().OutputPWM(data8);
+	av::Port<av::D17>().OutputPWM(data8);
+	av::Port<av::D18>().OutputPWM(data8);
+	av::Port<av::D19>().OutputPWM(data8);
+	av::Port<av::D20>().OutputPWM(data8);
+}
+
+void CompileTest_Port_OutputFinePWM()
+{
+	portD0.OutputFinePWM(data8);
+	portD1.OutputFinePWM(data8);
+	portD2.OutputFinePWM(data8);
+	portD3.OutputFinePWM(data8);
+	portD4.OutputFinePWM(data8);
+	portD5.OutputFinePWM(data8);
+	portD6.OutputFinePWM(data8);
+	portD7.OutputFinePWM(data8);
+	portD8.OutputFinePWM(data8);
+	portD9.OutputFinePWM(data8);
+	portD10.OutputFinePWM(data8);
+	portD11.OutputFinePWM(data8);
+	portD12.OutputFinePWM(data8);
+	portD13.OutputFinePWM(data8);
+	portD14.OutputFinePWM(data8);
+	portD15.OutputFinePWM(data8);
+	portD16.OutputFinePWM(data8);
+	portD17.OutputFinePWM(data8);
+	portD18.OutputFinePWM(data8);
+	portD19.OutputFinePWM(data8);
+	portD20.OutputFinePWM(data8);
+	av::Port<av::D0>().OutputFinePWM(data8);
+	av::Port<av::D1>().OutputFinePWM(data8);
+	av::Port<av::D2>().OutputFinePWM(data8);
+	av::Port<av::D3>().OutputFinePWM(data8);
+	av::Port<av::D4>().OutputFinePWM(data8);
+	av::Port<av::D5>().OutputFinePWM(data8);
+	av::Port<av::D6>().OutputFinePWM(data8);
+	av::Port<av::D7>().OutputFinePWM(data8);
+	av::Port<av::D8>().OutputFinePWM(data8);
+	av::Port<av::D9>().OutputFinePWM(data8);
+	av::Port<av::D10>().OutputFinePWM(data8);
+	av::Port<av::D11>().OutputFinePWM(data8);
+	av::Port<av::D12>().OutputFinePWM(data8);
+	av::Port<av::D13>().OutputFinePWM(data8);
+	av::Port<av::D14>().OutputFinePWM(data8);
+	av::Port<av::D15>().OutputFinePWM(data8);
+	av::Port<av::D16>().OutputFinePWM(data8);
+	av::Port<av::D17>().OutputFinePWM(data8);
+	av::Port<av::D18>().OutputFinePWM(data8);
+	av::Port<av::D19>().OutputFinePWM(data8);
+	av::Port<av::D20>().OutputFinePWM(data8);
 }
 
 void CompileTest_Port_StartADC()
@@ -593,32 +713,34 @@ void CompileTest_Port_WaitADC()
 
 void CompileTest_Port_InputAnalog()
 {
-	data = portA0.InputAnalog();
-	data = portA1.InputAnalog();
-	data = portA2.InputAnalog();
-	data = portA3.InputAnalog();
-	data = portA4.InputAnalog();
-	data = portA5.InputAnalog();
-	data = portA6.InputAnalog();
-	data = av::Port<av::A0>().InputAnalog();
-	data = av::Port<av::A1>().InputAnalog();
-	data = av::Port<av::A2>().InputAnalog();
-	data = av::Port<av::A3>().InputAnalog();
-	data = av::Port<av::A4>().InputAnalog();
-	data = av::Port<av::A5>().InputAnalog();
-	data = av::Port<av::A6>().InputAnalog();
+	data16 = portA0.InputAnalog();
+	data16 = portA1.InputAnalog();
+	data16 = portA2.InputAnalog();
+	data16 = portA3.InputAnalog();
+	data16 = portA4.InputAnalog();
+	data16 = portA5.InputAnalog();
+	data16 = portA6.InputAnalog();
+	data16 = av::Port<av::A0>().InputAnalog();
+	data16 = av::Port<av::A1>().InputAnalog();
+	data16 = av::Port<av::A2>().InputAnalog();
+	data16 = av::Port<av::A3>().InputAnalog();
+	data16 = av::Port<av::A4>().InputAnalog();
+	data16 = av::Port<av::A5>().InputAnalog();
+	data16 = av::Port<av::A6>().InputAnalog();
 }
 
 void setup()
 {
 	CompileTest_InitPort();
-	CompileTest_InitADConv();
+	CompileTest_InitADC();
 	CompileTest_Port_SetMode();
 	CompileTest_Port_OutputDigital();
 	CompileTest_Port_InputDigital();
+	CompileTest_Port_ProbeDigital();
 	CompileTest_Port_EnablePWM();
 	CompileTest_Port_DisablePWM();
 	CompileTest_Port_OutputPWM();
+	CompileTest_Port_OutputFinePWM();
 	CompileTest_Port_StartADC();
 	CompileTest_Port_WaitADC();
 	CompileTest_Port_InputAnalog();

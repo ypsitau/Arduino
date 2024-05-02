@@ -15,6 +15,7 @@ constexpr uint8_t High		= 1;
 constexpr uint8_t In		= 0;
 constexpr uint8_t Out		= 1;
 constexpr uint8_t InPullup	= 2;
+constexpr uint8_t OutHigh	= 3;
 
 constexpr int D0 = 0;
 constexpr int D1 = 1;
@@ -67,7 +68,7 @@ template<
 	uint8_t mode17	= In,	// D17: PC3(ADC3/PCINT11)
 	uint8_t mode18	= In,	// D18: PC4(ADC4/SDA/PCINT12)
 	uint8_t mode19	= In,	// D19: PC5(ADC5/SCL/PCINT13)
-	uint8_t mode20	= In		// D20: PC6(RESET/PCINT14)
+	uint8_t mode20	= In	// D20: PC6(RESET/PCINT14)
 > void InitPort() {
 	DDRD = ((mode0 & 1) << 0) | ((mode1 & 1) << 1) | ((mode2 & 1) << 2) | ((mode3 & 1) << 3) |
 		((mode4 & 1) << 4) | ((mode5 & 1) << 5) | ((mode6 & 1) << 6) | ((mode7 & 1) << 7);
@@ -84,22 +85,36 @@ template<
 }
 
 template <
+	uint8_t dataADPS	= 0b111,	// ADPS: ADC Prescaler Select Bits = 1/128
 	uint8_t dataREFS	= 0b01,		// REFS: Reference Selction Bits = AVcc with external capacitor at AREF pin 
-	uint8_t dataADLAR	= 0b0,		// ADLAR: ADC Left Adjust Result = false
-	uint8_t dataMUX		= 0b0000,	// MUX: Analog Channel Selection Bits = ADC0
 	uint8_t dataADEN	= 0b1,		// ADEN: ADC Enable = true
+	uint8_t dataMUX		= 0b0000,	// MUX: Analog Channel Selection Bits = ADC0
 	uint8_t dataADSC	= 0b0,		// ADSC: ADC Start Conversion = false
 	uint8_t dataADATE	= 0b0,		// ADATE: ADC Auto Trigger Enable = false
 	uint8_t dataADIF	= 0b0,		// ADIF: ADC Interrupt Flag = false
 	uint8_t dataADIE	= 0b0,		// ADIE: ADC Interrupt Enable = false
-	uint8_t dataADPS	= 0b111,	// ADPS: ADC Prescaler Select Bits = 1/128
-	uint8_t dataACME	= 0b0,		// ACME: Analog Comparator Multiplexer Enable = false
+	uint8_t dataADLAR	= 0b0,		// ADLAR: ADC Left Adjust Result = false
 	uint8_t dataADTS	= 0b000		// ADTS: ADC Auto Trigger Source = Free Running mode
-> static void InitADConv() {
+> static void InitADC() {
 	ADMUX = (dataREFS << REFS0) | (dataADLAR << ADLAR) | (dataMUX << MUX0);
 	ADCSRA = (dataADEN << ADEN) | (dataADSC << ADSC) | (dataADATE << ADATE) |
 		(dataADIF << ADIF) | (dataADIE << ADIE) | (dataADPS << ADPS0);
-	ADCSRB = (dataACME << ACME) | (dataADTS << ADTS0);
+	ADCSRB = ADCSRB & ~(0b111 << ADTS0) | (dataADTS << ADTS0);
+}
+
+template <
+	uint8_t dataACME	= 0b0,		// ACME: Analog Comparator Multiplexer Enable = false
+	uint8_t dataACD		= 0b0,		// ACD: Analog Comparator Disable = false
+	uint8_t dataACBG	= 0b0,		// ACBG: Analog Comparator Bandgap Select = AIN0 is applied to the positive input
+	uint8_t dataACO		= 0b0,		// ACO: Analog Comparator Output (Read only)
+	uint8_t dataACI		= 0b0,		// ACI: Analog Comparator Interrupt Flag = false
+	uint8_t dataACIE	= 0b0,		// ACIE: Analog Comparator Interrupt Enable = false
+	uint8_t dataACIC	= 0b0,		// ACIC: Analog Comparator Input Capture Enable = false
+	uint8_t dataACIS	= 0b00		// ACIS: Analog Comparator Interrupt Mode Select = Comparator Interrupt on Output Toggle
+> static void InitAnalogComparator() {
+	ADCSRB = ADCSRB & ~(0b1 << ACME) | (dataACME << ACME);
+	ACSR = (dataACD << ACD) | (dataACBG << ACBG) | (dataACO << ACO) | (dataACI << ACI) |
+		(dataACIE << ACIE) | (dataACIC << ACIC) | (dataACIS << ACIS0);
 }
 
 template<int pin_> class Port {
@@ -198,7 +213,7 @@ public:
 		} else if (pin == 20)   { if (sig) { PORTC |= (1 << 6); } else { PORTC &= ~(1 << 6); }
 		}
 	}
-	bool InputDigital() const {
+	Signal InputDigital() const {
 		if constexpr (pin == 0) return (PIND >> 0) & 1;
 		else if (pin == 1)      return (PIND >> 1) & 1;
 		else if (pin == 2)      return (PIND >> 2) & 1;
@@ -221,6 +236,30 @@ public:
 		else if (pin == 19)     return (PINC >> 5) & 1;
 		else if (pin == 20)     return (PINC >> 6) & 1;
 		return Low;
+	}
+	uint8_t ProbeDigital() const {
+		if constexpr (pin == 0) return PIND & (1 << 0);
+		else if (pin == 1)      return PIND & (1 << 1);
+		else if (pin == 2)      return PIND & (1 << 2);
+		else if (pin == 3)      return PIND & (1 << 3);
+		else if (pin == 4)      return PIND & (1 << 4);
+		else if (pin == 5)      return PIND & (1 << 5);
+		else if (pin == 6)      return PIND & (1 << 6);
+		else if (pin == 7)      return PIND & (1 << 7);
+		else if (pin == 8)      return PINB & (1 << 0);
+		else if (pin == 9)      return PINB & (1 << 1);
+		else if (pin == 10)     return PINB & (1 << 2);
+		else if (pin == 11)     return PINB & (1 << 3);
+		else if (pin == 12)     return PINB & (1 << 4);
+		else if (pin == 13)     return PINB & (1 << 5);
+		else if (pin == 14)     return PINC & (1 << 0);
+		else if (pin == 15)     return PINC & (1 << 1);
+		else if (pin == 16)     return PINC & (1 << 2);
+		else if (pin == 17)     return PINC & (1 << 3);
+		else if (pin == 18)     return PINC & (1 << 4);
+		else if (pin == 19)     return PINC & (1 << 5);
+		else if (pin == 20)     return PINC & (1 << 6);
+		return 0x00;
 	}
 	void EnablePWM() const {
 		if constexpr (pin == 3) { // PD3 is controlled by OC2B
@@ -252,31 +291,31 @@ public:
 			TCCR2A &= ~(1 << COM2A1);
 		}
 	}
-	void OutputPWM(uint8_t out) const {
+	void OutputPWM(uint8_t value) const {
 		if constexpr (pin == 3) { // PD3 is controlled by OC2B
-			OCR2B = out;
+			OCR2B = value;
 		} else if (pin == 5) { // PD5 is controlled by OC0B
-			OCR0B = out;
+			OCR0B = value;
 		} else if (pin == 6) { // PD6 is controlled by OC0A
-			OCR0A = out;
+			OCR0A = value;
 		} else if (pin == 9) { // PB1 is controlled by OC1A
-			OCR1A = out;
+			OCR1A = value;
 		} else if (pin == 10) { // PB2 is controlled by OC1B
-			OCR1B = out;
+			OCR1B = value;
 		} else if (pin == 11) { // PB3 is controlled by OC2A
-			OCR2A = out;
+			OCR2A = value;
 		}
 	}
-	void OutputFinePWM(uint8_t out) const {
-		if (out == 0) {
+	void OutputFinePWM(uint8_t value) const {
+		if (value == 0) {
 			DisablePWM();
-			OutputDigital<pin, false>();
-		} else if (out == 255) {
+			OutputDigital<Low>();
+		} else if (value == 255) {
 			DisablePWM();
-			OutputDigital<true>();
+			OutputDigital<High>();
 		} else {
 			EnablePWM();
-			OutputPWM(out);
+			OutputPWM(value);
 		}
 	}
 	static uint8_t PinToADCChannel(int pin) { return static_cast<uint8_t>(pin - A0); }
