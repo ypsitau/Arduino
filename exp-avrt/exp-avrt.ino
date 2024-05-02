@@ -757,6 +757,7 @@ void setup()
 	serial.Printf("%%d -1234      '%d'\n", -1234);
 	serial.Printf("%%d 32767      '%d'\n", 32767);
 	serial.Printf("%%d -32768     '%d'\n", -32768);
+#if 0
 	serial.Printf("%%d 32768      '%d'\n", 32768);
 	serial.Printf("%%d -32769     '%d'\n", -32769);
 	serial.Printf("%%8d 1234      '%8d'\n", 1234);
@@ -824,6 +825,7 @@ void setup()
 	serial.Printf("%%010o -1234     '%010o'\n", -1234);
 	serial.Printf("%%-010o 1234     '%-010o'\n", 1234);
 	serial.Printf("%%-010o -1234    '%-010o'\n", -1234);
+#endif
 	// %x specifier
 	serial.Print("--------\n");
 #if 0

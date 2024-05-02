@@ -1,4 +1,3 @@
-#include <stdarg.h>
 #include "avrt.h"
 
 namespace avrt {
@@ -244,6 +243,15 @@ void Serial::PutAlignedString(const FormatterFlags& formatterFlags, const char* 
 
 bool Serial::Printf(const char* format, ...)
 {
+	va_list ap;
+	va_start(ap, format);
+	bool rtn = PrintfV(format, ap);
+	va_end(ap);
+	return rtn;
+}
+
+bool Serial::PrintfV(const char* format, va_list ap)
+{
 	enum class Stat {
 		Start, FlagsPre, Flags,
 		FlagsAfterWhite,
@@ -254,8 +262,6 @@ bool Serial::Printf(const char* format, ...)
 	bool eatNextFlag;
 	FormatterFlags formatterFlags;
 	Stat stat = Stat::Start;
-	va_list ap;
-	va_start(ap, format);
 	for (const char* formatp = format; ; ) {
 		char ch = *formatp;
 		eatNextFlag = true;
@@ -372,14 +378,12 @@ bool Serial::Printf(const char* format, ...)
 				PutChar(ch);
 				stat = Stat::Start;
 			} else {
-				va_end(ap);
 				return false;
 			}
 			break;
 		}
 		case Stat::FlagsAfterWhite: {
 			if (ch == ' ') {
-				va_end(ap);
 				return false;
 			} else {
 				eatNextFlag = false;
@@ -427,7 +431,6 @@ bool Serial::Printf(const char* format, ...)
 				Print(buff);
 				stat = Stat::Start;
 			} else {
-				va_end(ap);
 				return false;
 			}
 			break;
@@ -507,7 +510,6 @@ bool Serial::Printf(const char* format, ...)
 		}
 		if (eatNextFlag) formatp++;
 	}
-	va_end(ap);
 	return true;
 }
 

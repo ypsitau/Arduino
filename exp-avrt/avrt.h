@@ -4,6 +4,7 @@
 //------------------------------------------------------------------------------
 #ifndef AVRT_H
 #define AVRT_H
+#include <stdarg.h>
 #include <avr/pgmspace.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -413,6 +414,11 @@ public:
 	const char* FormatNumber_g(double num, char* buff, size_t size) const;
 };
 
+class StringPtr {
+public:
+	virtual char Next() = 0;
+};
+
 //------------------------------------------------------------------------------
 // Serial
 //------------------------------------------------------------------------------
@@ -451,6 +457,7 @@ public:
 	void Print(char* str);
 	void PutAlignedString(const FormatterFlags& formatterFlags, const char* str, int cntMax = -1);
 	bool Printf(const char* format, ...);
+	bool PrintfV(const char* format, va_list ap);
 public:
 	virtual void Open(BaudRate baudRate, uint8_t charSize, uint8_t stopBit, uint8_t parity) = 0;
 	virtual void Close() = 0;
