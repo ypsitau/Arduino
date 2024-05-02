@@ -4,6 +4,9 @@
 //------------------------------------------------------------------------------
 #ifndef AVRT_H
 #define AVRT_H
+#include <avr/pgmspace.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
 
 namespace avrt {
 
@@ -47,6 +50,9 @@ constexpr int A4 = 18;
 constexpr int A5 = 19;
 constexpr int A6 = 20;
 
+//------------------------------------------------------------------------------
+// InitPort
+//------------------------------------------------------------------------------
 template<
 	uint8_t mode0	= In,	// D0: PD0(RXD/PCINT16)
 	uint8_t mode1	= In,	// D1: PD1(TXD/PCINT17)
@@ -84,6 +90,9 @@ template<
 		((mode18 >> 1) << 4) | ((mode19 >> 1) << 5) | ((mode20 >> 1) << 6);
 }
 
+//------------------------------------------------------------------------------
+// InitADC
+//------------------------------------------------------------------------------
 template <
 	uint8_t dataADATE	= 0b0,		// ADATE: ADC Auto Trigger Enable = false .. Single conversion triggered by ADSC
 	uint8_t dataADTS	= 0b000,	// ADTS: ADC Auto Trigger Source = Free Running mode
@@ -102,6 +111,9 @@ template <
 	ADCSRB = ADCSRB & ~(0b111 << ADTS0) | (dataADTS << ADTS0);
 }
 
+//------------------------------------------------------------------------------
+// InitADC_8bit
+//------------------------------------------------------------------------------
 template <
 	uint8_t dataADATE	= 0b0,		// ADATE: ADC Auto Trigger Enable = false .. Single conversion triggered by ADSC
 	uint8_t dataADTS	= 0b000,	// ADTS: ADC Auto Trigger Source = Free Running mode
@@ -120,6 +132,9 @@ template <
 	ADCSRB = ADCSRB & ~(0b111 << ADTS0) | (dataADTS << ADTS0);
 }
 
+//------------------------------------------------------------------------------
+// InitAnalogComparator
+//------------------------------------------------------------------------------
 template <
 	uint8_t dataACME	= 0b0,		// ACME: Analog Comparator Multiplexer Enable = false
 	uint8_t dataACD		= 0b0,		// ACD: Analog Comparator Disable = false
@@ -138,6 +153,9 @@ template <
 	DIDR1 = (dataAIN1D << AIN1D) | (dataAIN0D << AIN0D);
 }
 
+//------------------------------------------------------------------------------
+// Port
+//------------------------------------------------------------------------------
 template<int pin_> class Port {
 public:
 	constexpr static int pin = pin_;
@@ -361,6 +379,31 @@ public:
 		while (ADCSRA & (0b1 << ADSC)) ;
 		return ADCH;
 	}
+};
+
+//------------------------------------------------------------------------------
+// Serial
+//------------------------------------------------------------------------------
+class Serial {
+public:
+	virtual void Open(int baudRate) = 0;
+	virtual void Close() = 0;
+	virtual void Put(uint8_t data) = 0;
+	virtual void Write(const char* buff, int len) = 0;
+	void Printf(const char* format, ...);
+public:
+	static uint16_t LookupUBRR(int baudRate, bool doubleSpeedFlag);
+};
+
+//------------------------------------------------------------------------------
+// Serial0
+//------------------------------------------------------------------------------
+class Serial0 : public Serial {
+public:
+	virtual void Open(int baudRate);
+	virtual void Close();
+	virtual void Put(uint8_t data);
+	virtual void Write(const char* buff, int len);
 };
 
 };
