@@ -85,17 +85,35 @@ template<
 }
 
 template <
-	uint8_t dataADPS	= 0b111,	// ADPS: ADC Prescaler Select Bits = 1/128
+	uint8_t dataADATE	= 0b0,		// ADATE: ADC Auto Trigger Enable = false .. Single conversion triggered by ADSC
+	uint8_t dataADTS	= 0b000,	// ADTS: ADC Auto Trigger Source = Free Running mode
+	uint8_t dataADIE	= 0b0,		// ADIE: ADC Interrupt Enable = false
 	uint8_t dataREFS	= 0b01,		// REFS: Reference Selction Bits = AVcc with external capacitor at AREF pin 
-	uint8_t dataADEN	= 0b1,		// ADEN: ADC Enable = true
+	uint8_t dataADPS	= 0b111,	// ADPS: ADC Prescaler Select Bits = 1/128
+	uint8_t dataADLAR	= 0b0,		// ADLAR: ADC Left Adjust Result = false
 	uint8_t dataMUX		= 0b0000,	// MUX: Analog Channel Selection Bits = ADC0
 	uint8_t dataADSC	= 0b0,		// ADSC: ADC Start Conversion = false
-	uint8_t dataADATE	= 0b0,		// ADATE: ADC Auto Trigger Enable = false
-	uint8_t dataADIF	= 0b0,		// ADIF: ADC Interrupt Flag = false
-	uint8_t dataADIE	= 0b0,		// ADIE: ADC Interrupt Enable = false
-	uint8_t dataADLAR	= 0b0,		// ADLAR: ADC Left Adjust Result = false
-	uint8_t dataADTS	= 0b000		// ADTS: ADC Auto Trigger Source = Free Running mode
+	uint8_t dataADIF	= 0b1,		// ADIF: ADC Interrupt Flag .. clear by setting one
+	uint8_t dataADEN	= 0b1		// ADEN: ADC Enable = true
 > static void InitADC() {
+	ADMUX = (dataREFS << REFS0) | (dataADLAR << ADLAR) | (dataMUX << MUX0);
+	ADCSRA = (dataADEN << ADEN) | (dataADSC << ADSC) | (dataADATE << ADATE) |
+		(dataADIF << ADIF) | (dataADIE << ADIE) | (dataADPS << ADPS0);
+	ADCSRB = ADCSRB & ~(0b111 << ADTS0) | (dataADTS << ADTS0);
+}
+
+template <
+	uint8_t dataADATE	= 0b0,		// ADATE: ADC Auto Trigger Enable = false .. Single conversion triggered by ADSC
+	uint8_t dataADTS	= 0b000,	// ADTS: ADC Auto Trigger Source = Free Running mode
+	uint8_t dataADIE	= 0b0,		// ADIE: ADC Interrupt Enable = false
+	uint8_t dataREFS	= 0b01,		// REFS: Reference Selction Bits = AVcc with external capacitor at AREF pin 
+	uint8_t dataADPS	= 0b111,	// ADPS: ADC Prescaler Select Bits = 1/128
+	uint8_t dataADLAR	= 0b1,		// ADLAR: ADC Left Adjust Result = true
+	uint8_t dataMUX		= 0b0000,	// MUX: Analog Channel Selection Bits = ADC0
+	uint8_t dataADSC	= 0b0,		// ADSC: ADC Start Conversion = false
+	uint8_t dataADIF	= 0b1,		// ADIF: ADC Interrupt Flag .. clear by setting one
+	uint8_t dataADEN	= 0b1		// ADEN: ADC Enable = true
+> static void InitADC_8bit() {
 	ADMUX = (dataREFS << REFS0) | (dataADLAR << ADLAR) | (dataMUX << MUX0);
 	ADCSRA = (dataADEN << ADEN) | (dataADSC << ADSC) | (dataADATE << ADATE) |
 		(dataADIF << ADIF) | (dataADIE << ADIE) | (dataADPS << ADPS0);
@@ -330,11 +348,18 @@ public:
 		while (ADCSRA & (0b1 << ADSC)) ;
 	}
 	static uint16_t GetADC() { return ADC; }
+	static uint8_t GetADC_8bit() { return ADCH; }
 	uint16_t InputAnalog() const {
 		ADMUX = ADMUX & (~0b1111 << MUX0) | (PinToADCChannel(pin) << MUX0);
 		ADCSRA |= (0b1 << ADSC);	// ADSC: ADC Start Conversion = 1
 		while (ADCSRA & (0b1 << ADSC)) ;
 		return ADC;
+	}
+	uint8_t InputAnalog_8bit() const {
+		ADMUX = ADMUX & (~0b1111 << MUX0) | (PinToADCChannel(pin) << MUX0);
+		ADCSRA |= (0b1 << ADSC);	// ADSC: ADC Start Conversion = 1
+		while (ADCSRA & (0b1 << ADSC)) ;
+		return ADCH;
 	}
 };
 

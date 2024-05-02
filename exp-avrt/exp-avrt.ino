@@ -136,21 +136,18 @@ void CompileTest_InitPort()
 void CompileTest_InitADC()
 {
 	av::InitADC<>();
-#if 0
 	av::InitADC<
-		0b00,	// REFS: Reference Selction Bits
-		0b0,	// ADLAR: ADC Left Adjust Result
-		0b0000,	// MUX: Analog Channel Selection Bits
-		0b0,	// ADEN: ADC Enable
-		0b0,	// ADSC: ADC Start Conversion
-		0b0,	// ADATE: ADC Auto Trigger Enable
-		0b0,	// ADIF: ADC Interrupt Flag
-		0b0,	// ADIE: ADC Interrupt Enable
-		0b000,	// ADPS: ADC Prescaler Select Bits
-		0b0,	// ACME: Analog Comparator Multiplexer Enable
-		0b000	// ADTS: ADC Auto Trigger Source
+		0b0,	// ADATE: ADC Auto Trigger Enable = false .. Single conversion triggered by ADSC
+		0b000,	// ADTS: ADC Auto Trigger Source = Free Running mode
+		0b0,	// ADIE: ADC Interrupt Enable = false
+		0b01,	// REFS: Reference Selction Bits = AVcc with external capacitor at AREF pin 
+		0b111,	// ADPS: ADC Prescaler Select Bits = 1/128
+		0b0,	// ADLAR: ADC Left Adjust Result = false
+		0b0000,	// MUX: Analog Channel Selection Bits = ADC0
+		0b0,	// ADSC: ADC Start Conversion = false
+		0b1,	// ADIF: ADC Interrupt Flag .. clear by setting one
+		0b1		// ADEN: ADC Enable = true
 	>();
-#endif
 }
 
 void CompileTest_InitAnalogComparator()
