@@ -252,6 +252,27 @@ bool Serial::Printf(const char* format, ...)
 
 bool Serial::PrintfV(const char* format, va_list ap)
 {
+	StringPtr_SRAM format_(format);
+	return PrintfV(format_, ap);
+}
+
+bool Serial::Printf(const __FlashStringHelper* format, ...)
+{
+	va_list ap;
+	va_start(ap, format);
+	bool rtn = PrintfV(format, ap);
+	va_end(ap);
+	return rtn;
+}
+
+bool Serial::PrintfV(const __FlashStringHelper* format, va_list ap)
+{
+	StringPtr_Flash format_(format);
+	return PrintfV(format_, ap);
+}
+
+bool Serial::PrintfV(StringPtr& format, va_list ap)
+{
 	enum class Stat {
 		Start, FlagsPre, Flags,
 		FlagsAfterWhite,
@@ -262,8 +283,9 @@ bool Serial::PrintfV(const char* format, va_list ap)
 	bool eatNextFlag;
 	FormatterFlags formatterFlags;
 	Stat stat = Stat::Start;
-	for (const char* formatp = format; ; ) {
-		char ch = *formatp;
+	//for (const char* formatp = format; ; ) {
+	char ch = format.Next();
+	for (;;) {
 		eatNextFlag = true;
 		if (ch == '\0') break;
 		switch (stat) {
@@ -508,7 +530,9 @@ bool Serial::PrintfV(const char* format, va_list ap)
 		default:
 			break;
 		}
-		if (eatNextFlag) formatp++;
+		if (eatNextFlag) {
+			ch = format.Next();
+		}
 	}
 	return true;
 }

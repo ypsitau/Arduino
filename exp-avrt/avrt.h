@@ -9,6 +9,8 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+class __FlashStringHelper;
+
 namespace avrt {
 
 template<typename T> T ChooseMin(T a, T b) { return (a < b)? a : b; }
@@ -414,9 +416,28 @@ public:
 	const char* FormatNumber_g(double num, char* buff, size_t size) const;
 };
 
+//------------------------------------------------------------------------------
+// StringPtr
+//------------------------------------------------------------------------------
 class StringPtr {
 public:
 	virtual char Next() = 0;
+};
+
+class StringPtr_SRAM : public StringPtr {
+private:
+	const char* p_;
+public:
+	StringPtr_SRAM(const char* p) : p_(p) {}
+	virtual char Next() override { return *p_++; }
+};
+
+class StringPtr_Flash : public StringPtr {
+private:
+	const char* p_;
+public:
+	StringPtr_Flash(const __FlashStringHelper* p) : p_(reinterpret_cast<const char*>(p)) {}
+	virtual char Next() override { char ch = pgm_read_byte(p_); p_++; return ch; }
 };
 
 //------------------------------------------------------------------------------
@@ -458,6 +479,9 @@ public:
 	void PutAlignedString(const FormatterFlags& formatterFlags, const char* str, int cntMax = -1);
 	bool Printf(const char* format, ...);
 	bool PrintfV(const char* format, va_list ap);
+	bool Printf(const __FlashStringHelper* format, ...);
+	bool PrintfV(const __FlashStringHelper* format, va_list ap);
+	bool PrintfV(StringPtr& format, va_list ap);
 public:
 	virtual void Open(BaudRate baudRate, uint8_t charSize, uint8_t stopBit, uint8_t parity) = 0;
 	virtual void Close() = 0;
