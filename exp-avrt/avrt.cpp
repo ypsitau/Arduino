@@ -220,9 +220,19 @@ void Serial::Write(const uint8_t* buff, int len)
 	for ( ; len > 0; buff++, len--) PutData(*buff);
 }
 
-void Serial::Print(char* str)
+void Serial::Print(const char* str)
 {
-	for ( ; *str; str++) PutChar(*str);
+	for (const char* p = str; *p; p++) PutChar(*p);
+}
+
+void Serial::Print(const __FlashStringHelper* str)
+{
+	const char* p = reinterpret_cast<const char*>(str);
+	for ( ; ; p++) {
+		char ch = pgm_read_byte(p);
+		if (!ch) break;
+		PutChar(ch);
+	}
 }
 
 void Serial::PutAlignedString(const FormatterFlags& formatterFlags, const char* str, int cntMax)

@@ -475,7 +475,8 @@ public:
 	Serial() {}
 	void Write(const uint8_t* buff, int len);
 	void PutChar(char ch) { PutData(static_cast<uint8_t>(ch)); }
-	void Print(char* str);
+	void Print(const char* str);
+	void Print(const __FlashStringHelper* str);
 	void PutAlignedString(const FormatterFlags& formatterFlags, const char* str, int cntMax = -1);
 	bool Printf(const char* format, ...);
 	bool PrintfV(const char* format, va_list ap);

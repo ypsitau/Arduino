@@ -768,7 +768,7 @@ void setup()
 	serial.Printf(F("%%-08d 1234     '%-08d'\n"), 1234);
 	serial.Printf(F("%%-08d -1234    '%-08d'\n"), -1234);
 	// %u specifier
-	serial.Print("--------\n");
+	serial.Print(F("--------\n"));
 	serial.Printf(F("%%u 0          '%u'\n"), 0);
 	serial.Printf(F("%%u 1234       '%u'\n"), 1234);
 	serial.Printf(F("%%u -1234      '%u'\n"), -1234);
@@ -787,7 +787,7 @@ void setup()
 	serial.Printf(F("%%-08u 1234     '%-08u'\n"), 1234);
 	serial.Printf(F("%%-08u -1234    '%-08u'\n"), -1234);
 	// %b specifier
-	serial.Print("--------\n");
+	serial.Print(F("--------\n"));
 	serial.Printf(F("%%b 0          '%b'\n"), 0);
 	serial.Printf(F("%%b 1234       '%b'\n"), 1234);
 	serial.Printf(F("%%b -1234      '%b'\n"), -1234);
@@ -806,7 +806,7 @@ void setup()
 	serial.Printf(F("%%-018b 1234     '%-018b'\n"), 1234);
 	serial.Printf(F("%%-018b -1234    '%-018b'\n"), -1234);
 	// %o specifier
-	serial.Print("--------\n");
+	serial.Print(F("--------\n"));
 	serial.Printf(F("%%o 0          '%o'\n"), 0);
 	serial.Printf(F("%%o 1234       '%o'\n"), 1234);
 	serial.Printf(F("%%o -1234      '%o'\n"), -1234);
@@ -825,7 +825,7 @@ void setup()
 	serial.Printf(F("%%-010o 1234     '%-010o'\n"), 1234);
 	serial.Printf(F("%%-010o -1234    '%-010o'\n"), -1234);
 	// %x specifier
-	serial.Print("--------\n");
+	serial.Print(F("--------\n"));
 	serial.Printf(F("%%x 0          '%x'\n"), 0);
 	serial.Printf(F("%%x 1234       '%x'\n"), 1234);
 	serial.Printf(F("%%x -1234      '%x'\n"), -1234);
