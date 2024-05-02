@@ -153,6 +153,11 @@ void CompileTest_InitADC()
 #endif
 }
 
+void CompileTest_InitAnalogComparator()
+{
+	av::InitAnalogComparator();
+}
+
 void CompileTest_Port_SetMode()
 {
 	portD0.SetMode<av::In>();
@@ -733,6 +738,7 @@ void setup()
 {
 	CompileTest_InitPort();
 	CompileTest_InitADC();
+	CompileTest_InitAnalogComparator();
 	CompileTest_Port_SetMode();
 	CompileTest_Port_OutputDigital();
 	CompileTest_Port_InputDigital();
