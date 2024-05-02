@@ -102,7 +102,7 @@ template <
 	uint8_t dataADLAR	= 0b0,		// ADLAR: ADC Left Adjust Result = false
 	uint8_t dataMUX		= 0b0000,	// MUX: Analog Channel Selection Bits = ADC0
 	uint8_t dataADSC	= 0b0,		// ADSC: ADC Start Conversion = false
-	uint8_t dataADIF	= 0b1,		// ADIF: ADC Interrupt Flag .. clear by setting one
+	uint8_t dataADIF	= 0b1,		// ADIF: ADC Interrupt Flag .. set one to clear
 	uint8_t dataADEN	= 0b1		// ADEN: ADC Enable = true
 > static void InitADC() {
 	ADMUX = (dataREFS << REFS0) | (dataADLAR << ADLAR) | (dataMUX << MUX0);
@@ -123,7 +123,7 @@ template <
 	uint8_t dataADLAR	= 0b1,		// ADLAR: ADC Left Adjust Result = true
 	uint8_t dataMUX		= 0b0000,	// MUX: Analog Channel Selection Bits = ADC0
 	uint8_t dataADSC	= 0b0,		// ADSC: ADC Start Conversion = false
-	uint8_t dataADIF	= 0b1,		// ADIF: ADC Interrupt Flag .. clear by setting one
+	uint8_t dataADIF	= 0b1,		// ADIF: ADC Interrupt Flag .. set one to clear
 	uint8_t dataADEN	= 0b1		// ADEN: ADC Enable = true
 > static void InitADC_8bit() {
 	ADMUX = (dataREFS << REFS0) | (dataADLAR << ADLAR) | (dataMUX << MUX0);
@@ -386,6 +386,22 @@ public:
 //------------------------------------------------------------------------------
 class Serial {
 public:
+	enum BaudRate {
+		BaudRate2400,
+		BaudRate4800,
+		BaudRate9600,
+		BaudRate14400,
+		BaudRate19200,
+		BaudRate28800,
+		BaudRate38400,
+		BaudRate57600,
+		BaudRate76800,
+		BaudRate115200,
+		BaudRate230400,
+		BaudRate250000,
+		BaudRate500000,
+		BaudRate1000000,
+	};	
 	constexpr static uint8_t CharSize5	= 0b000;
 	constexpr static uint8_t CharSize6	= 0b001;
 	constexpr static uint8_t CharSize7	= 0b010;
@@ -400,12 +416,12 @@ public:
 	void Write(const uint8_t* buff, int len);
 	void Printf(const char* format, ...);
 public:
-	virtual void Open(int baudRate, uint8_t charSize, uint8_t parity, uint8_t stopBit) = 0;
+	virtual void Open(BaudRate baudRate, uint8_t charSize, uint8_t parity, uint8_t stopBit) = 0;
 	virtual void Close() = 0;
 	virtual void Put(uint8_t data) = 0;
 	virtual uint8_t Get() = 0;
 public:
-	static uint16_t LookupUBRR(int baudRate, bool doubleSpeedFlag);
+	static uint16_t LookupUBRR(BaudRate baudRate, bool doubleSpeedFlag);
 };
 
 //------------------------------------------------------------------------------
@@ -413,7 +429,7 @@ public:
 //------------------------------------------------------------------------------
 class Serial0 : public Serial {
 public:
-	virtual void Open(int baudRate, uint8_t charSize, uint8_t parity, uint8_t stopBit);
+	virtual void Open(BaudRate baudRate, uint8_t charSize, uint8_t parity, uint8_t stopBit);
 	virtual void Close();
 	virtual void Put(uint8_t data);
 	virtual uint8_t Get();
