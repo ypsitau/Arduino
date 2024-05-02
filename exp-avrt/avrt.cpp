@@ -10,6 +10,15 @@ void Serial::Write(const uint8_t* buff, int len)
 	for ( ; len > 0; buff++, len--) Put(*buff);
 }
 
+void Serial::Print(char* str)
+{
+	for ( ; *str; str++) Put(static_cast<uint8_t>(*str));
+}
+
+void Serial::Printf(const char* format, ...)
+{
+}
+
 uint16_t Serial::LookupUBRR(BaudRate baudRate, bool doubleSpeedFlag)
 {
 	// 20.20 Examples of Baud Rate Setting
@@ -33,10 +42,6 @@ uint16_t Serial::LookupUBRR(BaudRate baudRate, bool doubleSpeedFlag)
 			(baudRate == BaudRate230400)? 3 : (baudRate == BaudRate250000)? 3 :
 			(baudRate == BaudRate500000)? 1 : (baudRate == BaudRate1000000)? 0 : 103;
 	}
-}
-
-void Serial::Printf(const char* format, ...)
-{
 }
 
 //------------------------------------------------------------------------------
@@ -79,6 +84,8 @@ void Serial0::Close()
 void Serial0::Put(uint8_t data)
 {
 	UDR0 = data;
+	while (!(UCSR0A & (0b1 << TXC0))) ;
+	UCSR0A |= (0b1 << TXC0);	// set one to clear TXCn
 }
 
 uint8_t Serial0::Get()

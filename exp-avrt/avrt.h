@@ -415,6 +415,7 @@ public:
 public:
 	Serial() {}
 	void Write(const uint8_t* buff, int len);
+	void Print(char* str);
 	void Printf(const char* format, ...);
 public:
 	virtual void Open(BaudRate baudRate, uint8_t charSize, uint8_t stopBit, uint8_t parity) = 0;
