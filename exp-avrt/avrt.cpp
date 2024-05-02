@@ -1,3 +1,4 @@
+#include <stdarg.h>
 #include "avrt.h"
 
 namespace avrt {
@@ -232,34 +233,35 @@ void Serial::Printf(const char* format, ...)
 		FlagsAfterWhite, FlagsAfterL, FlagsAfterLL, FlagsAfterZ,
 		PrecisionPre, Precision, Padding,
 	};
+	char buff[32];
 	bool eatNextFlag;
 	FormatterFlags formatterFlags;
 	Stat stat = Stat::Start;
+	va_list ap;
 	for (const char* formatp = format; ; ) {
 		char ch = *formatp;
 		eatNextFlag = true;
 		if (ch == '\0') break;
 		switch (stat) {
-#if 0
 		case Stat::Start: {
 			if (ch == '%') {
 				stat = Stat::FlagsPre;
-			} else if (ch == '\n') {
-				if (!PutString(_lineSep)) return false;
+			//} else if (ch == '\n') {
+			//	PutString(lineSep);
 			} else {
-				if (!PutChar(ch)) return false;
+				PutChar(ch);
 			}
 			break;
 		}
 		case Stat::FlagsPre: {
 			if (ch == '%') {
-				if (!PutChar(ch)) return false;
+				PutChar(ch);
 				stat = Stat::Start;
 			} else {
-				if (source.IsEnd()) {
-					IssueError_NotEnoughArguments();
-					return false;
-				}
+				//if (source.IsEnd()) {
+				//	IssueError_NotEnoughArguments();
+				//	return false;
+				//}
 				formatterFlags.Initialize();
 				eatNextFlag = false;
 				stat = Stat::Flags;
@@ -284,20 +286,10 @@ void Serial::Printf(const char* format, ...)
 			} else if (ch == '+') {
 				formatterFlags.plusMode = FormatterFlags::PlusMode::Plus;
 			} else if (ch == '*') {
-				RefPtr<Value> pValue(source.FetchInt());
-				if (!pValue) return false;
-				if (!pValue->IsType(VTYPE_Number)) {
-					IssueError_NumberIsExpectedForAsterisk();
-					return false;
-				}
-				formatterFlags.fieldMinWidth = Value_Number::GetNumber<Int>(*pValue);
+				formatterFlags.fieldMinWidth = va_arg(ap, int32_t);
 				if (formatterFlags.fieldMinWidth < 0) {
 					formatterFlags.leftAlignFlag = true;
 					formatterFlags.fieldMinWidth = -formatterFlags.fieldMinWidth;
-				}
-				if (source.IsEnd()) {
-					IssueError_NotEnoughArguments();
-					return false;
 				}
 			} else if ('0' < ch && ch <= '9') {
 				eatNextFlag = false;
@@ -309,10 +301,11 @@ void Serial::Printf(const char* format, ...)
 			} else if (ch == 'z') {
 				stat = Stat::FlagsAfterZ;
 			} else if (ch == 'd' || ch == 'i') {
-				RefPtr<Value> pValue(source.FetchInt());
-				if (!pValue) return false;
-				if (!pValue->Format_d(*this, formatterFlags)) return false;
+				int32_t num = va_arg(ap, int32_t);
+				formatterFlags.FormatNumber_d(num, buff, sizeof(buff));
+				PutString(buff);
 				stat = Stat::Start;
+#if 0
 			} else if (ch == 'u') {
 				RefPtr<Value> pValue(source.FetchUInt());
 				if (!pValue) return false;
@@ -370,9 +363,11 @@ void Serial::Printf(const char* format, ...)
 			} else {
 				IssueError_WrongFormat();
 				return false;
+#endif
 			}
 			break;
 		}
+#if 0
 		case Stat::FlagsAfterWhite: {
 			if (ch == ' ') {
 				IssueError_WrongFormat();
