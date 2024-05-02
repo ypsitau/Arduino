@@ -449,7 +449,7 @@ public:
 	void Write(const uint8_t* buff, int len);
 	void PutChar(char ch) { PutData(static_cast<uint8_t>(ch)); }
 	void PutString(char* str);
-	void Printf(const char* format, ...);
+	bool Printf(const char* format, ...);
 public:
 	virtual void Open(BaudRate baudRate, uint8_t charSize, uint8_t stopBit, uint8_t parity) = 0;
 	virtual void Close() = 0;

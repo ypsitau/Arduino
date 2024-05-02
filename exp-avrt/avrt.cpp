@@ -226,7 +226,7 @@ void Serial::PutString(char* str)
 	for ( ; *str; str++) PutChar(*str);
 }
 
-void Serial::Printf(const char* format, ...)
+bool Serial::Printf(const char* format, ...)
 {
 	enum class Stat {
 		Start, FlagsPre, Flags,
@@ -305,34 +305,34 @@ void Serial::Printf(const char* format, ...)
 				formatterFlags.FormatNumber_d(num, buff, sizeof(buff));
 				PutString(buff);
 				stat = Stat::Start;
-#if 0
 			} else if (ch == 'u') {
-				RefPtr<Value> pValue(source.FetchUInt());
-				if (!pValue) return false;
-				if (!pValue->Format_u(*this, formatterFlags)) return false;
+				uint32_t num = va_arg(ap, uint32_t);
+				formatterFlags.FormatNumber_u(num, buff, sizeof(buff));
+				PutString(buff);
 				stat = Stat::Start;
 			} else if (ch == 'b') {
-				RefPtr<Value> pValue(source.FetchUInt());
-				if (!pValue) return false;
-				if (!pValue->Format_b(*this, formatterFlags)) return false;
+				uint32_t num = va_arg(ap, uint32_t);
+				formatterFlags.FormatNumber_b(num, buff, sizeof(buff));
+				PutString(buff);
 				stat = Stat::Start;
 			} else if (ch == 'o') {
-				RefPtr<Value> pValue(source.FetchUInt());
-				if (!pValue) return false;
-				if (!pValue->Format_o(*this, formatterFlags)) return false;
+				uint32_t num = va_arg(ap, uint32_t);
+				formatterFlags.FormatNumber_o(num, buff, sizeof(buff));
+				PutString(buff);
 				stat = Stat::Start;
 			} else if (ch == 'x' || ch == 'X') {
-				RefPtr<Value> pValue(source.FetchUInt());
-				if (!pValue) return false;
+				uint32_t num = va_arg(ap, uint32_t);
 				formatterFlags.upperCaseFlag = (ch == 'X');
-				if (!pValue->Format_x(*this, formatterFlags)) return false;
+				formatterFlags.FormatNumber_x(num, buff, sizeof(buff));
+				PutString(buff);
 				stat = Stat::Start;
 			} else if (ch == 'p') {
-				RefPtr<Value> pValue(source.FetchSizeT());
-				if (!pValue) return false;
-				if (!PutString("0x")) return false;
-				if (!pValue->Format_x(*this, formatterFlags)) return false;
+				uint32_t num = va_arg(ap, uint32_t);
+				formatterFlags.FormatNumber_x(num, buff, sizeof(buff));
+				PutString("0x");
+				PutString(buff);
 				stat = Stat::Start;
+#if 0
 			} else if (ch == 'e' || ch == 'E') {
 				RefPtr<Value> pValue(source.FetchDouble());
 				if (!pValue) return false;
@@ -350,27 +350,22 @@ void Serial::Printf(const char* format, ...)
 				formatterFlags.upperCaseFlag = (ch == 'G');
 				if (!pValue->Format_g(*this, formatterFlags)) return false;
 				stat = Stat::Start;
+#endif
 			} else if (ch == 's') {
-				RefPtr<Value> pValue(source.FetchString());
-				if (!pValue) return false;
-				if (!pValue->Format_s(*this, formatterFlags)) return false;
+				const char* str = va_arg(ap, const char*);
+				PutString(str);
 				stat = Stat::Start;
 			} else if (ch == 'c') {
-				RefPtr<Value> pValue(source.FetchInt());
-				if (!pValue) return false;
-				if (!pValue->Format_c(*this, formatterFlags)) return false;
+				char ch = va_arg(ap, char);
+				PutChar(ch);
 				stat = Stat::Start;
 			} else {
-				IssueError_WrongFormat();
 				return false;
-#endif
 			}
 			break;
 		}
-#if 0
 		case Stat::FlagsAfterWhite: {
 			if (ch == ' ') {
-				IssueError_WrongFormat();
 				return false;
 			} else {
 				eatNextFlag = false;
@@ -387,6 +382,7 @@ void Serial::Printf(const char* format, ...)
 			}
 			break;
 		}
+#if 0
 		case Stat::FlagsAfterLL: {
 			if (ch == 'd' || ch == 'i') {
 				RefPtr<Value> pValue(source.FetchInt64());
@@ -503,6 +499,7 @@ void Serial::Printf(const char* format, ...)
 		}
 		if (eatNextFlag) formatp++;
 	}
+	return true;
 }
 
 uint16_t Serial::LookupUBRR(BaudRate baudRate, bool doubleSpeedFlag)
