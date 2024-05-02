@@ -230,7 +230,8 @@ bool Serial::Printf(const char* format, ...)
 {
 	enum class Stat {
 		Start, FlagsPre, Flags,
-		FlagsAfterWhite, FlagsAfterL, FlagsAfterLL, FlagsAfterZ,
+		FlagsAfterWhite,
+		//FlagsAfterL, FlagsAfterLL, FlagsAfterZ,
 		PrecisionPre, Precision, Padding,
 	};
 	char buff[32];
@@ -297,40 +298,40 @@ bool Serial::Printf(const char* format, ...)
 			} else if (ch == '.') {
 				stat = Stat::PrecisionPre;
 			} else if (ch == 'l') {
-				stat = Stat::FlagsAfterL;
-			} else if (ch == 'z') {
-				stat = Stat::FlagsAfterZ;
+				stat = Stat::Flags;
+			//} else if (ch == 'z') {
+			//	stat = Stat::FlagsAfterZ;
 			} else if (ch == 'd' || ch == 'i') {
 				int32_t num = va_arg(ap, int32_t);
-				formatterFlags.FormatNumber_d(num, buff, sizeof(buff));
-				PutString(buff);
+				const char* p = formatterFlags.FormatNumber_d(num, buff, sizeof(buff));
+				PutString(p);
 				stat = Stat::Start;
 			} else if (ch == 'u') {
 				uint32_t num = va_arg(ap, uint32_t);
-				formatterFlags.FormatNumber_u(num, buff, sizeof(buff));
-				PutString(buff);
+				const char* p = formatterFlags.FormatNumber_u(num, buff, sizeof(buff));
+				PutString(p);
 				stat = Stat::Start;
 			} else if (ch == 'b') {
 				uint32_t num = va_arg(ap, uint32_t);
-				formatterFlags.FormatNumber_b(num, buff, sizeof(buff));
-				PutString(buff);
+				const char* p = formatterFlags.FormatNumber_b(num, buff, sizeof(buff));
+				PutString(p);
 				stat = Stat::Start;
 			} else if (ch == 'o') {
 				uint32_t num = va_arg(ap, uint32_t);
-				formatterFlags.FormatNumber_o(num, buff, sizeof(buff));
-				PutString(buff);
+				const char* p = formatterFlags.FormatNumber_o(num, buff, sizeof(buff));
+				PutString(p);
 				stat = Stat::Start;
 			} else if (ch == 'x' || ch == 'X') {
 				uint32_t num = va_arg(ap, uint32_t);
 				formatterFlags.upperCaseFlag = (ch == 'X');
-				formatterFlags.FormatNumber_x(num, buff, sizeof(buff));
-				PutString(buff);
+				const char* p = formatterFlags.FormatNumber_x(num, buff, sizeof(buff));
+				PutString(p);
 				stat = Stat::Start;
 			} else if (ch == 'p') {
 				uint32_t num = va_arg(ap, uint32_t);
-				formatterFlags.FormatNumber_x(num, buff, sizeof(buff));
+				const char* p = formatterFlags.FormatNumber_x(num, buff, sizeof(buff));
 				PutString("0x");
-				PutString(buff);
+				PutString(p);
 				stat = Stat::Start;
 #if 0
 			} else if (ch == 'e' || ch == 'E') {
@@ -373,6 +374,7 @@ bool Serial::Printf(const char* format, ...)
 			}
 			break;
 		}
+#if 0
 		case Stat::FlagsAfterL: {
 			if (ch == 'l') {
 				stat = Stat::FlagsAfterLL;
@@ -382,40 +384,42 @@ bool Serial::Printf(const char* format, ...)
 			}
 			break;
 		}
+#endif
 #if 0
 		case Stat::FlagsAfterLL: {
 			if (ch == 'd' || ch == 'i') {
-				RefPtr<Value> pValue(source.FetchInt64());
-				if (!pValue) return false;
-				if (!pValue->Format_d(*this, formatterFlags)) return false;
+				int32_t num = va_arg(ap, int32_t);
+				formatterFlags.FormatNumber_d(num, buff, sizeof(buff));
+				PutString(buff);
 				stat = Stat::Start;
 			} else if (ch == 'u') {
-				RefPtr<Value> pValue(source.FetchUInt64());
-				if (!pValue) return false;
-				if (!pValue->Format_u(*this, formatterFlags)) return false;
+				uint32_t num = va_arg(ap, uint32_t);
+				formatterFlags.FormatNumber_u(num, buff, sizeof(buff));
+				PutString(buff);
 				stat = Stat::Start;
 			} else if (ch == 'b') {
-				RefPtr<Value> pValue(source.FetchUInt64());
-				if (!pValue) return false;
-				if (!pValue->Format_b(*this, formatterFlags)) return false;
+				uint32_t num = va_arg(ap, uint32_t);
+				formatterFlags.FormatNumber_b(num, buff, sizeof(buff));
+				PutString(buff);
 				stat = Stat::Start;
 			} else if (ch == 'o') {
-				RefPtr<Value> pValue(source.FetchUInt64());
-				if (!pValue) return false;
-				if (!pValue->Format_o(*this, formatterFlags)) return false;
+				uint32_t num = va_arg(ap, uint32_t);
+				formatterFlags.FormatNumber_o(num, buff, sizeof(buff));
+				PutString(buff);
 				stat = Stat::Start;
 			} else if (ch == 'x' || ch == 'X') {
-				RefPtr<Value> pValue(source.FetchUInt64());
-				if (!pValue) return false;
+				uint32_t num = va_arg(ap, uint32_t);
 				formatterFlags.upperCaseFlag = (ch == 'X');
-				if (!pValue->Format_x(*this, formatterFlags)) return false;
+				formatterFlags.FormatNumber_x(num, buff, sizeof(buff));
+				PutString(buff);
 				stat = Stat::Start;
 			} else {
-				IssueError_WrongFormat();
 				return false;
 			}
 			break;
 		}
+#endif
+#if 0
 		case Stat::FlagsAfterZ: {
 			if (ch == 'd' || ch == 'i') {
 				RefPtr<Value> pValue(source.FetchSizeT());
@@ -449,6 +453,7 @@ bool Serial::Printf(const char* format, ...)
 			}
 			break;
 		}
+#endif
 		case Stat::Padding: {
 			if ('0' <= ch && ch <= '9') {
 				formatterFlags.fieldMinWidth = formatterFlags.fieldMinWidth * 10 + (ch - '0');
@@ -460,18 +465,8 @@ bool Serial::Printf(const char* format, ...)
 		}
 		case Stat::PrecisionPre: {
 			if (ch == '*') {
-				RefPtr<Value> pValue(source.FetchInt());
-				if (!pValue) return false;
-				if (!pValue->IsType(VTYPE_Number)) {
-					IssueError_NumberIsExpectedForAsterisk();
-					return false;
-				}
-				formatterFlags.precision = Value_Number::GetNumber<Int>(*pValue);
+				formatterFlags.precision = va_arg(ap, int);
 				if (formatterFlags.precision < 0) formatterFlags.precision = FormatterFlags::Prec::Default;
-				if (source.IsEnd()) {
-					IssueError_NotEnoughArguments();
-					return false;
-				}
 				stat = Stat::Flags;
 			} else if ('0' <= ch && ch <= '9') {
 				formatterFlags.precision = 0;
@@ -493,7 +488,6 @@ bool Serial::Printf(const char* format, ...)
 			}
 			break;
 		}
-#endif
 		default:
 			break;
 		}
