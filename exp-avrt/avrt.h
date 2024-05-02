@@ -386,11 +386,24 @@ public:
 //------------------------------------------------------------------------------
 class Serial {
 public:
-	virtual void Open(int baudRate) = 0;
+	constexpr static uint8_t CharSize5	= 0b000;
+	constexpr static uint8_t CharSize6	= 0b001;
+	constexpr static uint8_t CharSize7	= 0b010;
+	constexpr static uint8_t CharSize8	= 0b011;
+	constexpr static uint8_t CharSize9	= 0b111;
+	constexpr static uint8_t ParityNone	= 0b00;
+	constexpr static uint8_t ParityEven	= 0b10;
+	constexpr static uint8_t ParityOdd	= 0b11;
+	constexpr static uint8_t StopBit1	= 0b0;
+	constexpr static uint8_t StopBit2	= 0b1;
+public:
+	void Write(const uint8_t* buff, int len);
+	void Printf(const char* format, ...);
+public:
+	virtual void Open(int baudRate, uint8_t charSize, uint8_t parity, uint8_t stopBit) = 0;
 	virtual void Close() = 0;
 	virtual void Put(uint8_t data) = 0;
-	virtual void Write(const char* buff, int len) = 0;
-	void Printf(const char* format, ...);
+	virtual uint8_t Get() = 0;
 public:
 	static uint16_t LookupUBRR(int baudRate, bool doubleSpeedFlag);
 };
@@ -400,10 +413,10 @@ public:
 //------------------------------------------------------------------------------
 class Serial0 : public Serial {
 public:
-	virtual void Open(int baudRate);
+	virtual void Open(int baudRate, uint8_t charSize, uint8_t parity, uint8_t stopBit);
 	virtual void Close();
 	virtual void Put(uint8_t data);
-	virtual void Write(const char* buff, int len);
+	virtual uint8_t Get();
 };
 
 };
