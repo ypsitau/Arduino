@@ -751,11 +751,58 @@ void setup()
 #endif
 	av::Serial0 serial;
 	serial.Open(av::Serial::BaudRate57600, av::Serial::CharSize8, av::Serial::ParityNone, av::Serial::StopBit1);
-	serial.Printf("abcdefg %d\n", 1234);
-	serial.Printf("abcdefg %x\n", 1234);
-	for (int i = 0; i < 10; i++) {
-		serial.PutString("hoge\n");
-	}
+	// %d specifier
+	serial.Printf("%%d 0       '%d'\n", 0);
+	serial.Printf("%%d 1234    '%d'\n", 1234);
+	serial.Printf("%%d -1234   '%d'\n", -1234);
+	serial.Printf("%%d 32767   '%d'\n", 32767);
+	serial.Printf("%%d -32768  '%d'\n", -32768);
+	serial.Printf("%%d 32768   '%d'\n", 32768);
+	serial.Printf("%%d -32769  '%d'\n", -32769);
+	serial.Printf("%%8d 1234   '%8d'\n", 1234);
+	serial.Printf("%%8d -1234  '%8d'\n", -1234);
+	serial.Printf("%%-8d 1234  '%-8d'\n", 1234);
+	serial.Printf("%%-8d -1234 '%-8d'\n", -1234);
+	// %u specifier
+	serial.Printf("%%u 0       '%u'\n", 0);
+	serial.Printf("%%u 1234    '%u'\n", 1234);
+	serial.Printf("%%u -1234   '%u'\n", -1234);
+	serial.Printf("%%u 32767   '%u'\n", 32767);
+	serial.Printf("%%u -32768  '%u'\n", -32768);
+	serial.Printf("%%u 32768   '%u'\n", 32768);
+	serial.Printf("%%u -32769  '%u'\n", -32769);
+	serial.Printf("%%u 65535   '%u'\n", 65535);
+	serial.Printf("%%u 65536   '%u'\n", 65536);
+	// %b specifier
+	serial.Printf("%%b 0       '%b'\n", 0);
+	serial.Printf("%%b 1234    '%b'\n", 1234);
+	serial.Printf("%%b -1234   '%b'\n", -1234);
+	serial.Printf("%%b 32767   '%b'\n", 32767);
+	serial.Printf("%%b -32768  '%b'\n", -32768);
+	serial.Printf("%%b 32768   '%b'\n", 32768);
+	serial.Printf("%%b -32769  '%b'\n", -32769);
+	serial.Printf("%%b 65535   '%b'\n", 65535);
+	serial.Printf("%%b 65536   '%b'\n", 65536);
+	// %o specifier
+	serial.Printf("%%o 0       '%o'\n", 0);
+	serial.Printf("%%o 1234    '%o'\n", 1234);
+	serial.Printf("%%o -1234   '%o'\n", -1234);
+	serial.Printf("%%o 32767   '%o'\n", 32767);
+	serial.Printf("%%o -32768  '%o'\n", -32768);
+	serial.Printf("%%o 32768   '%o'\n", 32768);
+	serial.Printf("%%o -32769  '%o'\n", -32769);
+	serial.Printf("%%o 65535   '%o'\n", 65535);
+	serial.Printf("%%o 65536   '%o'\n", 65536);
+	// %x specifier
+	serial.Printf("%%x 0       '%x'\n", 0);
+	serial.Printf("%%x 1234    '%x'\n", 1234);
+	serial.Printf("%%x -1234   '%x'\n", -1234);
+	serial.Printf("%%x 32767   '%x'\n", 32767);
+	serial.Printf("%%x -32768  '%x'\n", -32768);
+	serial.Printf("%%x 32768   '%x'\n", 32768);
+	serial.Printf("%%x -32769  '%x'\n", -32769);
+	serial.Printf("%%x 65535   '%x'\n", 65535);
+	serial.Printf("%%x 65536   '%x'\n", 65536);
 }
 
 void loop()
