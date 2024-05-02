@@ -42,13 +42,13 @@ void Serial::Printf(const char* format, ...)
 //------------------------------------------------------------------------------
 // Serial0
 //------------------------------------------------------------------------------
-void Serial0::Open(BaudRate baudRate, uint8_t charSize, uint8_t parity, uint8_t stopBit)
+void Serial0::Open(BaudRate baudRate, uint8_t charSize, uint8_t stopBit, uint8_t parity)
 {
 	constexpr bool doubleSpeedFlag = false;
 	constexpr uint8_t dataU2X = doubleSpeedFlag? 0b1 : 0b0;
 	uint8_t dataUCSZ = charSize;
-	uint8_t dataUPM = parity;
 	uint8_t dataUSBS = stopBit;
+	uint8_t dataUPM = parity;
 	uint16_t dataUBRR = LookupUBRR(baudRate, doubleSpeedFlag);
 	UCSR0A =
 		(0b1 << TXC0) |					// TXCn: USART Transmit Complete .. set one to clear

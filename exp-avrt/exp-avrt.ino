@@ -733,6 +733,7 @@ void CompileTest_Port_InputAnalog()
 
 void setup()
 {
+#if 0
 	CompileTest_InitPort();
 	CompileTest_InitADC();
 	CompileTest_InitAnalogComparator();
@@ -747,6 +748,10 @@ void setup()
 	CompileTest_Port_StartADC();
 	CompileTest_Port_WaitADC();
 	CompileTest_Port_InputAnalog();
+#endif
+	av::Serial0 serial;
+	serial.Open(av::Serial::BaudRate57600, av::Serial::CharSize8, av::Serial::ParityNone, av::Serial::StopBit1);
+	serial.Write("hoge", 4);
 }
 
 void loop()
