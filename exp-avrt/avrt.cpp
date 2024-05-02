@@ -221,7 +221,7 @@ void Serial::Write(const uint8_t* buff, int len)
 	for ( ; len > 0; buff++, len--) PutData(*buff);
 }
 
-void Serial::PutString(char* str)
+void Serial::Print(char* str)
 {
 	for ( ; *str; str++) PutChar(*str);
 }
@@ -341,7 +341,7 @@ bool Serial::Printf(const char* format, ...)
 			} else if (ch == 'p') {
 				unsigned int num = va_arg(ap, unsigned int);
 				const char* p = formatterFlags.FormatNumber_x(num, buff, sizeof(buff));
-				PutString("0x");
+				Print("0x");
 				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
 #if 0
@@ -403,28 +403,28 @@ bool Serial::Printf(const char* format, ...)
 			if (ch == 'd' || ch == 'i') {
 				int32_t num = va_arg(ap, int32_t);
 				formatterFlags.FormatNumber_d(num, buff, sizeof(buff));
-				PutString(buff);
+				Print(buff);
 				stat = Stat::Start;
 			} else if (ch == 'u') {
 				unsigned int num = va_arg(ap, unsigned int);
 				formatterFlags.FormatNumber_u(num, buff, sizeof(buff));
-				PutString(buff);
+				Print(buff);
 				stat = Stat::Start;
 			} else if (ch == 'b') {
 				unsigned int num = va_arg(ap, unsigned int);
 				formatterFlags.FormatNumber_b(num, buff, sizeof(buff));
-				PutString(buff);
+				Print(buff);
 				stat = Stat::Start;
 			} else if (ch == 'o') {
 				unsigned int num = va_arg(ap, unsigned int);
 				formatterFlags.FormatNumber_o(num, buff, sizeof(buff));
-				PutString(buff);
+				Print(buff);
 				stat = Stat::Start;
 			} else if (ch == 'x' || ch == 'X') {
 				unsigned int num = va_arg(ap, unsigned int);
 				formatterFlags.upperCaseFlag = (ch == 'X');
 				formatterFlags.FormatNumber_x(num, buff, sizeof(buff));
-				PutString(buff);
+				Print(buff);
 				stat = Stat::Start;
 			} else {
 				va_end(ap);

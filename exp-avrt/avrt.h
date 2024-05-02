@@ -448,7 +448,7 @@ public:
 	Serial() {}
 	void Write(const uint8_t* buff, int len);
 	void PutChar(char ch) { PutData(static_cast<uint8_t>(ch)); }
-	void PutString(char* str);
+	void Print(char* str);
 	void PutAlignedString(const FormatterFlags& formatterFlags, const char* str, int cntMax = -1);
 	bool Printf(const char* format, ...);
 public:
