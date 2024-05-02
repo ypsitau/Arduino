@@ -752,7 +752,7 @@ void setup()
 	av::Serial0 serial;
 	serial.Open(av::Serial::BaudRate57600, av::Serial::CharSize8, av::Serial::ParityNone, av::Serial::StopBit1);
 	for (int i = 0; i < 10; i++) {
-		serial.Print("hoge\n");
+		serial.PutString("hoge\n");
 	}
 }
 

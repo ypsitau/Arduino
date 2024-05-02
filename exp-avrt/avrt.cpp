@@ -220,7 +220,7 @@ void Serial::Write(const uint8_t* buff, int len)
 	for ( ; len > 0; buff++, len--) PutData(*buff);
 }
 
-void Serial::Print(char* str)
+void Serial::PutString(char* str)
 {
 	for ( ; *str; str++) PutChar(*str);
 }
