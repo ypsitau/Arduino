@@ -763,6 +763,10 @@ void setup()
 	serial.Printf("%%8d -1234  '%8d'\n", -1234);
 	serial.Printf("%%-8d 1234  '%-8d'\n", 1234);
 	serial.Printf("%%-8d -1234 '%-8d'\n", -1234);
+
+	serial.Printf("%%8x 1234   '%8x'\n", 1234);
+	serial.Printf("%%-8x 1234   '%-8x'\n", -1234);
+
 	// %u specifier
 	serial.Printf("%%u 0       '%u'\n", 0);
 	serial.Printf("%%u 1234    '%u'\n", 1234);

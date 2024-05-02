@@ -226,6 +226,22 @@ void Serial::PutString(char* str)
 	for ( ; *str; str++) PutChar(*str);
 }
 
+void Serial::PutAlignedString(const FormatterFlags& formatterFlags, const char* str, int cntMax)
+{
+	int cnt = 0;
+	for (const char* p = str; *p; p++, cnt++) ;
+	if (cntMax >= 0 && cnt > cntMax) cnt = cntMax;
+	int cntPadding = formatterFlags.fieldMinWidth - cnt;
+	const char* p = str;
+	if (formatterFlags.leftAlignFlag) {
+		for ( ; cnt > 0; p++, cnt--) PutChar(*p);
+		while (cntPadding-- > 0) PutChar(formatterFlags.charPadding);
+	} else {
+		while (cntPadding-- > 0) PutChar(formatterFlags.charPadding);
+		for ( ; cnt > 0; p++, cnt--) PutChar(*p);
+	}
+}
+
 bool Serial::Printf(const char* format, ...)
 {
 	enum class Stat {
@@ -248,8 +264,6 @@ bool Serial::Printf(const char* format, ...)
 		case Stat::Start: {
 			if (ch == '%') {
 				stat = Stat::FlagsPre;
-			//} else if (ch == '\n') {
-			//	PutString(lineSep);
 			} else {
 				PutChar(ch);
 			}
@@ -260,10 +274,6 @@ bool Serial::Printf(const char* format, ...)
 				PutChar(ch);
 				stat = Stat::Start;
 			} else {
-				//if (source.IsEnd()) {
-				//	IssueError_NotEnoughArguments();
-				//	return false;
-				//}
 				formatterFlags.Initialize();
 				eatNextFlag = false;
 				stat = Stat::Flags;
@@ -305,34 +315,34 @@ bool Serial::Printf(const char* format, ...)
 			} else if (ch == 'd' || ch == 'i') {
 				int num = va_arg(ap, int);
 				const char* p = formatterFlags.FormatNumber_d(num, buff, sizeof(buff));
-				PutString(p);
+				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
 			} else if (ch == 'u') {
 				unsigned int num = va_arg(ap, unsigned int);
 				const char* p = formatterFlags.FormatNumber_u(num, buff, sizeof(buff));
-				PutString(p);
+				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
 			} else if (ch == 'b') {
 				unsigned int num = va_arg(ap, unsigned int);
 				const char* p = formatterFlags.FormatNumber_b(num, buff, sizeof(buff));
-				PutString(p);
+				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
 			} else if (ch == 'o') {
 				unsigned int num = va_arg(ap, unsigned int);
 				const char* p = formatterFlags.FormatNumber_o(num, buff, sizeof(buff));
-				PutString(p);
+				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
 			} else if (ch == 'x' || ch == 'X') {
 				unsigned int num = va_arg(ap, unsigned int);
 				formatterFlags.upperCaseFlag = (ch == 'X');
 				const char* p = formatterFlags.FormatNumber_x(num, buff, sizeof(buff));
-				PutString(p);
+				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
 			} else if (ch == 'p') {
 				unsigned int num = va_arg(ap, unsigned int);
 				const char* p = formatterFlags.FormatNumber_x(num, buff, sizeof(buff));
 				PutString("0x");
-				PutString(p);
+				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
 #if 0
 			} else if (ch == 'e' || ch == 'E') {
@@ -355,7 +365,7 @@ bool Serial::Printf(const char* format, ...)
 #endif
 			} else if (ch == 's') {
 				const char* str = va_arg(ap, const char*);
-				PutString(str);
+				PutAlignedString(formatterFlags, str);
 				stat = Stat::Start;
 			} else if (ch == 'c') {
 				char ch = va_arg(ap, char);
