@@ -30,6 +30,12 @@ uint16_t Serial::LookupUBRR(int baudRate, bool doubleSpeedFlag)
 //------------------------------------------------------------------------------
 void Serial0::Open(int baudRate)
 {
+	UDR0;
+	UCSR0A;
+	UCSR0B;
+	UCSR0C;
+	UBRR0L;
+	UBRR0H;
 }
 
 void Serial0::Close()
