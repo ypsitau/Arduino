@@ -413,6 +413,7 @@ public:
 	constexpr static uint8_t StopBit1	= 0b0;
 	constexpr static uint8_t StopBit2	= 0b1;
 public:
+	Serial() {}
 	void Write(const uint8_t* buff, int len);
 	void Printf(const char* format, ...);
 public:
@@ -429,6 +430,7 @@ public:
 //------------------------------------------------------------------------------
 class Serial0 : public Serial {
 public:
+	Serial0() {}
 	virtual void Open(BaudRate baudRate, uint8_t charSize, uint8_t parity, uint8_t stopBit);
 	virtual void Close();
 	virtual void Put(uint8_t data);
