@@ -751,7 +751,7 @@ void setup()
 #endif
 	av::Serial0 serial;
 	serial.Open(av::Serial::BaudRate57600, av::Serial::CharSize8, av::Serial::ParityNone, av::Serial::StopBit1);
-	// %d specifier
+	serial.Println("---- %d specifier ----");
 	serial.Printf(F("%%d 0          '%d'\n"), 0);
 	serial.Printf(F("%%d 1234       '%d'\n"), 1234);
 	serial.Printf(F("%%d -1234      '%d'\n"), -1234);
@@ -763,12 +763,11 @@ void setup()
 	serial.Printf(F("%%8d -1234     '%8d'\n"), -1234);
 	serial.Printf(F("%%-8d 1234     '%-8d'\n"), 1234);
 	serial.Printf(F("%%-8d -1234    '%-8d'\n"), -1234);
-	serial.Printf(F("%%08d 1234      '%08d'\n"), 1234);
-	serial.Printf(F("%%08d -1234     '%08d'\n"), -1234);
-	serial.Printf(F("%%-08d 1234     '%-08d'\n"), 1234);
-	serial.Printf(F("%%-08d -1234    '%-08d'\n"), -1234);
-	// %u specifier
-	serial.Print(F("--------\n"));
+	serial.Printf(F("%%08d 1234     '%08d'\n"), 1234);
+	serial.Printf(F("%%08d -1234    '%08d'\n"), -1234);
+	serial.Printf(F("%%-08d 1234    '%-08d'\n"), 1234);
+	serial.Printf(F("%%-08d -1234   '%-08d'\n"), -1234);
+	serial.Println("---- %u specifier ----");
 	serial.Printf(F("%%u 0          '%u'\n"), 0);
 	serial.Printf(F("%%u 1234       '%u'\n"), 1234);
 	serial.Printf(F("%%u -1234      '%u'\n"), -1234);
@@ -782,12 +781,11 @@ void setup()
 	serial.Printf(F("%%8u -1234     '%8u'\n"), -1234);
 	serial.Printf(F("%%-8u 1234     '%-8u'\n"), 1234);
 	serial.Printf(F("%%-8u -1234    '%-8u'\n"), -1234);
-	serial.Printf(F("%%08u 1234      '%08u'\n"), 1234);
-	serial.Printf(F("%%08u -1234     '%08u'\n"), -1234);
-	serial.Printf(F("%%-08u 1234     '%-08u'\n"), 1234);
-	serial.Printf(F("%%-08u -1234    '%-08u'\n"), -1234);
-	// %b specifier
-	serial.Print(F("--------\n"));
+	serial.Printf(F("%%08u 1234     '%08u'\n"), 1234);
+	serial.Printf(F("%%08u -1234    '%08u'\n"), -1234);
+	serial.Printf(F("%%-08u 1234    '%-08u'\n"), 1234);
+	serial.Printf(F("%%-08u -1234   '%-08u'\n"), -1234);
+	serial.Println("---- %b specifier ----");
 	serial.Printf(F("%%b 0          '%b'\n"), 0);
 	serial.Printf(F("%%b 1234       '%b'\n"), 1234);
 	serial.Printf(F("%%b -1234      '%b'\n"), -1234);
@@ -797,16 +795,15 @@ void setup()
 	serial.Printf(F("%%b -32769     '%b'\n"), -32769);
 	serial.Printf(F("%%b 65535      '%b'\n"), 65535);
 	serial.Printf(F("%%b 65536      '%b'\n"), 65536);
-	serial.Printf(F("%%18b 1234      '%18b'\n"), 1234);
-	serial.Printf(F("%%18b -1234     '%18b'\n"), -1234);
-	serial.Printf(F("%%-18b 1234     '%-18b'\n"), 1234);
-	serial.Printf(F("%%-18b -1234    '%-18b'\n"), -1234);
-	serial.Printf(F("%%018b 1234      '%018b'\n"), 1234);
-	serial.Printf(F("%%018b -1234     '%018b'\n"), -1234);
-	serial.Printf(F("%%-018b 1234     '%-018b'\n"), 1234);
-	serial.Printf(F("%%-018b -1234    '%-018b'\n"), -1234);
-	// %o specifier
-	serial.Print(F("--------\n"));
+	serial.Printf(F("%%18b 1234     '%18b'\n"), 1234);
+	serial.Printf(F("%%18b -1234    '%18b'\n"), -1234);
+	serial.Printf(F("%%-18b 1234    '%-18b'\n"), 1234);
+	serial.Printf(F("%%-18b -1234   '%-18b'\n"), -1234);
+	serial.Printf(F("%%018b 1234    '%018b'\n"), 1234);
+	serial.Printf(F("%%018b -1234   '%018b'\n"), -1234);
+	serial.Printf(F("%%-018b 1234   '%-018b'\n"), 1234);
+	serial.Printf(F("%%-018b -1234  '%-018b'\n"), -1234);
+	serial.Println("---- %o specifier ----");
 	serial.Printf(F("%%o 0          '%o'\n"), 0);
 	serial.Printf(F("%%o 1234       '%o'\n"), 1234);
 	serial.Printf(F("%%o -1234      '%o'\n"), -1234);
@@ -816,33 +813,39 @@ void setup()
 	serial.Printf(F("%%o -32769     '%o'\n"), -32769);
 	serial.Printf(F("%%o 65535      '%o'\n"), 65535);
 	serial.Printf(F("%%o 65536      '%o'\n"), 65536);
-	serial.Printf(F("%%10o 1234      '%10o'\n"), 1234);
-	serial.Printf(F("%%10o -1234     '%10o'\n"), -1234);
-	serial.Printf(F("%%-10o 1234     '%-10o'\n"), 1234);
-	serial.Printf(F("%%-10o -1234    '%-10o'\n"), -1234);
-	serial.Printf(F("%%010o 1234      '%010o'\n"), 1234);
-	serial.Printf(F("%%010o -1234     '%010o'\n"), -1234);
-	serial.Printf(F("%%-010o 1234     '%-010o'\n"), 1234);
-	serial.Printf(F("%%-010o -1234    '%-010o'\n"), -1234);
-	// %x specifier
-	serial.Print(F("--------\n"));
+	serial.Printf(F("%%10o 1234     '%10o'\n"), 1234);
+	serial.Printf(F("%%10o -1234    '%10o'\n"), -1234);
+	serial.Printf(F("%%-10o 1234    '%-10o'\n"), 1234);
+	serial.Printf(F("%%-10o -1234   '%-10o'\n"), -1234);
+	serial.Printf(F("%%010o 1234    '%010o'\n"), 1234);
+	serial.Printf(F("%%010o -1234   '%010o'\n"), -1234);
+	serial.Printf(F("%%-010o 1234   '%-010o'\n"), 1234);
+	serial.Printf(F("%%-010o -1234  '%-010o'\n"), -1234);
+	serial.Println("---- %x specifier ----");
 	serial.Printf(F("%%x 0          '%x'\n"), 0);
-	serial.Printf(F("%%x 1234       '%x'\n"), 1234);
-	serial.Printf(F("%%x -1234      '%x'\n"), -1234);
+	serial.Printf(F("%%x 0x1234     '%x'\n"), 0x1234);
+	serial.Printf(F("%%x -0x1234    '%x'\n"), -0x1234);
 	serial.Printf(F("%%x 32767      '%x'\n"), 32767);
 	serial.Printf(F("%%x -32768     '%x'\n"), -32768);
 	serial.Printf(F("%%x 32768      '%x'\n"), 32768);
 	serial.Printf(F("%%x -32769     '%x'\n"), -32769);
 	serial.Printf(F("%%x 65535      '%x'\n"), 65535);
 	serial.Printf(F("%%x 65536      '%x'\n"), 65536);
-	serial.Printf(F("%%8x 1234      '%8x'\n"), 1234);
-	serial.Printf(F("%%8x -1234     '%8x'\n"), -1234);
-	serial.Printf(F("%%-8x 1234     '%-8x'\n"), 1234);
-	serial.Printf(F("%%-8x -1234    '%-8x'\n"), -1234);
-	serial.Printf(F("%%08x 1234      '%08x'\n"), 1234);
-	serial.Printf(F("%%08x -1234     '%08x'\n"), -1234);
-	serial.Printf(F("%%-08x 1234     '%-08x'\n"), 1234);
-	serial.Printf(F("%%-08x -1234    '%-08x'\n"), -1234);
+	serial.Printf(F("%%8x 0x1234    '%8x'\n"), 0x1234);
+	serial.Printf(F("%%8x -0x1234   '%8x'\n"), -0x1234);
+	serial.Printf(F("%%-8x 0x1234   '%-8x'\n"), 0x1234);
+	serial.Printf(F("%%-8x -0x1234  '%-8x'\n"), -0x1234);
+	serial.Printf(F("%%08x 0x1234   '%08x'\n"), 0x1234);
+	serial.Printf(F("%%08x -0x1234  '%08x'\n"), -0x1234);
+	serial.Printf(F("%%-08x 0x1234  '%-08x'\n"), 0x1234);
+	serial.Printf(F("%%-08x -0x1234 '%-08x'\n"), -0x1234);
+	serial.Println("---- %x specifier ----");
+	serial.Printf(F("%%s \"Hello\"    '%s'\n"), "Hello");
+	serial.Printf(F("%%8s \"Hello\"   '%8s'\n"), "Hello");
+	serial.Printf(F("%%-8s \"Hello\"  '%-8s'\n"), "Hello");
+	serial.Println("---- width by * ----");
+	serial.Printf(F("%%*d 10, 1234    '%*d'\n"), 10, 1234);
+	serial.Printf(F("%%*d -10, 1234   '%*d'\n"), -10, 1234);
 }
 
 void loop()

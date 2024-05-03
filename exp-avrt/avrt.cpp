@@ -235,23 +235,28 @@ void Serial::Print(const __FlashStringHelper* str)
 	}
 }
 
-void Serial::PutAlignedString(const FormatterFlags& formatterFlags, const char* str, int cntMax)
+void Serial::Println(const char* str)
 {
-	int cnt = 0;
-	for (const char* p = str; *p; p++, cnt++) ;
-	if (cntMax >= 0 && cnt > cntMax) cnt = cntMax;
-	int cntPadding = formatterFlags.fieldMinWidth - cnt;
-	const char* p = str;
-	if (formatterFlags.leftAlignFlag) {
-		for ( ; cnt > 0; p++, cnt--) PutChar(*p);
-		while (cntPadding-- > 0) PutChar(formatterFlags.charPadding);
-	} else {
-		while (cntPadding-- > 0) PutChar(formatterFlags.charPadding);
-		for ( ; cnt > 0; p++, cnt--) PutChar(*p);
-	}
+	Print(str);
+	PutChar('\n');
+}
+
+void Serial::Println(const __FlashStringHelper* str)
+{
+	Print(str);
+	PutChar('\n');
 }
 
 bool Serial::Printf(const char* format, ...)
+{
+	va_list ap;
+	va_start(ap, format);
+	bool rtn = PrintfV(format, ap);
+	va_end(ap);
+	return rtn;
+}
+
+bool Serial::Printf(const __FlashStringHelper* format, ...)
 {
 	va_list ap;
 	va_start(ap, format);
@@ -264,15 +269,6 @@ bool Serial::PrintfV(const char* format, va_list ap)
 {
 	StringPtr_SRAM format_(format);
 	return PrintfV(format_, ap);
-}
-
-bool Serial::Printf(const __FlashStringHelper* format, ...)
-{
-	va_list ap;
-	va_start(ap, format);
-	bool rtn = PrintfV(format, ap);
-	va_end(ap);
-	return rtn;
 }
 
 bool Serial::PrintfV(const __FlashStringHelper* format, va_list ap)
@@ -293,7 +289,6 @@ bool Serial::PrintfV(StringPtr& format, va_list ap)
 	bool eatNextFlag;
 	FormatterFlags formatterFlags;
 	Stat stat = Stat::Start;
-	//for (const char* formatp = format; ; ) {
 	char ch = format.Next();
 	for (;;) {
 		eatNextFlag = true;
@@ -545,6 +540,22 @@ bool Serial::PrintfV(StringPtr& format, va_list ap)
 		}
 	}
 	return true;
+}
+
+void Serial::PutAlignedString(const FormatterFlags& formatterFlags, const char* str, int cntMax)
+{
+	int cnt = 0;
+	for (const char* p = str; *p; p++, cnt++) ;
+	if (cntMax >= 0 && cnt > cntMax) cnt = cntMax;
+	int cntPadding = formatterFlags.fieldMinWidth - cnt;
+	const char* p = str;
+	if (formatterFlags.leftAlignFlag) {
+		for ( ; cnt > 0; p++, cnt--) PutChar(*p);
+		while (cntPadding-- > 0) PutChar(formatterFlags.charPadding);
+	} else {
+		while (cntPadding-- > 0) PutChar(formatterFlags.charPadding);
+		for ( ; cnt > 0; p++, cnt--) PutChar(*p);
+	}
 }
 
 uint16_t Serial::LookupUBRR(BaudRate baudRate, bool doubleSpeedFlag)

@@ -477,12 +477,14 @@ public:
 	void PutChar(char ch) { PutData(static_cast<uint8_t>(ch)); }
 	void Print(const char* str);
 	void Print(const __FlashStringHelper* str);
-	void PutAlignedString(const FormatterFlags& formatterFlags, const char* str, int cntMax = -1);
+	void Println(const char* str);
+	void Println(const __FlashStringHelper* str);
 	bool Printf(const char* format, ...);
-	bool PrintfV(const char* format, va_list ap);
 	bool Printf(const __FlashStringHelper* format, ...);
+	bool PrintfV(const char* format, va_list ap);
 	bool PrintfV(const __FlashStringHelper* format, va_list ap);
 	bool PrintfV(StringPtr& format, va_list ap);
+	void PutAlignedString(const FormatterFlags& formatterFlags, const char* str, int cntMax = -1);
 public:
 	virtual void Open(BaudRate baudRate, uint8_t charSize, uint8_t stopBit, uint8_t parity) = 0;
 	virtual void Close() = 0;
