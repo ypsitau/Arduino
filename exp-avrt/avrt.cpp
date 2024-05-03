@@ -161,9 +161,11 @@ const char* FormatterFlags::FormatNumber_o(unsigned int num, char* buff, size_t 
 
 const char* FormatterFlags::FormatNumber_x(unsigned int num, char* buff, size_t size) const
 {
+	const static char convUpperTbl[] PROGMEM = "0123456789ABCDEF";
+	const static char convLowerTbl[] PROGMEM = "0123456789abcdef";
 	char* p = buff + size - 1;
 	*p = '\0';
-	const char* convTbl = upperCaseFlag? "0123456789ABCDEF" : "0123456789abcdef";
+	const char* convTbl = upperCaseFlag? convUpperTbl : convLowerTbl;
 	if (num == 0) {
 		if (precision == 0) {
 			// empty string
@@ -175,7 +177,7 @@ const char* FormatterFlags::FormatNumber_x(unsigned int num, char* buff, size_t 
 		int nCols = 0;
 		for ( ; num != 0; num >>= 4, nCols++) {
 			p--;
-			*p = convTbl[num & 0xf];
+			*p = pgm_read_byte(&convTbl[num & 0xf]);
 		}
 		if (nCols < precision) {
 			int cnt = ChooseMin(precision, static_cast<int>(size) - 3) - nCols;
@@ -282,7 +284,7 @@ bool Serial::PrintfV(StringPtr& format, va_list ap)
 	enum class Stat {
 		Start, FlagsPre, Flags,
 		FlagsAfterWhite,
-		//FlagsAfterL, FlagsAfterLL, FlagsAfterZ,
+		//FlagsAfterL, FlagsAfterLL,
 		PrecisionPre, Precision, Padding,
 	};
 	char buff[32];
@@ -331,7 +333,7 @@ bool Serial::PrintfV(StringPtr& format, va_list ap)
 			} else if (ch == '+') {
 				formatterFlags.plusMode = FormatterFlags::PlusMode::Plus;
 			} else if (ch == '*') {
-				formatterFlags.fieldMinWidth = va_arg(ap, int32_t);
+				formatterFlags.fieldMinWidth = va_arg(ap, int);
 				if (formatterFlags.fieldMinWidth < 0) {
 					formatterFlags.leftAlignFlag = true;
 					formatterFlags.fieldMinWidth = -formatterFlags.fieldMinWidth;
@@ -343,8 +345,6 @@ bool Serial::PrintfV(StringPtr& format, va_list ap)
 				stat = Stat::PrecisionPre;
 			} else if (ch == 'l') {
 				stat = Stat::Flags;
-			//} else if (ch == 'z') {
-			//	stat = Stat::FlagsAfterZ;
 			} else if (ch == 'd' || ch == 'i') {
 				int num = va_arg(ap, int);
 				const char* p = formatterFlags.FormatNumber_d(num, buff, sizeof(buff));
