@@ -731,24 +731,8 @@ void CompileTest_Port_InputAnalog()
 	data16 = av::Port<av::A6>().InputAnalog();
 }
 
-void setup()
+void Test_Serial_Printf()
 {
-#if 0
-	CompileTest_InitPort();
-	CompileTest_InitADC();
-	CompileTest_InitAnalogComparator();
-	CompileTest_Port_SetMode();
-	CompileTest_Port_OutputDigital();
-	CompileTest_Port_InputDigital();
-	CompileTest_Port_ProbeDigital();
-	CompileTest_Port_EnablePWM();
-	CompileTest_Port_DisablePWM();
-	CompileTest_Port_OutputPWM();
-	CompileTest_Port_OutputFinePWM();
-	CompileTest_Port_StartADC();
-	CompileTest_Port_WaitADC();
-	CompileTest_Port_InputAnalog();
-#endif
 	av::Serial0 serial;
 	serial.Open(av::Serial::BaudRate57600, av::Serial::CharSize8, av::Serial::ParityNone, av::Serial::StopBit1);
 	serial.Println("---- %d specifier ----");
@@ -900,6 +884,26 @@ void setup()
 	serial.Printf(F("%%lx 4294967295L   '%lx'\n"), 4294967295L);
 	//serial.Println("---- %f specifier ----");
 	//serial.Printf(F("%%f 0              '%f'\n"), 0);
+}
+
+void setup()
+{
+#if 0
+	CompileTest_InitPort();
+	CompileTest_InitADC();
+	CompileTest_InitAnalogComparator();
+	CompileTest_Port_SetMode();
+	CompileTest_Port_OutputDigital();
+	CompileTest_Port_InputDigital();
+	CompileTest_Port_ProbeDigital();
+	CompileTest_Port_EnablePWM();
+	CompileTest_Port_DisablePWM();
+	CompileTest_Port_OutputPWM();
+	CompileTest_Port_OutputFinePWM();
+	CompileTest_Port_StartADC();
+	CompileTest_Port_WaitADC();
+	CompileTest_Port_InputAnalog();
+#endif
 }
 
 void loop()
