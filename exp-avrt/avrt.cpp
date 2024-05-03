@@ -283,8 +283,7 @@ bool Serial::PrintfV(StringPtr& format, va_list ap)
 {
 	enum class Stat {
 		Start, FlagsPre, Flags,
-		FlagsAfterWhite,
-		//FlagsAfterL, FlagsAfterLL,
+		FlagsAfterWhite, FlagsAfterL,
 		PrecisionPre, Precision, Padding,
 	};
 	char buff[32];
@@ -344,7 +343,7 @@ bool Serial::PrintfV(StringPtr& format, va_list ap)
 			} else if (ch == '.') {
 				stat = Stat::PrecisionPre;
 			} else if (ch == 'l') {
-				stat = Stat::Flags;
+				stat = Stat::FlagsAfterL;
 			} else if (ch == 'd' || ch == 'i') {
 				int num = va_arg(ap, int);
 				const char* p = formatterFlags.FormatNumber_d(num, buff, sizeof(buff));
@@ -377,25 +376,23 @@ bool Serial::PrintfV(StringPtr& format, va_list ap)
 				Print("0x");
 				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
-#if 0
 			} else if (ch == 'e' || ch == 'E') {
-				RefPtr<Value> pValue(source.FetchDouble());
-				if (!pValue) return false;
+				float num = va_arg(ap, float);
 				formatterFlags.upperCaseFlag = (ch == 'E');
-				if (!pValue->Format_e(*this, formatterFlags)) return false;
+				const char* p = formatterFlags.FormatNumber_e(num, buff, sizeof(buff));
+				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
 			} else if (ch == 'f' || ch == 'F') {
-				RefPtr<Value> pValue(source.FetchDouble());
-				if (!pValue) return false;
-				if (!pValue->Format_f(*this, formatterFlags)) return false;
+				float num = va_arg(ap, float);
+				const char* p = formatterFlags.FormatNumber_f(num, buff, sizeof(buff));
+				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
 			} else if (ch == 'g' || ch == 'G') {
-				RefPtr<Value> pValue(source.FetchDouble());
-				if (!pValue) return false;
+				float num = va_arg(ap, float);
 				formatterFlags.upperCaseFlag = (ch == 'G');
-				if (!pValue->Format_g(*this, formatterFlags)) return false;
+				const char* p = formatterFlags.FormatNumber_g(num, buff, sizeof(buff));
+				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
-#endif
 			} else if (ch == 's') {
 				const char* str = va_arg(ap, const char*);
 				PutAlignedString(formatterFlags, str);
@@ -418,86 +415,38 @@ bool Serial::PrintfV(StringPtr& format, va_list ap)
 			}
 			break;
 		}
-#if 0
 		case Stat::FlagsAfterL: {
-			if (ch == 'l') {
-				stat = Stat::FlagsAfterLL;
-			} else {
-				eatNextFlag = false;
-				stat = Stat::Flags;
-			}
-			break;
-		}
-#endif
-#if 0
-		case Stat::FlagsAfterLL: {
 			if (ch == 'd' || ch == 'i') {
 				int32_t num = va_arg(ap, int32_t);
-				formatterFlags.FormatNumber_d(num, buff, sizeof(buff));
-				Print(buff);
+				const char* p = formatterFlags.FormatNumber_d(num, buff, sizeof(buff));
+				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
 			} else if (ch == 'u') {
-				unsigned int num = va_arg(ap, unsigned int);
-				formatterFlags.FormatNumber_u(num, buff, sizeof(buff));
-				Print(buff);
+				uint32_t num = va_arg(ap, uint32_t);
+				const char* p = formatterFlags.FormatNumber_u(num, buff, sizeof(buff));
+				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
 			} else if (ch == 'b') {
-				unsigned int num = va_arg(ap, unsigned int);
-				formatterFlags.FormatNumber_b(num, buff, sizeof(buff));
-				Print(buff);
+				uint32_t num = va_arg(ap, uint32_t);
+				const char* p = formatterFlags.FormatNumber_b(num, buff, sizeof(buff));
+				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
 			} else if (ch == 'o') {
-				unsigned int num = va_arg(ap, unsigned int);
-				formatterFlags.FormatNumber_o(num, buff, sizeof(buff));
-				Print(buff);
+				uint32_t num = va_arg(ap, uint32_t);
+				const char* p = formatterFlags.FormatNumber_o(num, buff, sizeof(buff));
+				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
 			} else if (ch == 'x' || ch == 'X') {
-				unsigned int num = va_arg(ap, unsigned int);
+				uint32_t num = va_arg(ap, uint32_t);
 				formatterFlags.upperCaseFlag = (ch == 'X');
-				formatterFlags.FormatNumber_x(num, buff, sizeof(buff));
-				Print(buff);
+				const char* p = formatterFlags.FormatNumber_x(num, buff, sizeof(buff));
+				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
 			} else {
 				return false;
 			}
 			break;
 		}
-#endif
-#if 0
-		case Stat::FlagsAfterZ: {
-			if (ch == 'd' || ch == 'i') {
-				RefPtr<Value> pValue(source.FetchSizeT());
-				if (!pValue) return false;
-				if (!pValue->Format_d(*this, formatterFlags)) return false;
-				stat = Stat::Start;
-			} else if (ch == 'u') {
-				RefPtr<Value> pValue(source.FetchSizeT());
-				if (!pValue) return false;
-				if (!pValue->Format_u(*this, formatterFlags)) return false;
-				stat = Stat::Start;
-			} else if (ch == 'b') {
-				RefPtr<Value> pValue(source.FetchSizeT());
-				if (!pValue) return false;
-				if (!pValue->Format_b(*this, formatterFlags)) return false;
-				stat = Stat::Start;
-			} else if (ch == 'o') {
-				RefPtr<Value> pValue(source.FetchSizeT());
-				if (!pValue) return false;
-				if (!pValue->Format_o(*this, formatterFlags)) return false;
-				stat = Stat::Start;
-			} else if (ch == 'x' || ch == 'X') {
-				RefPtr<Value> pValue(source.FetchSizeT());
-				if (!pValue) return false;
-				formatterFlags.upperCaseFlag = (ch == 'X');
-				if (!pValue->Format_x(*this, formatterFlags)) return false;
-				stat = Stat::Start;
-			} else {
-				IssueError_WrongFormat();
-				return false;
-			}
-			break;
-		}
-#endif
 		case Stat::Padding: {
 			if ('0' <= ch && ch <= '9') {
 				formatterFlags.fieldMinWidth = formatterFlags.fieldMinWidth * 10 + (ch - '0');
