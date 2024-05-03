@@ -5,6 +5,8 @@
 #ifndef AVRT_H
 #define AVRT_H
 #include <stdarg.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <avr/pgmspace.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -406,15 +408,202 @@ public:
 	char charPadding;
 public:
 	void Initialize();
-	const char* FormatNumber_d(int num, char* buff, size_t size) const;
-	const char* FormatNumber_u(unsigned int num, char* buff, size_t size) const;
-	const char* FormatNumber_b(unsigned int num, char* buff, size_t size) const;
-	const char* FormatNumber_o(unsigned int num, char* buff, size_t size) const;
-	const char* FormatNumber_x(unsigned int num, char* buff, size_t size) const;
-	const char* FormatNumber_e(double num, char* buff, size_t size) const;
-	const char* FormatNumber_f(double num, char* buff, size_t size) const;
-	const char* FormatNumber_g(double num, char* buff, size_t size) const;
+	template<typename T, typename T_Unsigned> const char* FormatNumber_d(T num, char* buff, size_t size) const;
+	template<typename T> const char* FormatNumber_u(T num, char* buff, size_t size) const;
+	template<typename T> const char* FormatNumber_b(T num, char* buff, size_t size) const;
+	template<typename T> const char* FormatNumber_o(T num, char* buff, size_t size) const;
+	template<typename T> const char* FormatNumber_x(T num, char* buff, size_t size) const;
+	const char* FormatNumber_e(float num, char* buff, size_t size) const;
+	const char* FormatNumber_f(float num, char* buff, size_t size) const;
+	const char* FormatNumber_g(float num, char* buff, size_t size) const;
+private:
+	void ToString(char* fmt, char qualifier) const;
 };
+
+template<typename T, typename T_Unsigned>
+const char* FormatterFlags::FormatNumber_d(T num, char* buff, size_t size) const
+{
+	char* p = buff + size - 1;
+	*p = '\0';
+	if (num == 0) {
+		if (precision == 0) {
+			// empty string
+		} else {
+			p--;
+			*p = '0';
+		}
+	} else if (num > 0) {
+		int nCols = 0;
+		for ( ; num != 0; num /= 10, nCols++) {
+			p--;
+			*p = (num % 10) + '0';
+		}
+		if (nCols < precision) {
+			int cnt = ChooseMin(precision, static_cast<int>(size) - 2) - nCols;
+			while (cnt-- > 0) {
+				p--;
+				*p = '0';
+			}
+		}
+		if (plusMode == PlusMode::Space) {
+			p--;
+			*p = ' ';
+		} else if (plusMode == PlusMode::Plus) {
+			p--;
+			*p = '+';
+		}
+	} else {
+		int nCols = 0;
+		T_Unsigned numNeg = -num;
+		for ( ; numNeg != 0; numNeg /= 10, nCols++) {
+			p--;
+			*p = (numNeg % 10) + '0';
+		}
+		if (nCols < precision) {
+			int cnt = ChooseMin(precision, static_cast<int>(size) - 2) - nCols;
+			while (cnt-- > 0) {
+				p--;
+				*p = '0';
+			}
+		}
+		p--;
+		*p = '-';
+	}
+	return p;
+}
+
+template<typename T>
+const char* FormatterFlags::FormatNumber_u(T num, char* buff, size_t size) const
+{
+	char* p = buff + size - 1;
+	*p = '\0';
+	if (num == 0) {
+		if (precision == 0) {
+			// empty string
+		} else {
+			p--;
+			*p = '0';
+		}
+	} else {
+		int nCols = 0;
+		for ( ; num != 0; num /= 10, nCols++) {
+			p--;
+			*p = (num % 10) + '0';
+		}
+		if (nCols < precision) {
+			int cnt = ChooseMin(precision, static_cast<int>(size) - 1) - nCols;
+			while (cnt-- > 0) {
+				p--;
+				*p = '0';
+			}
+		}
+	}
+	return p;
+}
+
+template<typename T>
+const char* FormatterFlags::FormatNumber_b(T num, char* buff, size_t size) const
+{
+	char* p = buff + size - 1;
+	*p = '\0';
+	if (num == 0) {
+		if (precision == 0) {
+			// empty string
+		} else {
+			p--;
+			*p = '0';
+		}
+	} else {
+		int nCols = 0;
+		for ( ; num != 0; num >>= 1, nCols++) {
+			p--;
+			*p = '0' + (num & 0x1);
+		}
+		if (nCols < precision) {
+			int cnt = ChooseMin(precision, static_cast<int>(size) - 1) - nCols;
+			while (cnt-- > 0) {
+				p--;
+				*p = '0';
+			}
+		} else if (sharpFlag) {
+			p--;
+			*p = 'b';
+			p--;
+			*p = '0';
+		}
+	}
+	return p;
+}
+
+template<typename T>
+const char* FormatterFlags::FormatNumber_o(T num, char* buff, size_t size) const
+{
+	char* p = buff + size - 1;
+	*p = '\0';
+	if (num == 0) {
+		if (precision == 0) {
+			// empty string
+		} else {
+			p--;
+			*p = '0';
+		}
+	} else {
+		int nCols = 0;
+		for ( ; num != 0; num >>= 3, nCols++) {
+			p--;
+			*p = '0' + (num & 0x7);
+		}
+		if (nCols < precision) {
+			int cnt = ChooseMin(precision, static_cast<int>(size) - 1) - nCols;
+			while (cnt-- > 0) {
+				p--;
+				*p = '0';
+			}
+		} else if (sharpFlag) {
+			p--;
+			*p = '0';
+		}
+	}
+	return p;
+}
+
+template<typename T>
+const char* FormatterFlags::FormatNumber_x(T num, char* buff, size_t size) const
+{
+	const static char convUpperTbl[] PROGMEM = "0123456789ABCDEF";
+	const static char convLowerTbl[] PROGMEM = "0123456789abcdef";
+	char* p = buff + size - 1;
+	*p = '\0';
+	const char* convTbl = upperCaseFlag? convUpperTbl : convLowerTbl;
+	if (num == 0) {
+		if (precision == 0) {
+			// empty string
+		} else {
+			p--;
+			*p = '0';
+		}
+	} else {
+		int nCols = 0;
+		for ( ; num != 0; num >>= 4, nCols++) {
+			p--;
+			*p = pgm_read_byte(&convTbl[num & 0xf]);
+		}
+		if (nCols < precision) {
+			int cnt = ChooseMin(precision, static_cast<int>(size) - 3) - nCols;
+			while (cnt-- > 0) {
+				p--;
+				*p = '0';
+			}
+		}
+		if (sharpFlag) {
+			p--;
+			*p = upperCaseFlag? 'X' : 'x';
+			p--;
+			*p = '0';
+		}
+	}
+	return p;
+}
 
 //------------------------------------------------------------------------------
 // StringPtr

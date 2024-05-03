@@ -1,5 +1,7 @@
 #include "avrt.h"
 
+#define ENABLE_L_FLAG
+
 namespace avrt {
 
 //------------------------------------------------------------------------------
@@ -16,202 +18,61 @@ void FormatterFlags::Initialize()
 	charPadding = ' ';
 }
 
-const char* FormatterFlags::FormatNumber_d(int num, char* buff, size_t size) const
+const char* FormatterFlags::FormatNumber_e(float num, char* buff, size_t size) const
 {
-	char* p = buff + size - 1;
-	*p = '\0';
-	if (num == 0) {
-		if (precision == 0) {
-			// empty string
-		} else {
-			p--;
-			*p = '0';
-		}
-	} else if (num > 0) {
-		int nCols = 0;
-		for ( ; num != 0; num /= 10, nCols++) {
-			p--;
-			*p = (num % 10) + '0';
-		}
-		if (nCols < precision) {
-			int cnt = ChooseMin(precision, static_cast<int>(size) - 2) - nCols;
-			while (cnt-- > 0) {
-				p--;
-				*p = '0';
-			}
-		}
-		if (plusMode == PlusMode::Space) {
-			p--;
-			*p = ' ';
-		} else if (plusMode == PlusMode::Plus) {
-			p--;
-			*p = '+';
-		}
-	} else {
-		int nCols = 0;
-		unsigned int numNeg = -num;
-		for ( ; numNeg != 0; numNeg /= 10, nCols++) {
-			p--;
-			*p = (numNeg % 10) + '0';
-		}
-		if (nCols < precision) {
-			int cnt = ChooseMin(precision, static_cast<int>(size) - 2) - nCols;
-			while (cnt-- > 0) {
-				p--;
-				*p = '0';
-			}
-		}
-		p--;
-		*p = '-';
-	}
-	return p;
-}
-
-const char* FormatterFlags::FormatNumber_u(unsigned int num, char* buff, size_t size) const
-{
-	char* p = buff + size - 1;
-	*p = '\0';
-	if (num == 0) {
-		if (precision == 0) {
-			// empty string
-		} else {
-			p--;
-			*p = '0';
-		}
-	} else {
-		int nCols = 0;
-		for ( ; num != 0; num /= 10, nCols++) {
-			p--;
-			*p = (num % 10) + '0';
-		}
-		if (nCols < precision) {
-			int cnt = ChooseMin(precision, static_cast<int>(size) - 1) - nCols;
-			while (cnt-- > 0) {
-				p--;
-				*p = '0';
-			}
-		}
-	}
-	return p;
-}
-
-const char* FormatterFlags::FormatNumber_b(unsigned int num, char* buff, size_t size) const
-{
-	char* p = buff + size - 1;
-	*p = '\0';
-	if (num == 0) {
-		if (precision == 0) {
-			// empty string
-		} else {
-			p--;
-			*p = '0';
-		}
-	} else {
-		int nCols = 0;
-		for ( ; num != 0; num >>= 1, nCols++) {
-			p--;
-			*p = '0' + (num & 0x1);
-		}
-		if (nCols < precision) {
-			int cnt = ChooseMin(precision, static_cast<int>(size) - 1) - nCols;
-			while (cnt-- > 0) {
-				p--;
-				*p = '0';
-			}
-		} else if (sharpFlag) {
-			p--;
-			*p = 'b';
-			p--;
-			*p = '0';
-		}
-	}
-	return p;
-}
-
-const char* FormatterFlags::FormatNumber_o(unsigned int num, char* buff, size_t size) const
-{
-	char* p = buff + size - 1;
-	*p = '\0';
-	if (num == 0) {
-		if (precision == 0) {
-			// empty string
-		} else {
-			p--;
-			*p = '0';
-		}
-	} else {
-		int nCols = 0;
-		for ( ; num != 0; num >>= 3, nCols++) {
-			p--;
-			*p = '0' + (num & 0x7);
-		}
-		if (nCols < precision) {
-			int cnt = ChooseMin(precision, static_cast<int>(size) - 1) - nCols;
-			while (cnt-- > 0) {
-				p--;
-				*p = '0';
-			}
-		} else if (sharpFlag) {
-			p--;
-			*p = '0';
-		}
-	}
-	return p;
-}
-
-const char* FormatterFlags::FormatNumber_x(unsigned int num, char* buff, size_t size) const
-{
-	const static char convUpperTbl[] PROGMEM = "0123456789ABCDEF";
-	const static char convLowerTbl[] PROGMEM = "0123456789abcdef";
-	char* p = buff + size - 1;
-	*p = '\0';
-	const char* convTbl = upperCaseFlag? convUpperTbl : convLowerTbl;
-	if (num == 0) {
-		if (precision == 0) {
-			// empty string
-		} else {
-			p--;
-			*p = '0';
-		}
-	} else {
-		int nCols = 0;
-		for ( ; num != 0; num >>= 4, nCols++) {
-			p--;
-			*p = pgm_read_byte(&convTbl[num & 0xf]);
-		}
-		if (nCols < precision) {
-			int cnt = ChooseMin(precision, static_cast<int>(size) - 3) - nCols;
-			while (cnt-- > 0) {
-				p--;
-				*p = '0';
-			}
-		}
-		if (sharpFlag) {
-			p--;
-			*p = upperCaseFlag? 'X' : 'x';
-			p--;
-			*p = '0';
-		}
-	}
-	return p;
-}
-
-const char* FormatterFlags::FormatNumber_e(double num, char* buff, size_t size) const
-{
-	//::snprintf(buff, size, ToString(upperCaseFlag? "E" : "e").c_str(), num);
+#if 1
+	char fmt[32];
+	ToString(fmt, upperCaseFlag? 'E' : 'e');
+	::snprintf(buff, size, fmt, num);
+#endif
 	return buff;
 }
 
-const char* FormatterFlags::FormatNumber_f(double num, char* buff, size_t size) const
+const char* FormatterFlags::FormatNumber_f(float num, char* buff, size_t size) const
 {
-	//::snprintf(buff, size, ToString("f").c_str(), num);
+#if 1
+	char fmt[32];
+	ToString(fmt, 'f');
+	::snprintf(buff, size, fmt, num);
+#endif
 	return buff;
 }
 
-const char* FormatterFlags::FormatNumber_g(double num, char* buff, size_t size) const
+const char* FormatterFlags::FormatNumber_g(float num, char* buff, size_t size) const
 {
-	//::snprintf(buff, size, ToString(upperCaseFlag? "G" : "g").c_str(), num);
+#if 1
+	char fmt[32];
+	ToString(fmt, upperCaseFlag? 'G' : 'g');
+	::snprintf(buff, size, fmt, num);
+#endif
 	return buff;
+}
+
+void FormatterFlags::ToString(char* fmt, char qualifier) const
+{
+	char* p = fmt;
+	*p++ = '%';
+	if (leftAlignFlag) *p++ += '-';
+	if (sharpFlag) *p++ += '#';
+	if (charPadding == '0') *p++ += '0';
+	if (plusMode == PlusMode::Space) {
+		*p++ += ' ';
+	} else if (plusMode == PlusMode::Plus) {
+		*p++ += '+';
+	}
+	if (fieldMinWidth > 0) {
+		::itoa(fieldMinWidth, p, 10);
+		for ( ; *p; p++) ;
+	}
+	if (precision == Prec::Null) {
+		*p++ = '.';
+	} else if (precision >= 0) {
+		*p++ = '.';
+		::itoa(precision, p, 10);
+		for ( ; *p; p++) ;
+	}
+	*p++ += qualifier;
+	*p = '\0';
 }
 
 //------------------------------------------------------------------------------
@@ -282,11 +143,14 @@ bool Serial::PrintfV(const __FlashStringHelper* format, va_list ap)
 bool Serial::PrintfV(StringPtr& format, va_list ap)
 {
 	enum class Stat {
-		Start, FlagsPre, Flags,
-		FlagsAfterWhite, FlagsAfterL,
+		Start, NoFormat, FlagsPre, Flags,
+		FlagsAfterWhite,
+#if defined(ENABLE_L_FLAG)
+		FlagsAfterL,
+#endif
 		PrecisionPre, Precision, Padding,
 	};
-	char buff[32];
+	char buff[40];
 	bool eatNextFlag;
 	FormatterFlags formatterFlags;
 	Stat stat = Stat::Start;
@@ -301,6 +165,10 @@ bool Serial::PrintfV(StringPtr& format, va_list ap)
 			} else {
 				PutChar(ch);
 			}
+			break;
+		}
+		case Stat::NoFormat: {
+			PutChar(ch);
 			break;
 		}
 		case Stat::FlagsPre: {
@@ -343,10 +211,16 @@ bool Serial::PrintfV(StringPtr& format, va_list ap)
 			} else if (ch == '.') {
 				stat = Stat::PrecisionPre;
 			} else if (ch == 'l') {
+#if defined(ENABLE_L_FLAG)
 				stat = Stat::FlagsAfterL;
+#else
+				static const char msg[] PROGMEM = "[l flag is not enabled]";
+				Print(reinterpret_cast<const __FlashStringHelper*>(msg));
+				stat = Stat::NoFormat;
+#endif
 			} else if (ch == 'd' || ch == 'i') {
 				int num = va_arg(ap, int);
-				const char* p = formatterFlags.FormatNumber_d(num, buff, sizeof(buff));
+				const char* p = formatterFlags.FormatNumber_d<int, unsigned int>(num, buff, sizeof(buff));
 				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
 			} else if (ch == 'u') {
@@ -415,10 +289,11 @@ bool Serial::PrintfV(StringPtr& format, va_list ap)
 			}
 			break;
 		}
+#if defined(ENABLE_L_FLAG)
 		case Stat::FlagsAfterL: {
 			if (ch == 'd' || ch == 'i') {
 				int32_t num = va_arg(ap, int32_t);
-				const char* p = formatterFlags.FormatNumber_d(num, buff, sizeof(buff));
+				const char* p = formatterFlags.FormatNumber_d<int32_t, uint32_t>(num, buff, sizeof(buff));
 				PutAlignedString(formatterFlags, p);
 				stat = Stat::Start;
 			} else if (ch == 'u') {
@@ -447,6 +322,7 @@ bool Serial::PrintfV(StringPtr& format, va_list ap)
 			}
 			break;
 		}
+#endif
 		case Stat::Padding: {
 			if ('0' <= ch && ch <= '9') {
 				formatterFlags.fieldMinWidth = formatterFlags.fieldMinWidth * 10 + (ch - '0');
