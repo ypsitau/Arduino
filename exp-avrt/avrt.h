@@ -663,7 +663,7 @@ public:
 public:
 	Serial() {}
 	void Write(const uint8_t* buff, int len);
-	void PutChar(char ch) { PutData(static_cast<uint8_t>(ch)); }
+	void PutChar(char ch) { TransmitData(static_cast<uint8_t>(ch)); }
 	void Print(const char* str);
 	void Print(const __FlashStringHelper* str);
 	void Println(const char* str);
@@ -677,8 +677,8 @@ public:
 public:
 	virtual void Open(BaudRate baudRate, uint8_t charSize, uint8_t stopBit, uint8_t parity) = 0;
 	virtual void Close() = 0;
-	virtual void PutData(uint8_t data) = 0;
-	virtual uint8_t GetData() = 0;
+	virtual void TransmitData(uint8_t data) = 0;
+	virtual uint8_t ReceiveData() = 0;
 public:
 	static uint16_t LookupUBRR(BaudRate baudRate, bool doubleSpeedFlag);
 };
@@ -689,10 +689,10 @@ public:
 class Serial0 : public Serial {
 public:
 	Serial0() {}
-	virtual void Open(BaudRate baudRate, uint8_t charSize, uint8_t stopBit, uint8_t parity);
+	virtual void Open(BaudRate baudRate, uint8_t charSize = CharSize8, uint8_t stopBit = StopBit1, uint8_t parity = ParityNone);
 	virtual void Close();
-	virtual void PutData(uint8_t data);
-	virtual uint8_t GetData();
+	virtual void TransmitData(uint8_t data);
+	virtual uint8_t ReceiveData();
 };
 
 };

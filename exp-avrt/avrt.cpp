@@ -80,7 +80,7 @@ void FormatterFlags::ToString(char* fmt, char qualifier) const
 //------------------------------------------------------------------------------
 void Serial::Write(const uint8_t* buff, int len)
 {
-	for ( ; len > 0; buff++, len--) PutData(*buff);
+	for ( ; len > 0; buff++, len--) TransmitData(*buff);
 }
 
 void Serial::Print(const char* str)
@@ -445,15 +445,16 @@ void Serial0::Close()
 {
 }
 
-void Serial0::PutData(uint8_t data)
+void Serial0::TransmitData(uint8_t data)
 {
+	while (!(UCSR0A & (0b1 << UDRE0))) ;
 	UDR0 = data;
-	while (!(UCSR0A & (0b1 << TXC0))) ;
 	UCSR0A |= (0b1 << TXC0);	// set one to clear TXCn
 }
 
-uint8_t Serial0::GetData()
+uint8_t Serial0::ReceiveData()
 {
+	while (!UCSR0A & (0b1 << RXC0)) ;
 	return UDR0;
 }
 
