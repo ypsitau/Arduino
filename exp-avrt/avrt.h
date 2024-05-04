@@ -718,7 +718,8 @@ public:
 // Serial0
 //------------------------------------------------------------------------------
 template<
-	uint8_t dataRXCIE0		= 0b1,			// RXCIEn: RX Complete Interrupt Enable n = true
+	bool useInterrupt		= true,
+	//uint8_t dataRXCIE0	= 0b1,			// RXCIEn: RX Complete Interrupt Enable n = true
 	uint8_t dataTXCIE0		= 0b0,			// TXCIEn: TX Complete Interrupt Enable n = false
 	uint8_t dataUDRIE0		= 0b0,			// UDRIEn: USART Data Register Empty Interrupt Enable n = false
 	uint8_t dataUMSEL00		= 0b00,			// UMSELn: USART Mode Select = Asynchronous USART
@@ -729,14 +730,13 @@ template<
 	uint8_t dataRXEN0		= 0b1,			// RXENn: Receiver Enable n = true
 	uint8_t dataTXEN0		= 0b1			// TXENn: Transmitter Enable n = true
 > class Serial0 : public Serial {
-public:
-	static constexpr bool hasBuffForRead = dataRXCIE0;
 private:
-	BufferFIFO<> buffs_[hasBuffForRead? 1 : 0];
+	BufferFIFO<> buffs_[useInterrupt? 1 : 0];
 public:
 	Serial0() {}
 	BufferFIFO<>& GetBuffForRead() { return buffs_[0]; }
 	virtual void Open(BaudRate baudRate, uint8_t charSize = CharSize8, uint8_t stopBit = StopBit1, uint8_t parity = ParityNone) {
+		constexpr uint8_t dataRXCIE0 = useInterrupt? 0b1 : 0b0; // RXCIEn: RX Complete Interrupt Enable n
 		uint8_t dataUCSZ = charSize;
 		uint8_t dataUSBS = stopBit;
 		uint8_t dataUPM = parity;
@@ -761,7 +761,7 @@ public:
 		uint16_t dataUBRR = LookupUBRR(baudRate, dataU2X);
 		UBRR0H = static_cast<uint8_t>((dataUBRR >> 8) & 0xff); // this must be written first
 		UBRR0L = static_cast<uint8_t>(dataUBRR & 0xff);
-		volatile uint8_t dummy = UDR0;
+		volatile uint8_t dummy = UDR0;		// clear RXCn
 	}
 	virtual void Close() {}
 	virtual void TransmitData(uint8_t data) {
@@ -769,7 +769,7 @@ public:
 		UDR0 = data;
 	}
 	virtual uint8_t ReceiveData() {
-		if constexpr (hasBuffForRead) {
+		if constexpr (useInterrupt) {
 			return GetBuffForRead().ReadByte();
 		} else {
 			while (!UCSR0A & (0b1 << RXC0)) ;
