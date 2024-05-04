@@ -733,7 +733,7 @@ void CompileTest_Port_InputAnalog()
 
 void Test_Serial_Printf()
 {
-	av::Serial0<> serial;
+	av::Serial0 serial;
 	serial.Open(av::Serial::BaudRate57600, av::Serial::CharSize8, av::Serial::ParityNone, av::Serial::StopBit1);
 	serial.Println("---- %d specifier ----");
 	serial.Printf(F("%%d 0              '%d'\n"), 0);
