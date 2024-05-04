@@ -630,6 +630,37 @@ public:
 };
 
 //------------------------------------------------------------------------------
+// BufferFIFO
+//------------------------------------------------------------------------------
+template<int size = 32> class BufferFIFO {
+public:
+	static constexpr uint8_t sizeMinusOne = static_cast<uint8_t>(size - 1);
+private:
+	uint8_t posRead_;
+	uint8_t posWrite_;
+	uint8_t buff_[size];
+public:
+	BufferFIFO() : posRead_(0), posWrite_(0) {}
+	void WriteByte(uint8_t data) {
+		uint8_t posWriteNext = (posWrite_ == sizeMinusOne)? 0 : posWrite_ + 1;
+		if (posWriteNext == posRead_) return;
+		buff_[posWrite_] = data;
+		posWrite_ = posWriteNext;
+	}
+	uint8_t ReadByte() {
+		if (IsEmpty()) return 0x00;		
+		uint8_t data = buff_[posRead_];
+		posRead_ = (posRead_ == sizeMinusOne)? 0 : posRead_ + 1;
+		return data;
+	}
+	bool IsEmpty() { return posRead_ == posWrite_; }
+	bool HasRoom() {
+		uint8_t posWriteNext = (posWrite_ == sizeMinusOne)? 0 : posWrite_ + 1;
+		return posWriteNext != posRead_;
+	}
+};
+
+//------------------------------------------------------------------------------
 // Serial
 //------------------------------------------------------------------------------
 class Serial {
@@ -687,7 +718,7 @@ public:
 // Serial0
 //------------------------------------------------------------------------------
 template<
-	uint8_t dataRXCIE0		= 0b0,			// RXCIEn: RX Complete Interrupt Enable n = false
+	uint8_t dataRXCIE0		= 0b1,			// RXCIEn: RX Complete Interrupt Enable n = true
 	uint8_t dataTXCIE0		= 0b0,			// TXCIEn: TX Complete Interrupt Enable n = false
 	uint8_t dataUDRIE0		= 0b0,			// UDRIEn: USART Data Register Empty Interrupt Enable n = false
 	uint8_t dataUMSEL00		= 0b00,			// UMSELn: USART Mode Select = Asynchronous USART
@@ -699,7 +730,12 @@ template<
 	uint8_t dataTXEN0		= 0b1			// TXENn: Transmitter Enable n = true
 > class Serial0 : public Serial {
 public:
+	static constexpr bool hasBuffForRead = dataRXCIE0;
+private:
+	BufferFIFO<> buffs_[hasBuffForRead? 1 : 0];
+public:
 	Serial0() {}
+	BufferFIFO<>& GetBuffForRead() { return buffs_[0]; }
 	virtual void Open(BaudRate baudRate, uint8_t charSize = CharSize8, uint8_t stopBit = StopBit1, uint8_t parity = ParityNone) {
 		uint8_t dataUCSZ = charSize;
 		uint8_t dataUSBS = stopBit;
@@ -730,11 +766,14 @@ public:
 	virtual void TransmitData(uint8_t data) {
 		while (!(UCSR0A & (0b1 << UDRE0))) ;
 		UDR0 = data;
-		UCSR0A |= (0b1 << TXC0);	// set one to clear TXCn
 	}
 	virtual uint8_t ReceiveData() {
+		if constexpr (hasBuffForRead) return GetBuffForRead().ReadByte();
 		while (!UCSR0A & (0b1 << RXC0)) ;
 		return UDR0;
+	}
+	void HandleIRQ_USART_RX() {
+		while (UCSR0A & (0b1 << RXC0)) GetBuffForRead().WriteByte(UDR0);
 	}
 };
 

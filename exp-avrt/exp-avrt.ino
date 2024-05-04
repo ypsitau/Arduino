@@ -731,10 +731,14 @@ void CompileTest_Port_InputAnalog()
 	data16 = av::Port<av::A6>().InputAnalog();
 }
 
+av::Serial0<> serial;
+
+ISR(USART_RX_vect) {
+	serial.HandleIRQ_USART_RX();
+}
+
 void Test_Serial_Printf()
 {
-	av::Serial0<> serial;
-	serial.Open(av::Serial::BaudRate57600, av::Serial::CharSize8, av::Serial::ParityNone, av::Serial::StopBit1);
 	serial.Println("---- %d specifier ----");
 	serial.Printf(F("%%d 0              '%d'\n"), 0);
 	serial.Printf(F("%%d 1234           '%d'\n"), 1234);
@@ -886,6 +890,15 @@ void Test_Serial_Printf()
 	//serial.Printf(F("%%f 0              '%f'\n"), 0);
 }
 
+void Test_Serial_ReceiveData()
+{
+	serial.Println("Test of ReceiveData");
+	for (;;) {
+		uint8_t data = serial.ReceiveData();
+		serial.TransmitData(data);
+	}
+}
+
 void setup()
 {
 #if 0
@@ -904,7 +917,10 @@ void setup()
 	CompileTest_Port_WaitADC();
 	CompileTest_Port_InputAnalog();
 #endif
-	Test_Serial_Printf();
+
+	serial.Open(av::Serial::BaudRate57600, av::Serial::CharSize8, av::Serial::ParityNone, av::Serial::StopBit1);
+	//Test_Serial_Printf();
+	Test_Serial_ReceiveData();
 }
 
 void loop()
