@@ -891,9 +891,21 @@ void Test_Serial_Printf()
 void Test_Serial_ReceiveData()
 {
 	serial.Println("Test of ReceiveData");
-	for (;;) {
-		uint8_t data = serial.ReceiveData();
-		serial.TransmitData(data);
+	for (int i = 0; i < 32; i++) {
+		uint8_t ch = serial.ReceiveData();
+		if (ch != 0x00) {
+			serial.TransmitData(ch);
+		}
+		//char buff[32];
+		//int i = 0;
+		//for (i = 0; i < 32; i++) {
+		//	while (!serial.HasReceiveData()) ;
+		//	char ch = serial.ReceiveData();
+		//	if (ch == '\n') break;
+		//	buff[i] = ch;
+		//}
+		//buff[i] = 0x00;
+		//serial.Println(buff);
 	}
 }
 
