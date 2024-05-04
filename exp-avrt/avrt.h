@@ -762,7 +762,7 @@ public:
 		uint16_t dataUBRR = LookupUBRR(baudRate, dataU2X);
 		UBRR0H = static_cast<uint8_t>((dataUBRR >> 8) & 0xff); // this must be written first
 		UBRR0L = static_cast<uint8_t>(dataUBRR & 0xff);
-		volatile uint8_t dummy = UDR0;		// clear RXCn
+		//volatile uint8_t dummy = UDR0;		// clear RXCn
 	}
 	virtual void Close() {}
 	virtual void TransmitData(uint8_t data) {
