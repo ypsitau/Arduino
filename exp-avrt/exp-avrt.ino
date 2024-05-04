@@ -733,9 +733,7 @@ void CompileTest_Port_InputAnalog()
 
 av::Serial0<> serial;
 
-ISR(USART_RX_vect) {
-	serial.HandleIRQ_USART_RX();
-}
+RegisterISR_Serial0(serial)
 
 void Test_Serial_Printf()
 {
@@ -917,7 +915,6 @@ void setup()
 	CompileTest_Port_WaitADC();
 	CompileTest_Port_InputAnalog();
 #endif
-
 	serial.Open(av::Serial::BaudRate57600, av::Serial::CharSize8, av::Serial::ParityNone, av::Serial::StopBit1);
 	//Test_Serial_Printf();
 	Test_Serial_ReceiveData();

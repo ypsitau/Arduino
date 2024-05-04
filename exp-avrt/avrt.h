@@ -761,6 +761,7 @@ public:
 		uint16_t dataUBRR = LookupUBRR(baudRate, dataU2X);
 		UBRR0H = static_cast<uint8_t>((dataUBRR >> 8) & 0xff); // this must be written first
 		UBRR0L = static_cast<uint8_t>(dataUBRR & 0xff);
+		volatile uint8_t dummy = UDR0;
 	}
 	virtual void Close() {}
 	virtual void TransmitData(uint8_t data) {
@@ -768,9 +769,12 @@ public:
 		UDR0 = data;
 	}
 	virtual uint8_t ReceiveData() {
-		if constexpr (hasBuffForRead) return GetBuffForRead().ReadByte();
-		while (!UCSR0A & (0b1 << RXC0)) ;
-		return UDR0;
+		if constexpr (hasBuffForRead) {
+			return GetBuffForRead().ReadByte();
+		} else {
+			while (!UCSR0A & (0b1 << RXC0)) ;
+			return UDR0;
+		}
 	}
 	void HandleIRQ_USART_RX() {
 		while (UCSR0A & (0b1 << RXC0)) GetBuffForRead().WriteByte(UDR0);
@@ -778,5 +782,7 @@ public:
 };
 
 }
+
+#define RegisterISR_Serial0(serial) ISR(USART_RX_vect) { serial.HandleIRQ_USART_RX(); }
 
 #endif
