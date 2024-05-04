@@ -686,16 +686,6 @@ public:
 //------------------------------------------------------------------------------
 // Serial0
 //------------------------------------------------------------------------------
-class Serial0 : public Serial {
-public:
-	Serial0() {}
-	virtual void Open(BaudRate baudRate, uint8_t charSize = CharSize8, uint8_t stopBit = StopBit1, uint8_t parity = ParityNone);
-	virtual void Close();
-	virtual void TransmitData(uint8_t data);
-	virtual uint8_t ReceiveData();
-};
-
-#if 0
 template<
 	uint8_t dataRXCIE0		= 0b0,			// RXCIEn: RX Complete Interrupt Enable n = false
 	uint8_t dataTXCIE0		= 0b0,			// TXCIEn: TX Complete Interrupt Enable n = false
@@ -711,7 +701,6 @@ template<
 public:
 	Serial0() {}
 	virtual void Open(BaudRate baudRate, uint8_t charSize = CharSize8, uint8_t stopBit = StopBit1, uint8_t parity = ParityNone) {
-#if 0
 		uint8_t dataUCSZ = charSize;
 		uint8_t dataUSBS = stopBit;
 		uint8_t dataUPM = parity;
@@ -736,51 +725,18 @@ public:
 		uint16_t dataUBRR = LookupUBRR(baudRate, dataU2X);
 		UBRR0H = static_cast<uint8_t>((dataUBRR >> 8) & 0xff); // this must be written first
 		UBRR0L = static_cast<uint8_t>(dataUBRR & 0xff);
-#else
-		constexpr bool doubleSpeedFlag = false;
-		//constexpr uint8_t dataU2X = doubleSpeedFlag? 0b1 : 0b0;
-		uint8_t dataUCSZ = charSize;
-		uint8_t dataUSBS = stopBit;
-		uint8_t dataUPM = parity;
-		uint16_t dataUBRR = LookupUBRR(baudRate, doubleSpeedFlag);
-		UCSR0A =
-			(0b1 << TXC0) |					// TXCn: USART Transmit Complete .. set one to clear
-			(dataU2X << U2X0) |				// U2Xn: Double the USART Transmission Speed
-			(0b0 << MPCM0);					// MPCMn: Multi-processor Communication Mode
-		UCSR0B =
-			(0b0 << RXCIE0) |				// RXCIEn: RX Complete Interrupt Enable n = false
-			(0b0 << TXCIE0) |				// TXCIEn: TX Complete Interrupt Enable n = false
-			(0b0 << UDRIE0) |				// UDRIEn: USART Data Register Empty Interrupt Enable n = false
-			(0b1 << RXEN0) |				// RXENn: Receiver Enable n = true
-			(0b1 << TXEN0) |				// TXENn: Transmitter Enable n = true
-			((dataUCSZ >> 2) << UCSZ02) |	// UCSZn: Character Size
-			(0b0 << TXB80);					// TXB8n: Transmit Data Bit 8 n
-		UCSR0C =
-			(0b00 << UMSEL00) |				// UMSELn: USART Mode Select = Asynchronous USART
-			(dataUPM << UPM00) |			// UPMn: Parity Mode
-			(dataUSBS << USBS0) |			// USBSn: Stop Bit Select
-			((dataUCSZ & 0b11) << UCSZ00) |	// UCSZn: Character Size
-			(0b0 << UCPOL0);				// UCPOLn: Clock Polarity = Tx on Rising XCKn & Rx on Falling XCKn
-		UBRR0H = static_cast<uint8_t>((dataUBRR >> 8) & 0xff); // this must be written first
-		UBRR0L = static_cast<uint8_t>(dataUBRR & 0xff);
-#endif
 	}
 	virtual void Close() {}
 	virtual void TransmitData(uint8_t data) {
+		while (!(UCSR0A & (0b1 << UDRE0))) ;
 		UDR0 = data;
-		while (!(UCSR0A & (0b1 << TXC0))) ;
 		UCSR0A |= (0b1 << TXC0);	// set one to clear TXCn
-		//while (!(UCSR0A & (0b1 << UDRE0))) ;
-		//UDR0 = data;
-		//while ((UCSR0A & (0b1 << TXC0))) ;
-		//UCSR0A |= (0b1 << TXC0);	// set one to clear TXCn
 	}
 	virtual uint8_t ReceiveData() {
 		while (!UCSR0A & (0b1 << RXC0)) ;
 		return UDR0;
 	}
 };
-#endif
 
 }
 
