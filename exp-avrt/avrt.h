@@ -768,11 +768,11 @@ public:
 		UBRR0L = static_cast<uint8_t>(dataUBRR & 0xff);
 	}
 	void Close() {}
-	virtual void SendData(uint8_t data) {
+	virtual void SendData(uint8_t data) override {
 		while (!(UCSR0A & (0b1 << UDRE0))) ;
 		UDR0 = data;
 	}
-	virtual uint8_t RecvData() {
+	virtual uint8_t RecvData() override {
 		if constexpr (enableReceive) {
 			return GetBuffForRead().ReadByte();
 		} else {
