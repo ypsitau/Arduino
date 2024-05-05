@@ -890,12 +890,12 @@ void Test_Serial_Printf()
 
 void Test_Serial_ReceiveData()
 {
-	serial.Println("Test of ReceiveData");
+	serial.Println("Test of RecvData");
 	for (;;) {
-		if (serial.HasReceivedData()) {
+		if (serial.HasRecvData()) {
 			serial.Print("Received: ");
-			while (serial.HasReceivedData()) {
-				serial.TransmitData(serial.ReceiveData());
+			while (serial.HasRecvData()) {
+				serial.SendData(serial.RecvData());
 			}
 		}
 	}

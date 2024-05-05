@@ -661,9 +661,34 @@ public:
 };
 
 //------------------------------------------------------------------------------
+// Stream
+//------------------------------------------------------------------------------
+class Stream {
+public:
+	Stream() {}
+	void Write(const uint8_t* buff, int len);
+	void PutChar(char ch) { SendData(static_cast<uint8_t>(ch)); }
+	char GetChar() { return static_cast<char>(RecvData()); }
+	void Print(const char* str);
+	void Print(const __FlashStringHelper* str);
+	void Println() { PutChar('\n'); }
+	void Println(const char* str);
+	void Println(const __FlashStringHelper* str);
+	bool Printf(const char* format, ...);
+	bool Printf(const __FlashStringHelper* format, ...);
+	bool PrintfV(const char* format, va_list ap);
+	bool PrintfV(const __FlashStringHelper* format, va_list ap);
+	bool PrintfV(StringPtr& format, va_list ap);
+	void PutAlignedString(const FormatterFlags& formatterFlags, const char* str, int cntMax = -1);
+public:
+	virtual void SendData(uint8_t) = 0;
+	virtual uint8_t RecvData() = 0;
+};
+
+//------------------------------------------------------------------------------
 // Serial
 //------------------------------------------------------------------------------
-class Serial {
+class Serial : public Stream {
 public:
 	enum BaudRate {
 		BaudRate2400,
@@ -692,26 +717,6 @@ public:
 	constexpr static uint8_t StopBit1	= 0b0;
 	constexpr static uint8_t StopBit2	= 0b1;
 public:
-	Serial() {}
-	void Write(const uint8_t* buff, int len);
-	void PutChar(char ch) { TransmitData(static_cast<uint8_t>(ch)); }
-	void Print(const char* str);
-	void Print(const __FlashStringHelper* str);
-	void Println() { PutChar('\n'); }
-	void Println(const char* str);
-	void Println(const __FlashStringHelper* str);
-	bool Printf(const char* format, ...);
-	bool Printf(const __FlashStringHelper* format, ...);
-	bool PrintfV(const char* format, va_list ap);
-	bool PrintfV(const __FlashStringHelper* format, va_list ap);
-	bool PrintfV(StringPtr& format, va_list ap);
-	void PutAlignedString(const FormatterFlags& formatterFlags, const char* str, int cntMax = -1);
-public:
-	virtual void Open(BaudRate baudRate, uint8_t charSize, uint8_t stopBit, uint8_t parity) = 0;
-	virtual void Close() = 0;
-	virtual void TransmitData(uint8_t data) = 0;
-	virtual uint8_t ReceiveData() = 0;
-public:
 	static uint16_t LookupUBRR(BaudRate baudRate, bool doubleSpeedFlag);
 };
 
@@ -731,12 +736,11 @@ template<
 	uint8_t dataTXEN0		= 0b1			// TXENn: Transmitter Enable n = true
 > class Serial0 : public Serial {
 private:
-	//FIFOBuff<> buffs_[enableReceive? 1 : 0];
-	FIFOBuff<> buffs_[1];
+	FIFOBuff<> buffs_[enableReceive? 1 : 0];
 public:
 	Serial0() {}
 	FIFOBuff<>& GetBuffForRead() { return buffs_[0]; }
-	virtual void Open(BaudRate baudRate, uint8_t charSize = CharSize8, uint8_t stopBit = StopBit1, uint8_t parity = ParityNone) {
+	void Open(BaudRate baudRate, uint8_t charSize = CharSize8, uint8_t stopBit = StopBit1, uint8_t parity = ParityNone) {
 		constexpr uint8_t dataRXCIE0 = enableReceive? 0b1 : 0b0; // RXCIEn: RX Complete Interrupt Enable n
 		uint8_t dataUCSZ = charSize;
 		uint8_t dataUSBS = stopBit;
@@ -762,32 +766,28 @@ public:
 		uint16_t dataUBRR = LookupUBRR(baudRate, dataU2X);
 		UBRR0H = static_cast<uint8_t>((dataUBRR >> 8) & 0xff); // this must be written first
 		UBRR0L = static_cast<uint8_t>(dataUBRR & 0xff);
-		//volatile uint8_t dummy = UDR0;		// clear RXCn
 	}
-	virtual void Close() {}
-	virtual void TransmitData(uint8_t data) {
+	void Close() {}
+	virtual void SendData(uint8_t data) {
 		while (!(UCSR0A & (0b1 << UDRE0))) ;
 		UDR0 = data;
 	}
-	virtual uint8_t ReceiveData() {
-		return GetBuffForRead().ReadByte();
-		//if constexpr (enableReceive) {
-		//	return GetBuffForRead().ReadByte();
-		//} else {
-		//	return 0x00;
-		//}
+	virtual uint8_t RecvData() {
+		if constexpr (enableReceive) {
+			return GetBuffForRead().ReadByte();
+		} else {
+			return 0x00;
+		}
 	}
-	bool HasReceivedData() {
-		return !GetBuffForRead().IsEmpty();
-		//if constexpr (enableReceive) {
-		//	return !GetBuffForRead().IsEmpty();
-		//} else {
-		//	return false;
-		//}
+	bool HasRecvData() {
+		if constexpr (enableReceive) {
+			return !GetBuffForRead().IsEmpty();
+		} else {
+			return false;
+		}
 	}
 	void HandleIRQ_USART_RX() {
-		//while (UCSR0A & (0b1 << RXC0)) GetBuffForRead().WriteByte(UDR0);
-		GetBuffForRead().WriteByte(UDR0);
+		while (UCSR0A & (0b1 << RXC0)) GetBuffForRead().WriteByte(UDR0);
 	}
 };
 

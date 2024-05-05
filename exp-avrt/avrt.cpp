@@ -76,19 +76,19 @@ void FormatterFlags::ToString(char* fmt, char qualifier) const
 }
 
 //------------------------------------------------------------------------------
-// Serial
+// Stream
 //------------------------------------------------------------------------------
-void Serial::Write(const uint8_t* buff, int len)
+void Stream::Write(const uint8_t* buff, int len)
 {
-	for ( ; len > 0; buff++, len--) TransmitData(*buff);
+	for ( ; len > 0; buff++, len--) SendData(*buff);
 }
 
-void Serial::Print(const char* str)
+void Stream::Print(const char* str)
 {
 	for (const char* p = str; *p; p++) PutChar(*p);
 }
 
-void Serial::Print(const __FlashStringHelper* str)
+void Stream::Print(const __FlashStringHelper* str)
 {
 	const char* p = reinterpret_cast<const char*>(str);
 	for ( ; ; p++) {
@@ -98,19 +98,19 @@ void Serial::Print(const __FlashStringHelper* str)
 	}
 }
 
-void Serial::Println(const char* str)
+void Stream::Println(const char* str)
 {
 	Print(str);
 	PutChar('\n');
 }
 
-void Serial::Println(const __FlashStringHelper* str)
+void Stream::Println(const __FlashStringHelper* str)
 {
 	Print(str);
 	PutChar('\n');
 }
 
-bool Serial::Printf(const char* format, ...)
+bool Stream::Printf(const char* format, ...)
 {
 	va_list ap;
 	va_start(ap, format);
@@ -119,7 +119,7 @@ bool Serial::Printf(const char* format, ...)
 	return rtn;
 }
 
-bool Serial::Printf(const __FlashStringHelper* format, ...)
+bool Stream::Printf(const __FlashStringHelper* format, ...)
 {
 	va_list ap;
 	va_start(ap, format);
@@ -128,19 +128,19 @@ bool Serial::Printf(const __FlashStringHelper* format, ...)
 	return rtn;
 }
 
-bool Serial::PrintfV(const char* format, va_list ap)
+bool Stream::PrintfV(const char* format, va_list ap)
 {
 	StringPtr_SRAM format_(format);
 	return PrintfV(format_, ap);
 }
 
-bool Serial::PrintfV(const __FlashStringHelper* format, va_list ap)
+bool Stream::PrintfV(const __FlashStringHelper* format, va_list ap)
 {
 	StringPtr_Flash format_(format);
 	return PrintfV(format_, ap);
 }
 
-bool Serial::PrintfV(StringPtr& format, va_list ap)
+bool Stream::PrintfV(StringPtr& format, va_list ap)
 {
 	enum class Stat {
 		Start, NoFormat, FlagsPre, Flags,
@@ -367,7 +367,7 @@ bool Serial::PrintfV(StringPtr& format, va_list ap)
 	return true;
 }
 
-void Serial::PutAlignedString(const FormatterFlags& formatterFlags, const char* str, int cntMax)
+void Stream::PutAlignedString(const FormatterFlags& formatterFlags, const char* str, int cntMax)
 {
 	int cnt = 0;
 	for (const char* p = str; *p; p++, cnt++) ;
@@ -383,6 +383,9 @@ void Serial::PutAlignedString(const FormatterFlags& formatterFlags, const char* 
 	}
 }
 
+//------------------------------------------------------------------------------
+// Serial
+//------------------------------------------------------------------------------
 uint16_t Serial::LookupUBRR(BaudRate baudRate, bool doubleSpeedFlag)
 {
 	// 20.20 Examples of Baud Rate Setting
