@@ -630,17 +630,17 @@ public:
 };
 
 //------------------------------------------------------------------------------
-// BufferFIFO
+// FIFOBuff
 //------------------------------------------------------------------------------
-template<int size = 32> class BufferFIFO {
+template<int size = 32> class FIFOBuff {
 public:
 	static constexpr uint8_t sizeMinusOne = static_cast<uint8_t>(size - 1);
 private:
-	uint8_t posRead_;
-	uint8_t posWrite_;
-	uint8_t buff_[size];
+	volatile uint8_t posRead_;
+	volatile uint8_t posWrite_;
+	volatile uint8_t buff_[size];
 public:
-	BufferFIFO() : posRead_(0), posWrite_(0) {}
+	FIFOBuff() : posRead_(0), posWrite_(0) {}
 	void WriteByte(uint8_t data) {
 		uint8_t posWriteNext = (posWrite_ == sizeMinusOne)? 0 : posWrite_ + 1;
 		if (posWriteNext == posRead_) return;
@@ -731,11 +731,11 @@ template<
 	uint8_t dataTXEN0		= 0b1			// TXENn: Transmitter Enable n = true
 > class Serial0 : public Serial {
 private:
-	//BufferFIFO<> buffs_[enableReceive? 1 : 0];
-	BufferFIFO<> buffs_[1];
+	//FIFOBuff<> buffs_[enableReceive? 1 : 0];
+	FIFOBuff<> buffs_[1];
 public:
 	Serial0() {}
-	BufferFIFO<>& GetBuffForRead() { return buffs_[0]; }
+	FIFOBuff<>& GetBuffForRead() { return buffs_[0]; }
 	virtual void Open(BaudRate baudRate, uint8_t charSize = CharSize8, uint8_t stopBit = StopBit1, uint8_t parity = ParityNone) {
 		constexpr uint8_t dataRXCIE0 = enableReceive? 0b1 : 0b0; // RXCIEn: RX Complete Interrupt Enable n
 		uint8_t dataUCSZ = charSize;
@@ -777,7 +777,7 @@ public:
 		//	return 0x00;
 		//}
 	}
-	bool HasReceiveData() {
+	bool HasReceivedData() {
 		return !GetBuffForRead().IsEmpty();
 		//if constexpr (enableReceive) {
 		//	return !GetBuffForRead().IsEmpty();
