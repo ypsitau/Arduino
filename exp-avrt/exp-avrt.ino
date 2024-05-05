@@ -892,24 +892,13 @@ void Test_Serial_ReceiveData()
 {
 	serial.Println("Test of ReceiveData");
 	for (;;) {
-		while (!serial.HasReceivedData()) ;
-		serial.TransmitData(serial.ReceiveData());
-	}
-#if 0
-	for (;;) {
-		char buff[32];
-		int i = 0;
-		for (i = 0; i < sizeof(buff) - 1; i++) {
-			while (!serial.HasReceivedData()) ;
-			serial.PutChar(ch);
-			char ch = serial.ReceiveData();
-			if (ch == '\n') break;
-			buff[i] = ch;
+		if (serial.HasReceivedData()) {
+			serial.Print("Received: ");
+			while (serial.HasReceivedData()) {
+				serial.TransmitData(serial.ReceiveData());
+			}
 		}
-		buff[i] = 0x00;
-		serial.Println(buff);
 	}
-#endif
 }
 
 void setup()
