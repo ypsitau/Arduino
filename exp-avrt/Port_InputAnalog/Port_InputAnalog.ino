@@ -15,15 +15,9 @@ av::Port<av::A5> portA6;
 void setup()
 {
 	serial.Open(av::Serial::BaudRate57600);
-	serial.Println(F("Analog Print"));
+	av::InitPort<>();
 	av::InitADC<>();
-	portA0.SetMode<av::In>();
-	portA1.SetMode<av::Out>();
-	portA2.SetMode<av::Out>();
-	portA3.SetMode<av::Out>();
-	portA4.SetMode<av::Out>();
-	portA5.SetMode<av::Out>();
-	portA6.SetMode<av::Out>();
+	serial.Println(F("Analog Print"));
 }
 
 void loop()
