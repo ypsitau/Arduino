@@ -1,5 +1,29 @@
-#include "avrt.h"
+#include <avrt.h>
 
+namespace av = avrt;
+
+AVRT_IMPLEMENT_Serial0(serial)
+
+av::Port<av::A0> portA0;
+av::Port<av::D3> portPWM;
+
+void setup()
+{
+	serial.Open(av::Serial::BaudRate57600);
+	av::InitPort<>();
+	av::InitADC_8bit<>();
+	portPWM.SetMode<av::Out>();
+	portPWM.EnablePWM();
+}
+
+void loop()
+{
+	uint8_t value = portA0.InputAnalog_8bit();
+	serial.Printf(F("Duty: %3d/255\n"), value);
+	portPWM.OutputPWM(value);
+}
+
+#if 0
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
 
@@ -84,3 +108,4 @@ void loop()
 	//OutputPWM<pin>(value);
 	avrt::Port::OutputPWM<pin>(value);
 }
+#endif
