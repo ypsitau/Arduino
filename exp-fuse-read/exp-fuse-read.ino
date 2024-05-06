@@ -1,5 +1,5 @@
-#include <avr/boot.h>
 #include <avrt.h>
+#include <avr/boot.h>
 
 namespace av = avrt;
 

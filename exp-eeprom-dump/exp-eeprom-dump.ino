@@ -1,36 +1,30 @@
+#include <avrt.h>
 #include <EEPROM.h>
 
-char HalfToHexChar(uint8_t num)
-{
-	static const char hexCharTbl[] PROGMEM = "0123456789ABCDEF";
-	return pgm_read_byte(&hexCharTbl[num]);
-}
+namespace av = avrt;
+
+AVRT_IMPLEMENT_Serial0_NoRecv(serial)
 
 void setup()
 {
-	Serial.begin(57500);
+	serial.Open(av::Serial::BaudRate57600);
 	uint16_t addrEnd = EEPROM.length();
 	int col = 0;
 	for (uint16_t addr = 0x0000; addr < addrEnd; addr++) {
 		uint8_t data = EEPROM.read(addr);
 		if (col == 0) {
-			Serial.print(HalfToHexChar((addr >> 12) & 0xf));
-			Serial.print(HalfToHexChar((addr >> 8) & 0xf));
-			Serial.print(HalfToHexChar((addr >> 4) & 0xf));
-			Serial.print(HalfToHexChar(addr & 0xf));
-			Serial.print("  ");
+			serial.Printf(F("%04X "), addr);
 		} else {
-			Serial.print(" ");
+			serial.Print(" ");
 		}
-		Serial.print(HalfToHexChar((data >> 4) & 0xf));
-		Serial.print(HalfToHexChar(data & 0xf));
+		serial.Printf(F("%02X"), data);
 		col++;
 		if (col == 32) {
-			Serial.print("\n");
+			serial.Println();
 			col = 0;
 		}
 	}
-	if (col > 0) Serial.print("\n");
+	if (col > 0) serial.Println();
 }
 
 void loop()
