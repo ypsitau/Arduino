@@ -1,22 +1,15 @@
 #include <avr/boot.h>
+#include <avrt.h>
 
-char HalfToHexChar(uint8_t num)
-{
-	static const char hexCharTbl[] PROGMEM = "0123456789ABCDEF";
-	return pgm_read_byte(&hexCharTbl[num]);
-}
+namespace av = avrt;
 
-void PrintHex(uint8_t data)
-{
-	Serial.print(HalfToHexChar((data >> 4) & 0xf));
-	Serial.print(HalfToHexChar(data & 0xf));
-}
+AVRT_IMPLEMENT_Serial0(serial)
 
 void setup()
 {
-	Serial.begin(57500);
-	Serial.print("Low Fuse: ");
-	PrintHex(boot_lock_fuse_bits_get(GET_LOW_FUSE_BITS));
+	serial.Open(av::Serial::BaudRate57600);
+	serial.Printf("Low Fuse: %02x", boot_lock_fuse_bits_get(GET_LOW_FUSE_BITS));
+#if 0
 	Serial.println();
 	Serial.print("High Fuse: ");
 	PrintHex(boot_lock_fuse_bits_get(GET_HIGH_FUSE_BITS));
@@ -27,6 +20,7 @@ void setup()
 	Serial.print("Lock: ");
 	PrintHex(boot_lock_fuse_bits_get(GET_LOCK_BITS));
 	Serial.println();
+#endif
 }
 
 void loop()
