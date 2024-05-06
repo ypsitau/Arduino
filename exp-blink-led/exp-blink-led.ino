@@ -1,4 +1,4 @@
-const uint8_t pinLED = 2;
+const uint8_t pinLED = 4;
 
 void setup()
 {
