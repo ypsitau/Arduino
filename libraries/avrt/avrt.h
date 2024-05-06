@@ -13,6 +13,13 @@
 
 class __FlashStringHelper;
 
+#define AVRT_IMPLEMENT_Serial0(variableName) \
+avrt::Serial0<> variableName; \
+ISR(USART_RX_vect) { variableName.HandleIRQ_USART_RX(); }
+
+#define AVRT_IMPLEMENT_Serial0_NoRecv(variableName) \
+avrt::Serial0<false> variableName;
+
 namespace avrt {
 
 template<typename T> T ChooseMin(T a, T b) { return (a < b)? a : b; }
@@ -792,7 +799,5 @@ public:
 };
 
 }
-
-#define RegisterISR_Serial0(serial) ISR(USART_RX_vect) { serial.HandleIRQ_USART_RX(); }
 
 #endif
