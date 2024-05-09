@@ -1,2 +1,4 @@
 .vscode/
 build/
+arduino-cli/
+ArduinoCore-avr/
