@@ -12,16 +12,16 @@
 
 #include <Wire.h>
 
-void requestEvent();
 void receiveEvent();
+void requestEvent();
 
 void setup()
 {
 	Serial.begin(57600);
-	Serial.print("Waiting ror data from I2C at 0x08\n");
+	Serial.print("Waiting for data from I2C at 0x08\n");
 	Wire.begin(0x08); // join i2c bus with address #8
-	Wire.onRequest(requestEvent); // register event
 	Wire.onReceive(receiveEvent); // register event
+	Wire.onRequest(requestEvent); // register event
 }
 
 void loop()
@@ -29,16 +29,17 @@ void loop()
 	delay(100);
 }
 
+void receiveEvent()
+{
+	Serial.print("onReceive: 0x");
+	Serial.println(Wire.read(), 16);
+	Serial.println(Wire.read(), 16);
+}
+
 void requestEvent()
 {
-	Serial.print("requestEvent: 0x");
+	Serial.print("onRequest: 0x");
 	Serial.println(Wire.read(), 16);
 	Wire.write("hello "); // respond with message of 6 bytes
 }
 
-void receiveEvent()
-{
-	Serial.print("receiveEvent: 0x");
-	Serial.println(Wire.read(), 16);
-	Serial.println(Wire.read(), 16);
-}

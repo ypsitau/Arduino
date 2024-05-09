@@ -118,7 +118,7 @@ template <
 	uint8_t dataADSC	= 0b0,		// ADSC: ADC Start Conversion = false
 	uint8_t dataADIF	= 0b1,		// ADIF: ADC Interrupt Flag .. set one to clear
 	uint8_t dataADEN	= 0b1		// ADEN: ADC Enable = true
-> static void InitADC() {
+> void InitADC() {
 	ADMUX = (dataREFS << REFS0) | (dataADLAR << ADLAR) | (dataMUX << MUX0);
 	ADCSRA = (dataADEN << ADEN) | (dataADSC << ADSC) | (dataADATE << ADATE) |
 		(dataADIF << ADIF) | (dataADIE << ADIE) | (dataADPS << ADPS0);
@@ -139,7 +139,7 @@ template <
 	uint8_t dataADSC	= 0b0,		// ADSC: ADC Start Conversion = false
 	uint8_t dataADIF	= 0b1,		// ADIF: ADC Interrupt Flag .. set one to clear
 	uint8_t dataADEN	= 0b1		// ADEN: ADC Enable = true
-> static void InitADC_8bit() {
+> void InitADC_8bit() {
 	ADMUX = (dataREFS << REFS0) | (dataADLAR << ADLAR) | (dataMUX << MUX0);
 	ADCSRA = (dataADEN << ADEN) | (dataADSC << ADSC) | (dataADATE << ADATE) |
 		(dataADIF << ADIF) | (dataADIE << ADIE) | (dataADPS << ADPS0);
@@ -160,7 +160,7 @@ template <
 	uint8_t dataACIS	= 0b00,		// ACIS: Analog Comparator Interrupt Mode Select = Comparator Interrupt on Output Toggle
 	uint8_t dataAIN0D	= 0b0,		// AIN0 Digital Input Disable
 	uint8_t dataAIN1D	= 0b0		// AIN1 Digital Input Disable
-> static void InitAnalogComparator() {
+> void InitAnalogComparator() {
 	ADCSRB = ADCSRB & ~(0b1 << ACME) | (dataACME << ACME);
 	ACSR = (dataACD << ACD) | (dataACBG << ACBG) | (dataACO << ACO) | (dataACI << ACI) |
 		(dataACIE << ACIE) | (dataACIC << ACIC) | (dataACIS << ACIS0);
