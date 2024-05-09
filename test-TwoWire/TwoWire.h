@@ -1,9 +1,8 @@
 #include <avrt.h>
 #include <util/twi.h>
 
-namespace av = avrt;
-
-AVRT_IMPLEMENT_Serial0_NoRecv(serial)
+#define AVRT_IMPLEMENT_TwoWire(variableName) \
+avrt::TwoWire<> variableName; \
 
 namespace avrt {
 
@@ -41,8 +40,5 @@ public:
 		TWAMR = dataTWAM << TWAM0;
 	}
 };
-
-#define AVRT_IMPLEMENT_TwoWire(variableName) \
-avrt::TwoWire<> variableName; \
 
 }
