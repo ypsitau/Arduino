@@ -40,13 +40,13 @@ void loop()
 {
 	uint8_t value = portA0.InputAnalog_8bit();
 	if (valuePrev != value) {
-		serial.Printf("%d\n", value);
+		serial.Printf("Duty: %3d/255\n", value);
 		valuePrev = value;
 	}
-	portD3.OutputPWM(value);
-	portD5.OutputPWM(value);
-	portD6.OutputPWM(value);
-	portD9.OutputPWM(value);
-	portD10.OutputPWM(value);
-	portD11.OutputPWM(value);
+	portD3.OutputFinePWM(value);
+	portD5.OutputFinePWM(value);
+	portD6.OutputFinePWM(value);
+	portD9.OutputFinePWM(value);
+	portD10.OutputFinePWM(value);
+	portD11.OutputFinePWM(value);
 }
