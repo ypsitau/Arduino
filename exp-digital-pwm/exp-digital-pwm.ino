@@ -17,7 +17,7 @@ uint8_t valuePrev = 0;
 
 AVRT_IMPLEMENT_Serial0(serial)
 
-const char* ClockSelToString(uint8_t clockSel)
+const char* ClockSelToString_OC0_OC1(uint8_t clockSel)
 {
 	return
 		(clockSel == 0)? "No Clock" :
@@ -28,6 +28,19 @@ const char* ClockSelToString(uint8_t clockSel)
 		(clockSel == 5)? "clk/1024" :
 		(clockSel == 6)? "External Falling Edge" :
 		(clockSel == 7)? "External Rising Edge" : "";
+}
+
+const char* ClockSelToString_OC2(uint8_t clockSel)
+{
+	return
+		(clockSel == 0)? "No Clock" :
+		(clockSel == 1)? "clk/1" :
+		(clockSel == 2)? "clk/8" :
+		(clockSel == 3)? "clk/32" :
+		(clockSel == 4)? "clk/64" :
+		(clockSel == 5)? "clk/128" :
+		(clockSel == 6)? "clk/256" :
+		(clockSel == 7)? "clk/1024" : "";
 }
 
 void setup()
@@ -48,9 +61,9 @@ void setup()
 	portD10.EnablePWM();
 	portD11.EnablePWM();
 	serial.Println("OutputPWM");
-	serial.Printf("D5, D6  .. OC0:%s\n", ClockSelToString((TCCR0B >> CS00) & 0b111));
-	serial.Printf("D9, D10 .. OC1:%s\n", ClockSelToString((TCCR1B >> CS10) & 0b111));
-	serial.Printf("D3, D11 .. OC2:%s\n", ClockSelToString((TCCR2B >> CS20) & 0b111));
+	serial.Printf("D5, D6  .. OC0:%s\n", ClockSelToString_OC0_OC1((TCCR0B >> CS00) & 0b111));
+	serial.Printf("D9, D10 .. OC1:%s\n", ClockSelToString_OC0_OC1((TCCR1B >> CS10) & 0b111));
+	serial.Printf("D3, D11 .. OC2:%s\n", ClockSelToString_OC2((TCCR2B >> CS20) & 0b111));
 }
 
 void loop()
