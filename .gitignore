@@ -1,4 +1,6 @@
 .vscode/
 build/
+resource/
+libraries/
 arduino-cli/
 ArduinoCore-avr/
