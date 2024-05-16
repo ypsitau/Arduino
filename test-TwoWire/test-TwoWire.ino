@@ -8,7 +8,7 @@ AVRT_IMPLEMENT_TwoWire(twi)
 
 void setup()
 {
-	serial.Open(av::Serial::BaudRate57600);
+	serial.Open(serial.Speed::Bps57600);
 	serial.Printf("hello\n");
 	
 }

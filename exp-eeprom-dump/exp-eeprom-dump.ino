@@ -7,7 +7,7 @@ AVRT_IMPLEMENT_Serial0_NoRecv(serial)
 
 void setup()
 {
-	serial.Open(av::Serial::BaudRate57600);
+	serial.Open(serial.Speed::Bps57600);
 	uint16_t addrEnd = EEPROM.length();
 	int col = 0;
 	for (uint16_t addr = 0x0000; addr < addrEnd; addr++) {
