@@ -28,6 +28,9 @@
 #include <util/delay.h>
 #include <compat/twi.h>
 #include "Arduino.h" // for digitalWrite and micros
+#include <avrt.h>
+
+AVRT_DECLARE_Serial0(serial)
 
 #ifndef cbi
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
