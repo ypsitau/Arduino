@@ -505,7 +505,10 @@ bool twi_manageTimeoutFlag(bool clear_flag){
 
 ISR(TWI_vect)
 {
-  switch(TW_STATUS){
+  //serial.Printf(F("hogehogehoge"));
+  uint8_t stat = TW_STATUS;
+  //serial.Printf(F("TWI_vect(%S)\n"), avrt::TwoWire::StatusToString(stat));
+  switch(stat){
     // All Master
     case TW_START:     // sent start condition
     case TW_REP_START: // sent repeated start condition
@@ -596,8 +599,10 @@ ISR(TWI_vect)
       // if there is still room in the rx buffer
       if(twi_rxBufferIndex < TWI_BUFFER_LENGTH){
         // put byte in buffer and ack
-        twi_rxBuffer[twi_rxBufferIndex++] = TWDR;
+        uint8_t data = TWDR;
+        twi_rxBuffer[twi_rxBufferIndex++] = data;
         twi_reply(1);
+        serial.Printf(F("%02x\n"), data);
       }else{
         // otherwise nack
         twi_reply(0);
