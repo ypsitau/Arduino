@@ -31,15 +31,21 @@ void setup()
 	portD10.PWMEnable();
 }
 
+uint8_t AdjustValue(uint8_t valueRaw)
+{
+	const uint8_t valueMin = 70, valueMax = 230;
+	return static_cast<uint8_t>(static_cast<uint16_t>(valueRaw) * (valueMax - valueMin) / 255 + valueMin);
+}
+
 void loop()
 {
-	uint8_t value0 = portA0.AnalogInput8bit();
-	uint8_t value1 = portA1.AnalogInput8bit();
-	uint8_t value2 = portA2.AnalogInput8bit();
-	uint8_t value3 = portA3.AnalogInput8bit();
-	serial.Printf("Result:%3d %3d %3d %3d\n", value0, value1, value2, value3);
-	portD5.PWMOutput(value0);
-	portD6.PWMOutput(value1);
-	portD9.PWMOutput(value2);
-	portD10.PWMOutput(value3);
+	uint8_t valueOrange = AdjustValue(portA0.AnalogInput8bit());
+	uint8_t valueYellow = AdjustValue(portA1.AnalogInput8bit());
+	uint8_t valueGreen = AdjustValue(portA2.AnalogInput8bit());
+	uint8_t valueBlue = AdjustValue(255 - portA3.AnalogInput8bit());
+	serial.Printf("Result:%3d %3d %3d %3d\n", valueOrange, valueYellow, valueGreen, valueBlue);
+	portD5.PWMOutput(valueOrange);
+	portD6.PWMOutput(valueYellow);
+	portD9.PWMOutput(valueGreen);
+	portD10.PWMOutput(valueBlue);
 }
